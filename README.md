@@ -2,8 +2,6 @@
 ===========
 Compiler for Latte Programming Language
 
-
-
 Laboratorium MRJP - projekt zaliczeniowy
 
 Zaliczenie laboratorium odbywa się na podstawie projektu obejmującego implementację kompilatora dla prostego jezyka imperatywnego Latte.
