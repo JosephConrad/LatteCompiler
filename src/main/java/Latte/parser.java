@@ -328,7 +328,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
   public Latte.Absyn.Program pProgram() throws Exception
   {
-    System.out.println("Latte.Absyn.Program pProgram() ");
+    System.out.println("; Latte.Absyn.Program pProgram() ");
 	java_cup.runtime.Symbol res = parse();;
 	return (Latte.Absyn.Program) res.value;
   }

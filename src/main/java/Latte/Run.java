@@ -4,44 +4,39 @@ import java.io.FileReader;
 
 public class Run
 {
-  public static void main(String args[]) throws Exception
-  {
-    Yylex l = null;
-    parser p;;
-    try
+    public static void main(String args[]) throws Exception
     {
-      if (args.length == 0) l = new Yylex(System.in);
-      else l = new Yylex(new FileReader(args[0]));
+        Yylex l = null;
+        parser p;
+        try
+        {
+            if (args.length == 0) l = new Yylex(System.in);
+            else l = new Yylex(new FileReader(args[0]));
+        }
+        catch(FileNotFoundException e)
+        {
+            System.err.println("Error: File not found: " + args[0]);
+            System.exit(1);
+        }
+        p = new parser(l);
+        try
+        {
+            Latte.Absyn.Program parse_tree = p.pProgram();
+            System.out.print("; ");
+            System.out.println(PrettyPrinter.show(parse_tree));
+            System.out.println("; Nasm - Asembly code generator for Latte");
+            System.out.println("; Author: Konrad Lisiecki");
+            System.out.println("; Classes: Compilers 2014/15\n\n");
+            //System.out.println(PrettyPrinter.print(parse_tree));
+
+            AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
+            asmGenerator.generateASM();
+        }
+        catch(Throwable e)
+        {
+            System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+            System.err.println("     " + e.getMessage());
+            System.exit(1);
+        }
     }
-    catch(FileNotFoundException e)
-    {
-     System.err.println("Error: File not found: " + args[0]);
-     System.exit(1);
-    }
-    p = new parser(l);
-    /* The default parser is the first-defined entry point. */
-    /* You may want to change this. Other options are: */
-    /*  */
-    try
-    {
-      Latte.Absyn.Program parse_tree = p.pProgram();
-      System.out.println("[Abstract Syntax]");
-      System.out.println();
-      System.out.println("Parse Succesful!");
-      System.out.println();
-      System.out.println("[Abstract Syntax]");
-      System.out.println();
-      System.out.println(PrettyPrinter.show(parse_tree));
-      System.out.println();
-      System.out.println("[Linearized Tree]");
-      System.out.println();
-      System.out.println(PrettyPrinter.print(parse_tree));
-    }
-    catch(Throwable e)
-    {
-      System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
-      System.err.println("     " + e.getMessage());
-      System.exit(1);
-    }
-  }
 }
