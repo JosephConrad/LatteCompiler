@@ -13,6 +13,7 @@ public class AsmGenerator
     String classname;
     String asm = "";
     Latte.Absyn.Program program;
+    Integer currentNumber;
     Env env;
 
     public AsmGenerator(Latte.Absyn.Program program, String string) {
@@ -296,8 +297,7 @@ public class AsmGenerator
         public R visit(Latte.Absyn.ELitInt p, A arg)
         {
       /* Code For ELitInt Goes Here */
-
-            //p.integer_;
+            currentNumber = p.integer_;
 
             return null;
         }
@@ -321,7 +321,8 @@ public class AsmGenerator
 
             //p.ident_;
             for (Expr expr : p.listexpr_) { 
-                //expr.accept(ArgVisitor<R,A>, arg);
+                expr.accept(new ExprVisitor<R,A>(), arg);
+                asm += "\tmov rdi, "+currentNumber+"\n";
             }
             asm += "\tcall " + p.ident_ + "\n";
             
@@ -342,6 +343,7 @@ public class AsmGenerator
 
             p.expr_.accept(new ExprVisitor<R,A>(), arg);
 
+            currentNumber = (-1)  * currentNumber;
             return null;
         }
         public R visit(Latte.Absyn.Not p, A arg)

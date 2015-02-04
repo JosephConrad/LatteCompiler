@@ -1,6 +1,9 @@
 package Latte;
+
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.PrintStream;
 
 public class Run
 {
@@ -21,6 +24,11 @@ public class Run
         p = new parser(l);
         try
         {
+            String[] parts = args[0].split("/");
+            String[] file = parts[2].split("\\.");
+            System.out.println(file[0]);
+            PrintStream out = new PrintStream(new FileOutputStream("/Users/konrad/Dropbox/09_semestr/mrjp/LatteCompiler/tests/out/"+ file[0]+".asm"));
+            System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
             System.out.print("; ");
             System.out.println(PrettyPrinter.show(parse_tree));
