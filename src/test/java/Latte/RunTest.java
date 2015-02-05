@@ -17,7 +17,10 @@ public class RunTest
         Run.main(new String[]{"tests/good/core008.lat"});
         Run.main(new String[]{"tests/good/core009.lat"});
         Run.main(new String[]{"tests/good/core011.lat"});
+        Run.main(new String[]{"tests/good/core014.lat"});
+        Run.main(new String[]{"tests/good/core016.lat"});
         Run.main(new String[]{"tests/good/core020.lat"});
+        Run.main(new String[]{"tests/good/core021.lat"});
         Run.main(new String[]{"tests/good/core022.lat"});
     }
 }

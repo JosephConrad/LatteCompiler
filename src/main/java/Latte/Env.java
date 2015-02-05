@@ -18,6 +18,7 @@ public class Env {
     public int ifCounter = 1;
     public String register = "";
     public int neg;
+    public int whileCounter = 1;
 
     public String getCurrentType() {
         return currentType;

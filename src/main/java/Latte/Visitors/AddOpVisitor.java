@@ -1,21 +1,22 @@
 package Latte.Visitors;
 
 import Latte.Absyn.AddOp;
+import Latte.Env;
 
 /**
  * Created by konrad on 05/02/15.
  */
 
 
-public class AddOpVisitor<R,A> implements AddOp.Visitor<R,A>
+public class AddOpVisitor implements AddOp.Visitor<String, Env>
 {
-    public R visit(Latte.Absyn.Plus p, A arg)
+    public String visit(Latte.Absyn.Plus p, Env env)
     {
-       return null;
+       return "\tadd";
     }
-    public R visit(Latte.Absyn.Minus p, A arg)
+    public String visit(Latte.Absyn.Minus p, Env env)
     {
-        return null;
+        return "\tsub";
     }
 
 }

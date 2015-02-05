@@ -90,7 +90,10 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     {
         env.register = "eax"; // che dostac wynik obliczenia wyr do eax
         int ifNo = env.ifCounter++;
-        String asm = p.expr_.accept(new ExprVisitor(), env) + " ELSE_"+ ifNo +"\n\n";
+        
+        String ifLabel = "IF_"+ifNo;
+        String asm = ifLabel+":\n";
+        asm += p.expr_.accept(new ExprVisitor(), env) + " ELSE_"+ ifNo +"\n\n";
         
         env.register = "eax";
         asm += p.stmt_1.accept(new StmtVisitor(), env);
@@ -104,10 +107,17 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     }
 
     // Petla
-    public String visit(Latte.Absyn.While p, Env arg)
-    {
-        String asm = p.expr_.accept(new ExprVisitor(), arg);
-        asm += p.stmt_.accept(new StmtVisitor(), arg);
+    public String visit(Latte.Absyn.While p, Env env)
+    {   
+        int whileNo = env.whileCounter++;
+        String whileLabel = "WHILE_"+whileNo;
+        String afterWhileLabel = "AFTER_WHILE_"+whileNo;
+        
+        String asm = whileLabel + ":\n";
+        asm += p.expr_.accept(new ExprVisitor(), env) +  " " + afterWhileLabel+"\n\n";
+        asm += p.stmt_.accept(new StmtVisitor(), env);
+        asm += "\tjmp "+whileLabel+"\n\n";
+        asm += afterWhileLabel+ ":\n\n";
 
         return asm;
     }

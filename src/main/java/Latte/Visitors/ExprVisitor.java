@@ -11,10 +11,10 @@ import Latte.Env;
 
 public class ExprVisitor implements Expr.Visitor<String, Env>
 {
-    public String visit(Latte.Absyn.EVar p, Env arg)
+    public String visit(Latte.Absyn.EVar p, Env env)
     {
         String argument = "["+p.ident_+"]";
-        String asm = "\tmov eax, "+ argument+"\n";
+        String asm = "\tmov "+ env.register + ", "+ argument+"\n";
         return asm;
     }
 
@@ -88,12 +88,10 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     public String visit(Latte.Absyn.EAdd p, Env env)
     {
         env.register = "eax";
-        p.expr_1.accept(new ExprVisitor(), env);//eax
-        p.addop_.accept(new AddOpVisitor(), env);
-        env.register = "eax";
-        p.expr_2.accept(new ExprVisitor(), env);//edx
-        String asm = "\tadd eax, edx\n";
-
+        String asm = p.expr_1.accept(new ExprVisitor(), env);//eax
+        env.register = "edx";
+        asm += p.expr_2.accept(new ExprVisitor(), env);//edx
+        asm += p.addop_.accept(new AddOpVisitor(), env) + " eax, edx\n";
         return asm;
     }
     public String visit(Latte.Absyn.ERel p, Env env)
