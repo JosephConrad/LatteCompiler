@@ -1,5 +1,6 @@
-package Latte;
-import Latte.Absyn.*;
+package Latte.Lib;
+import Latte.Lib.AllVisitor;
+
 /** BNFC-Generated Abstract Visitor */
 public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
 /* Program */

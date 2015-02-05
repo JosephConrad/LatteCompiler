@@ -1,6 +1,4 @@
-package Latte;
-
-import Latte.Absyn.*;
+package Latte.Lib;
 
 /** BNFC-Generated All Visitor */
 public interface AllVisitor<R,A> extends

@@ -4,7 +4,7 @@
 // Sat Jan 31 22:55:10 CET 2015
 //----------------------------------------------------
 
-package Latte;
+package Latte.Lib;
 
 
 /** CUP v0.10k generated parser.

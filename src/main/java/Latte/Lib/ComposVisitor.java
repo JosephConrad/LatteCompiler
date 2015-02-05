@@ -1,4 +1,4 @@
-package Latte;
+package Latte.Lib;
 import Latte.Absyn.*;
 /** BNFC-Generated Composition Visitor
 */

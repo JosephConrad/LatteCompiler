@@ -1,9 +1,6 @@
-package Latte;
+package Latte.Lib;
 
 import Latte.Absyn.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
 
 /** BNFC-Generated Fold Visitor */
 public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {

@@ -1,5 +1,9 @@
 package Latte;
 
+import Latte.Lib.PrettyPrinter;
+import Latte.Lib.Yylex;
+import Latte.Lib.parser;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;

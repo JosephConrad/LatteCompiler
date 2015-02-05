@@ -4,7 +4,7 @@
 // Sat Jan 31 22:55:09 CET 2015
 //----------------------------------------------------
 
-package Latte;
+package Latte.Lib;
 
 /** CUP generated class containing symbol constants. */
 public class sym {
