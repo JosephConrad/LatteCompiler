@@ -17,8 +17,9 @@ public class AsmGenerator
     String classname;
     String asm = "";
     String bss = "";
+    String argument = "";
     Latte.Absyn.Program program;
-    Integer currentNumber;
+    Integer currentNumber = 0;
     Env env;
 
     public AsmGenerator(Latte.Absyn.Program program, String string) {
@@ -31,7 +32,7 @@ public class AsmGenerator
     void generateASM(){
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
         program.accept(programVisitor, env);
-        System.out.print("\n\n\n"+bss);
+        System.out.print("\n\n\n" + bss);
         System.out.print("\n\n\n"+asm);
     }
 
@@ -167,7 +168,9 @@ public class AsmGenerator
 
             //p.ident_;
             p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
-            asm+="\tmov ["+p.ident_+"], rax\n";
+            asm += "\tmov eax, "+currentNumber+"\n";
+            asm+="\tmov ["+p.ident_+"], eax\n";
+            currentNumber = 0;
 
             return null;
         }
@@ -312,7 +315,7 @@ public class AsmGenerator
         public R visit(Latte.Absyn.EVar p, A arg)
         {
       /* Code For EVar Goes Here */
-            asm += "\tmov rax, ["+p.ident_+"]\n";
+            argument = "["+p.ident_+"]";
             //p.ident_;
 
             return null;
@@ -321,7 +324,7 @@ public class AsmGenerator
         {
       /* Code For ELitInt Goes Here */
             currentNumber = p.integer_;
-
+            argument = currentNumber.toString();
             return null;
         }
         public R visit(Latte.Absyn.ELitTrue p, A arg)
@@ -345,7 +348,8 @@ public class AsmGenerator
             //p.ident_;
             for (Expr expr : p.listexpr_) { 
                 expr.accept(new ExprVisitor<R,A>(), arg);
-                asm += "\tmov rdi, rax\n";
+                asm += "\tmov eax, "+ argument + "\n";
+                asm += "\tmov edi, eax\n";
             }
             asm += "\tcall " + p.ident_ + "\n";
             
@@ -366,7 +370,7 @@ public class AsmGenerator
 
             p.expr_.accept(new ExprVisitor<R,A>(), arg);
             currentNumber = (-1)  * currentNumber;
-            asm += "\tmov rax, "+currentNumber+"\n";
+            argument = currentNumber.toString();
             return null;
         }
         public R visit(Latte.Absyn.Not p, A arg)
