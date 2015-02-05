@@ -111,6 +111,7 @@ public class AsmGenerator
 
             for (Stmt x : p.liststmt_) {
                 x.accept(new StmtVisitor(), arg);
+                asm += "\n";
                 System.out.println("; "+x);
             }
 
@@ -164,11 +165,8 @@ public class AsmGenerator
         }
         public Void visit(Latte.Absyn.Ass p, Env arg)
         {
-      /* Code For Ass Goes Here */
-
-            //p.ident_;
             p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
-            asm += "\tmov eax, "+currentNumber+"\n";
+            //asm += "\tmov eax, "+currentNumber+"\n";
             asm+="\tmov ["+p.ident_+"], eax\n";
             currentNumber = 0;
 
@@ -194,8 +192,8 @@ public class AsmGenerator
         {
       /* Code For Ret Goes Here */
 
-            asm += "\tmov eax, 0\n";
             p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
+            asm += "\tmov eax, "+currentNumber+"\n";
 
             return null;
         }
@@ -259,15 +257,14 @@ public class AsmGenerator
         }
         public Void visit(Latte.Absyn.Init p, Latte.Env arg)
         {
-      /* Code For Init Goes Here */
 
-            //p.ident_;
+            p.expr_.accept(new ExprVisitor<Void,Latte.Env>(), arg);
             env.addVariable(p.ident_, env.rbp);
             bss += "\t"+p.ident_+"\t"+ "resd\t1\n";
-            asm += "\tmov ["+p.ident_+"], dword "+p.expr_+"\n";
+            //asm += "\tmov eax, "+currentNumber+"\n";//+p.expr_+"\n";
+            asm += "\tmov ["+p.ident_+"], eax\n";//+p.expr_+"\n";
             env.rbp += 4;
             System.out.println(";init " + env);
-            p.expr_.accept(new ExprVisitor<Void,Latte.Env>(), arg);
 
             return null;
         }
@@ -310,12 +307,20 @@ public class AsmGenerator
         }
 
     }
+
+
+
+
+    /* **********************************
+     * Expressions
+     ***********************************/
     public class ExprVisitor<R,A> implements Expr.Visitor<R,A>
     {
         public R visit(Latte.Absyn.EVar p, A arg)
         {
       /* Code For EVar Goes Here */
             argument = "["+p.ident_+"]";
+            asm += "\tmov eax, "+ argument+"\n";
             //p.ident_;
 
             return null;
@@ -325,6 +330,7 @@ public class AsmGenerator
       /* Code For ELitInt Goes Here */
             currentNumber = p.integer_;
             argument = currentNumber.toString();
+            asm += "\tmov eax, "+ currentNumber+"\n";
             return null;
         }
         public R visit(Latte.Absyn.ELitTrue p, A arg)
@@ -336,55 +342,41 @@ public class AsmGenerator
         }
         public R visit(Latte.Absyn.ELitFalse p, A arg)
         {
-      /* Code For ELitFalse Goes Here */
-
-
             return null;
         }
         public R visit(Latte.Absyn.EApp p, A arg)
         {
-      /* Code For EApp Goes Here */
-
-            //p.ident_;
-            for (Expr expr : p.listexpr_) { 
+            for (Expr expr : p.listexpr_) {
                 expr.accept(new ExprVisitor<R,A>(), arg);
-                asm += "\tmov eax, "+ argument + "\n";
                 asm += "\tmov edi, eax\n";
             }
             asm += "\tcall " + p.ident_ + "\n";
-            
 
             return null;
         }
         public R visit(Latte.Absyn.EString p, A arg)
         {
-      /* Code For EString Goes Here */
-
-            //p.string_;
-
             return null;
         }
         public R visit(Latte.Absyn.Neg p, A arg)
         {
-      /* Code For Neg Goes Here */
-
             p.expr_.accept(new ExprVisitor<R,A>(), arg);
-            currentNumber = (-1)  * currentNumber;
-            argument = currentNumber.toString();
+
+            asm += "\tsub eax, " + currentNumber+ " \n";
+            asm += "\tsub eax, " + currentNumber+ " \n";
             return null;
         }
+        
         public R visit(Latte.Absyn.Not p, A arg)
         {
-      /* Code For Not Goes Here */
 
             p.expr_.accept(new ExprVisitor<R,A>(), arg);
 
             return null;
         }
+        
         public R visit(Latte.Absyn.EMul p, A arg)
         {
-      /* Code For EMul Goes Here */
-
             p.expr_1.accept(new ExprVisitor<R,A>(), arg);
             p.mulop_.accept(new MulOpVisitor<R,A>(), arg);
             p.expr_2.accept(new ExprVisitor<R,A>(), arg);
