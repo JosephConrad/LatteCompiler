@@ -10,7 +10,7 @@ public class Program {
         listArg.add(new Arg(new Int(), "number"));
         listtopdef_.add(new FnDef(new Int(), "printInt", listArg, new Block(new ListStmt())));
         for (int i = 0; i< listtopdef_.size(); i++) {
-            System.out.println(listtopdef_.get(i));
+            //System.out.println(listtopdef_.get(i));
         }
         return programVisitor.visit(this, env);
     }

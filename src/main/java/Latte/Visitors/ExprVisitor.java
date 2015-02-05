@@ -23,6 +23,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     public String visit(Latte.Absyn.ELitInt p, Env env)
     {
         String asm = "\tmov " + env.register + ", " + p.integer_+"\n";
+        env.neg = p.integer_;
         return asm;
     }
     
@@ -41,11 +42,12 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
     
     // Dodawanie
-    public String visit(Latte.Absyn.EApp p, Env arg)
+    public String visit(Latte.Absyn.EApp p, Env env)
     {
         String asm = "";
         for (Expr expr : p.listexpr_) {
-            expr.accept(new ExprVisitor(), arg);
+            env.register = "eax";
+            asm += expr.accept(new ExprVisitor(), env);
             asm += "\tmov edi, eax\n";
         }
         asm += "\tcall " + p.ident_ + "\n";
@@ -58,12 +60,12 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     {
         return null;
     }
-    public String visit(Latte.Absyn.Neg p, Env arg)
+   
+    public String visit(Latte.Absyn.Neg p, Env env)
     {
-        p.expr_.accept(new ExprVisitor(), arg);
-        String asm = "";
-        //String asm = "\tsub eax, " + currentNumber+ " \n";
-        //asm += "\tsub eax, " + currentNumber+ " \n";
+        String asm = p.expr_.accept(new ExprVisitor(), env);
+        asm += "\tsub eax, " + env.neg + " \n";
+        asm += "\tsub eax, " + env.neg + " \n";
         return asm;
     }
 
