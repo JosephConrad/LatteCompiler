@@ -1,7 +1,7 @@
 package Latte;
 
 import Latte.Absyn.*;
-import Latte.Visitors.RelOpVisitor;
+import Latte.Visitors.ExprVisitor;
 import Latte.Visitors.TypeVisitor;
 
 import java.lang.Void;
@@ -34,24 +34,24 @@ public class AsmGenerator
 
     void generateASM(){
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
-        program.accept(programVisitor, env);
         System.out.print("\n\n\n" + bss);
-        System.out.print("\n\n\n"+asm);
+        System.out.println(program.accept(programVisitor, env));
+        //System.out.print("\n\n\n"+asm);
     }
 
-    public class ProgramVisitor<R,S>  implements Program.Visitor<R,S>
+    public class ProgramVisitor<R,S>  implements Program.Visitor<String,S>
     {
-        public R visit(Latte.Absyn.Program p, S args)
+        public String visit(Latte.Absyn.Program p, S args)
         {
             bss += "section .bss\n";
-            asm += "section .text\n";
+            String asm = "section .text\n";
             asm += "\tglobal main\n\n";
             asm += "extern printInt, printString, readInt, readString, error, contactString, calloc, malloc\n";
             for (TopDef x : p.listtopdef_) {
-                x.accept(new TopDefVisitor(), env);
+                asm += x.accept(new TopDefVisitor(), env);
             }
 
-            return null;
+            return asm;
         }
 
     }
@@ -64,27 +64,27 @@ public class AsmGenerator
 
 
 
-    public class TopDefVisitor implements TopDef.Visitor<Void,Env>
+    public class TopDefVisitor implements TopDef.Visitor<String,Env>
     {
-        public Void visit(Latte.Absyn.FnDef p, Env arg)
+        public String visit(Latte.Absyn.FnDef p, Env arg)
         {
             if (env.predefinedFunctions.contains(p.ident_)) {
                 return null;
             }
-            asm += p.ident_+":\n";
+            String asm = p.ident_+":\n";
             asm += "\tenter 0,0\n";
 
             p.type_.accept(new TypeVisitor<Void, Env>(), arg);
             for (Arg a: p.listarg_) {
-                a.accept(new ArgVisitor(), arg);
+                asm += a.accept(new ArgVisitor(), arg);
             }
-            p.block_.accept(new BlockVisitor(), arg);
+            asm += p.block_.accept(new BlockVisitor(), arg);
 
             asm += "\tleave\n";
             asm += "\tret\n";
             asm += "\n\n\n";
 
-            return null;
+            return asm;
         }
     }
 
@@ -107,19 +107,17 @@ public class AsmGenerator
         }
 
     }
-    public class BlockVisitor implements Block.Visitor<Void,Env>
+    public class BlockVisitor implements Block.Visitor<String,Env>
     {
-        public Void visit(Latte.Absyn.Block p, Env arg)
+        public String visit(Latte.Absyn.Block p, Env arg)
         {
       /* Code For Block Goes Here */
-
+            String asm = "";
             for (Stmt x : p.liststmt_) {
-                x.accept(new StmtVisitor(), arg);
+                asm += x.accept(new StmtVisitor(), arg);
                 asm += "\n";
-                System.out.println("; "+x);
             }
-
-            return null;
+            return asm;
         }
 
     }
@@ -133,117 +131,111 @@ public class AsmGenerator
     
     
     
-    public class StmtVisitor implements Stmt.Visitor<Void,Latte.Env>
+    public class StmtVisitor implements Stmt.Visitor<String,Env>
     {
-        public Void visit(Latte.Absyn.Empty p, Env arg)
+        public String visit(Latte.Absyn.Empty p, Env arg)
         {
-      /* Code For Empty Goes Here */
-
-
             return null;
         }
-        public Void visit(Latte.Absyn.BStmt p, Env arg)
+        public String visit(Latte.Absyn.BStmt p, Env arg)
         {
-      /* Code For BStmt Goes Here */
-
-            p.block_.accept(new BlockVisitor(), arg);
-
-            return null;
+            String asm = p.block_.accept(new BlockVisitor(), arg);
+            return asm;
         }
-
-        /* ****************************************************************************
-         * Blok deklaracji
-         * ****************************************************************************/
-        public Void visit(Latte.Absyn.Decl p, Env arg)
+        
+        // Deklaracje
+        public String visit(Latte.Absyn.Decl p, Env arg)
         {
-      /* Code For Decl Goes Here */
             System.out.println(";Jestesm w deklaracji zmiennych "+ p.type_ + "\n");
             arg.setCurrentType(";" + p.type_.toString());
             p.type_.accept(new TypeVisitor<Void, Env>(), env);
             for (Item x : p.listitem_) {
                 x.accept(new ItemVisitor(), arg);
             }
-            
-
             return null;
         }
-        public Void visit(Latte.Absyn.Ass p, Env arg)
+        
+        // Przypisanie
+        public String visit(Latte.Absyn.Ass p, Env arg)
         {
-            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
+            String asm = p.expr_.accept(new ExprVisitor(), arg);//eax
             //asm += "\tmov eax, "+currentNumber+"\n";
             asm+="\tmov ["+p.ident_+"], eax\n";
             currentNumber = 0;
 
-            return null;
+            return asm;
         }
-        public Void visit(Latte.Absyn.Incr p, Env arg)
+        
+        // Inkrementacja
+        public String visit(Latte.Absyn.Incr p, Env arg)
         {
-      /* Code For Incr Goes Here */
-
             //p.ident_;
-
             return null;
         }
-        public Void visit(Latte.Absyn.Decr p, Env arg)
+        
+        // Dekrementacja
+        public String visit(Latte.Absyn.Decr p, Env arg)
         {
-      /* Code For Decr Goes Here */
-
             //p.ident_;
-
             return null;
         }
-        public Void visit(Latte.Absyn.Ret p, Env arg)
+        
+        // Return
+        public String visit(Latte.Absyn.Ret p, Env env)
         {
-      /* Code For Ret Goes Here */
-
-            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
-            //asm += "\tmov eax, "+currentNumber+"\n";
-
+            env.register = "eax";
+            String asm = p.expr_.accept(new ExprVisitor(), env);
+            return asm;
+        }
+        
+        // Void Return
+        public String visit(Latte.Absyn.VRet p, Env arg)
+        {
             return null;
         }
-        public Void visit(Latte.Absyn.VRet p, Env arg)
+        
+        // Warunek
+        public String visit(Latte.Absyn.Cond p, Env arg)
         {
-      /* Code For VRet Goes Here */
-;
-            return null;
-        }
-        public Void visit(Latte.Absyn.Cond p, Env arg)
-        {
-            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
+            asm += p.expr_.accept(new ExprVisitor(), arg); //eax
             asm += " AFTER_IF\n\n";
-            p.stmt_.accept(new StmtVisitor(), arg);
-            asm += "AFTER_IF:\n";
-            return null;
-        }
-        public Void visit(Latte.Absyn.CondElse p, Env arg)
-        {
-      /* Code For CondElse Goes Here */
 
-            asm += p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
+            System.out.println("haha "+p.stmt_.accept(new StmtVisitor(), arg));
+            asm += p.stmt_.accept(new StmtVisitor(), arg);
+            asm += "AFTER_IF:\n";
+            return asm;
+        }
+        
+        // Warunek z elsem
+        public String visit(Latte.Absyn.CondElse p, Env arg)
+        {
+            asm += p.expr_.accept(new ExprVisitor(), arg);//eax
             asm += '\t'+ currentMnemonic + " ELSE\n\n";
-            p.stmt_1.accept(new StmtVisitor(), arg);
+            System.out.println("haha "+p.stmt_1.accept(new StmtVisitor(), arg));
             asm += "\tjmp AFTER_IF\n\n";
             asm += "ELSE:\n";
             p.stmt_2.accept(new StmtVisitor(), arg);
             asm += "AFTER_IF:\n";
 
-            return null;
+            return asm;
         }
-        public Void visit(Latte.Absyn.While p, Env arg)
+        
+        // Petla
+        public String visit(Latte.Absyn.While p, Env arg)
         {
-      /* Code For While Goes Here */
+            String asm = p.expr_.accept(new ExprVisitor(), arg);
+            asm += p.stmt_.accept(new StmtVisitor(), arg);
 
-            p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
-            p.stmt_.accept(new StmtVisitor(), arg);
-
-            return null;
+            return asm;
         }
-        public Void visit(Latte.Absyn.SExp p, Env arg)
+        
+        // Instrukcja dla wyrazenia
+        public String visit(Latte.Absyn.SExp p, Env arg)
         {
-            
-            p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
 
-            return null;
+            String asm = p.expr_.accept(new ExprVisitor(), arg);
+
+            return asm;
         }
 
     }
@@ -271,7 +263,7 @@ public class AsmGenerator
         public Void visit(Latte.Absyn.Init p, Latte.Env arg)
         {
 
-            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
+            asm = asm + p.expr_.accept(new ExprVisitor(), arg);
             env.addVariable(p.ident_, env.rbp);
             bss += "\t"+p.ident_+"\t"+ "resd\t1\n";
             asm += "\tmov ["+p.ident_+"], eax\n";
@@ -282,175 +274,8 @@ public class AsmGenerator
         }
 
     }
-    
 
 
-
-
-
-    /* **********************************
-     * Expressions
-     ***********************************/
-    public class ExprVisitor<R,A> implements Expr.Visitor<R,A>
-    {
-        public R visit(Latte.Absyn.EVar p, A arg)
-        {
-      /* Code For EVar Goes Here */
-            argument = "["+p.ident_+"]";
-            asm += "\tmov eax, "+ argument+"\n";
-            //p.ident_;
-
-            return null;
-        }
-        public R visit(Latte.Absyn.ELitInt p, A arg)
-        {
-      /* Code For ELitInt Goes Here */
-            currentNumber = p.integer_;
-            argument = currentNumber.toString();
-            asm += "\tmov "+arg+", "+ currentNumber+"\n";
-            return null;
-        }
-        public R visit(Latte.Absyn.ELitTrue p, A arg)
-        {
-      /* Code For ELitTrue Goes Here */
-
-            asm += '\t' + "mov " + arg + ", 1\n" ;
-            return null;
-        }
-        public R visit(Latte.Absyn.ELitFalse p, A arg)
-        {
-            asm += '\t' + "mov " + arg + ", 0\n" ;
-            return null;
-        }
-        public R visit(Latte.Absyn.EApp p, A arg)
-        {
-            for (Expr expr : p.listexpr_) {
-                expr.accept(new ExprVisitor<R,String>(), "eax");
-                asm += "\tmov edi, eax\n";
-            }
-            asm += "\tcall " + p.ident_ + "\n";
-
-            return null;
-        }
-        public R visit(Latte.Absyn.EString p, A arg)
-        {
-            return null;
-        }
-        public R visit(Latte.Absyn.Neg p, A arg)
-        {
-            p.expr_.accept(new ExprVisitor<R,String>(), "eax");
-
-            asm += "\tsub eax, " + currentNumber+ " \n";
-            asm += "\tsub eax, " + currentNumber+ " \n";
-            return null;
-        }
-
-        public R visit(Latte.Absyn.Not p, A arg)
-        {
-
-            p.expr_.accept(new ExprVisitor<R,A>(), arg);
-
-            return null;
-        }
-
-        public R visit(Latte.Absyn.EMul p, A arg)
-        {
-            p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-            p.mulop_.accept(new MulOpVisitor<R,A>(), arg);
-            p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-
-            return null;
-        }
-        public R visit(Latte.Absyn.EAdd p, A arg)
-        {
-      /* Code For EAdd Goes Here */
-
-            p.expr_1.accept(new ExprVisitor<R,String>(), "eax");
-            p.addop_.accept(new AddOpVisitor<R,A>(), arg);
-            p.expr_2.accept(new ExprVisitor<R,String>(), "edx");
-            asm += "\tadd eax, edx\n";
-
-            return null;
-        }
-        public R visit(Latte.Absyn.ERel p, A arg)
-        {
-      /* Code For ERel Goes Here */
-
-            p.expr_1.accept(new ExprVisitor<R,String>(), "eax");
-            p.expr_2.accept(new ExprVisitor<R,String>(), "edx");
-
-            asm += '\t'+ "cmp eax, edx\n";
-            p.relop_.accept(new RelOpVisitor<A>(), arg);
-            currentMnemonic = p.relop_.getMnemonic();
-
-            return null;
-        }
-        public R visit(Latte.Absyn.EAnd p, A arg)
-        {
-      /* Code For EAnd Goes Here */
-
-            p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-            p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-
-            return null;
-        }
-        public R visit(Latte.Absyn.EOr p, A arg)
-        {
-      /* Code For EOr Goes Here */
-
-            p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-            p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-
-            return null;
-        }
-
-    }
-    public class AddOpVisitor<R,A> implements AddOp.Visitor<R,A>
-    {
-        public R visit(Latte.Absyn.Plus p, A arg)
-        {
-      /* Code For Plus Goes Here */
-
-
-            return null;
-        }
-        public R visit(Latte.Absyn.Minus p, A arg)
-        {
-      /* Code For Minus Goes Here */
-
-
-            return null;
-        }
-
-    }
-    public class MulOpVisitor<R,A> implements MulOp.Visitor<R,A>
-    {
-        public R visit(Latte.Absyn.Times p, A arg)
-        {
-      /* Code For Times Goes Here */
-
-
-            return null;
-        }
-        public R visit(Latte.Absyn.Div p, A arg)
-        {
-      /* Code For Div Goes Here */
-
-
-            return null;
-        }
-        public R visit(Latte.Absyn.Mod p, A arg)
-        {
-      /* Code For Mod Goes Here */
-
-
-            return null;
-        }
-
-    }
-
-
-    
     
     
     

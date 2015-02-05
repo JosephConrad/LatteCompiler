@@ -15,6 +15,7 @@ public class Env {
     private Map<String, String> variablesDefault = new HashMap<String, String>();
     private String currentType;
     public int rbp = 4;
+    public String register = "";
 
     public String getCurrentType() {
         return currentType;
