@@ -6,7 +6,12 @@ public class NE extends RelOp {
 
   public <R,A> R accept(Latte.Absyn.RelOp.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-  public boolean equals(Object o) {
+    @Override
+    public String getMnemonic() {
+        return null;
+    }
+
+    public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.NE) {
       return true;

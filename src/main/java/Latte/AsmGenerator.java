@@ -18,6 +18,7 @@ public class AsmGenerator
     String asm = "";
     String bss = "";
     String argument = "";
+    String currentMnemonic;
     Latte.Absyn.Program program;
     Integer currentNumber = 0;
     Env env;
@@ -64,7 +65,7 @@ public class AsmGenerator
     public class TopDefVisitor implements TopDef.Visitor<Void,Env>
     {
         public Void visit(Latte.Absyn.FnDef p, Env arg)
-        {   
+        {
             if (env.predefinedFunctions.contains(p.ident_)) {
                 return null;
             }
@@ -76,15 +77,15 @@ public class AsmGenerator
                 a.accept(new ArgVisitor(), arg);
             }
             p.block_.accept(new BlockVisitor(), arg);
-            
+
             asm += "\tleave\n";
             asm += "\tret\n";
 
             return null;
         }
     }
-    
-    
+
+
     
     /*
      * Argument Visitor
@@ -165,7 +166,7 @@ public class AsmGenerator
         }
         public Void visit(Latte.Absyn.Ass p, Env arg)
         {
-            p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
+            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
             //asm += "\tmov eax, "+currentNumber+"\n";
             asm+="\tmov ["+p.ident_+"], eax\n";
             currentNumber = 0;
@@ -192,7 +193,7 @@ public class AsmGenerator
         {
       /* Code For Ret Goes Here */
 
-            p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
+            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
             asm += "\tmov eax, "+currentNumber+"\n";
 
             return null;
@@ -207,18 +208,23 @@ public class AsmGenerator
         {
       /* Code For Cond Goes Here */
 
-            p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
+            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
+            asm += '\t' + currentMnemonic + " AFTER_"+p.getClass() ;
             p.stmt_.accept(new StmtVisitor(), arg);
-
+            asm += "AFTER_"+p.getClass();
             return null;
         }
         public Void visit(Latte.Absyn.CondElse p, Env arg)
         {
       /* Code For CondElse Goes Here */
 
-            p.expr_.accept(new ExprVisitor<Void,Env>(), arg);
-            p.stmt_1.accept(new StmtVisitor(), arg);
+            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
+            asm += '\t'+ currentMnemonic + "\tELSE\n\n";
             p.stmt_2.accept(new StmtVisitor(), arg);
+            asm += "\tjmp AFTER_IF\n\n";
+            asm += "ELSE:\n";
+            p.stmt_1.accept(new StmtVisitor(), arg);
+            asm += "AFTER_IF:\n";
 
             return null;
         }
@@ -258,11 +264,10 @@ public class AsmGenerator
         public Void visit(Latte.Absyn.Init p, Latte.Env arg)
         {
 
-            p.expr_.accept(new ExprVisitor<Void,Latte.Env>(), arg);
+            p.expr_.accept(new ExprVisitor<Void,String>(), "eax");
             env.addVariable(p.ident_, env.rbp);
             bss += "\t"+p.ident_+"\t"+ "resd\t1\n";
-            //asm += "\tmov eax, "+currentNumber+"\n";//+p.expr_+"\n";
-            asm += "\tmov ["+p.ident_+"], eax\n";//+p.expr_+"\n";
+            asm += "\tmov ["+p.ident_+"], eax\n";
             env.rbp += 4;
             System.out.println(";init " + env);
 
@@ -330,7 +335,7 @@ public class AsmGenerator
       /* Code For ELitInt Goes Here */
             currentNumber = p.integer_;
             argument = currentNumber.toString();
-            asm += "\tmov eax, "+ currentNumber+"\n";
+            asm += "\tmov "+arg+", "+ currentNumber+"\n";
             return null;
         }
         public R visit(Latte.Absyn.ELitTrue p, A arg)
@@ -347,7 +352,7 @@ public class AsmGenerator
         public R visit(Latte.Absyn.EApp p, A arg)
         {
             for (Expr expr : p.listexpr_) {
-                expr.accept(new ExprVisitor<R,A>(), arg);
+                expr.accept(new ExprVisitor<R,String>(), "eax");
                 asm += "\tmov edi, eax\n";
             }
             asm += "\tcall " + p.ident_ + "\n";
@@ -360,7 +365,7 @@ public class AsmGenerator
         }
         public R visit(Latte.Absyn.Neg p, A arg)
         {
-            p.expr_.accept(new ExprVisitor<R,A>(), arg);
+            p.expr_.accept(new ExprVisitor<R,String>(), "eax");
 
             asm += "\tsub eax, " + currentNumber+ " \n";
             asm += "\tsub eax, " + currentNumber+ " \n";
@@ -387,9 +392,10 @@ public class AsmGenerator
         {
       /* Code For EAdd Goes Here */
 
-            p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+            p.expr_1.accept(new ExprVisitor<R,String>(), "eax");
             p.addop_.accept(new AddOpVisitor<R,A>(), arg);
-            p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+            p.expr_2.accept(new ExprVisitor<R,String>(), "edx");
+            asm += "\tadd eax, edx\n";
 
             return null;
         }
@@ -397,9 +403,12 @@ public class AsmGenerator
         {
       /* Code For ERel Goes Here */
 
-            p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+            p.expr_1.accept(new ExprVisitor<R,String>(), "eax");
             p.relop_.accept(new RelOpVisitor<R,A>(), arg);
-            p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+            p.expr_2.accept(new ExprVisitor<R,String>(), "edx");    
+
+            asm += '\t'+ "cmp eax, edx\n";
+            currentMnemonic = p.relop_.getMnemonic();
 
             return null;
         }
