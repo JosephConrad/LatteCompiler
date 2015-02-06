@@ -71,7 +71,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     // Void Return
     public String visit(Latte.Absyn.VRet p, Env arg)
     {
-        return null;
+        return "\tmov eax, 0\n";
     }
 
     // Warunek

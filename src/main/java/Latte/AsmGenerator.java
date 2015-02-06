@@ -27,7 +27,13 @@ public class AsmGenerator
 
     void generateASM(){
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
+        System.out.print("SECTION .bss\n");
         String asm = program.accept(programVisitor, env);
+        String data = "SECTION .data\n";
+        for (String key : env.strings.keySet()){
+            data += "\t" + key + "\tdb\t\"" + env.strings.get(key) + "\", 0\n";
+        }
+        System.out.println("\n\n\n"+data);
         System.out.println("\n\n\n"+asm);
     }
 
@@ -35,10 +41,9 @@ public class AsmGenerator
     {
         public String visit(Latte.Absyn.Program p, S args)
         {
-            System.out.print("SECTION .bss\n");
             String asm = "SECTION .text\n";
             asm += "\tglobal main\n\n";
-            asm += "EXTERN printInt, printString, readInt, readString, error, contactString, calloc, malloc\n\n\n";
+            asm += "EXTERN printInt, printString, error, readInt, readString\n\n\n";
             for (TopDef x : p.listtopdef_) {
                 asm += x.accept(new TopDefVisitor(), env);
             }

@@ -19,6 +19,8 @@ public class Env {
     public String register = "";
     public int neg;
     public int whileCounter = 1;
+    public Map<String, String> strings = new HashMap<String, String>();
+    
 
     public String getCurrentType() {
         return currentType;

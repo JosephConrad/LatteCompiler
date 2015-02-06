@@ -41,7 +41,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
         return asm;
     }
     
-    // Dodawanie
+    // Wywolanie funkcji
     public String visit(Latte.Absyn.EApp p, Env env)
     {
         String asm = "";
@@ -49,16 +49,21 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
             env.register = "eax";
             asm += expr.accept(new ExprVisitor(), env);
             asm += "\tmov edi, eax\n";
+            //asm += "\tpush eax\n";
         }
         asm += "\tcall " + p.ident_ + "\n";
 
         return asm;
     }
     
-    // Napis
-    public String visit(Latte.Absyn.EString p, Env arg)
+    // Napis - zwraca identyfikator do wypisania
+    public String visit(Latte.Absyn.EString p, Env env)
     {
-        return null;
+        int stringNo = env.strings.size();
+        String stringID = "STR_"+stringNo;
+        env.strings.put(stringID, p.string_);
+        String asm = "\tmov eax, (" + stringID + ")\n";
+        return asm;
     }
    
     public String visit(Latte.Absyn.Neg p, Env env)
