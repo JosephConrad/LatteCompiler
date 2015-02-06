@@ -26,7 +26,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     public String visit(Latte.Absyn.Decl p, Env env)
     {
         env.setCurrentType(";" + p.type_.toString());
-        p.type_.accept(new TypeVisitor<String, Env>(), env);
+        p.type_.accept(new TypeVisitor(), env);
         String asm = "";
         for (Item x : p.listitem_) {
             env.register = "eax";

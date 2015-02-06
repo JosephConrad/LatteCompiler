@@ -2,6 +2,7 @@ package Latte.Visitors;
 
 import Latte.Absyn.Fun;
 import Latte.Absyn.Type;
+import Latte.Env;
 
 /**
  * Created by konrad on 05/02/15.
@@ -10,26 +11,27 @@ import Latte.Absyn.Type;
 
 
 
-public class TypeVisitor<R,A> implements Type.Visitor<R,A>
+public class TypeVisitor implements Type.Visitor<String, Env>
 {
-    public R visit(Latte.Absyn.Int p, A arg)
+    public String visit(Latte.Absyn.Int p, Env env) {
+;
+        String asm = "";
+        return asm;
+    }
+    public String visit(Latte.Absyn.Str p, Env env)
     {
         return null;
     }
-    public R visit(Latte.Absyn.Str p, A arg)
+    public String visit(Latte.Absyn.Bool p, Env env)
     {
         return null;
     }
-    public R visit(Latte.Absyn.Bool p, A arg)
-    {
-        return null;
-    }
-    public R visit(Latte.Absyn.Void p, A arg)
+    public String visit(Latte.Absyn.Void p, Env env)
     {
         return null;
     }
     @Override
-    public R visit(Fun p, A arg) {
+    public String visit(Fun p, Env env) { 
         return null;
     }
 }

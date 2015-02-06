@@ -33,7 +33,7 @@ public class AsmGenerator
         for (String key : env.strings.keySet()){
             data += "\t" + key + "\tdb\t\"" + env.strings.get(key) + "\", 0\n";
         }
-        System.out.println("\n\n\n"+data);
+        System.out.println("\n\n\n" + data);
         System.out.println("\n\n\n"+asm);
     }
 
@@ -62,7 +62,7 @@ public class AsmGenerator
             String asm = p.ident_+":\n";
             asm += "\tenter 0,0\n";
 
-            p.type_.accept(new TypeVisitor<Void, Env>(), arg);
+            p.type_.accept(new TypeVisitor(), arg);
             for (Arg a: p.listarg_) {
                 asm += a.accept(new ArgVisitor(), arg);
             }
@@ -81,13 +81,15 @@ public class AsmGenerator
      * Argument Visitor
      */
 
-    public class ArgVisitor implements Arg.Visitor<Void,Latte.Env>
+    public class ArgVisitor implements Arg.Visitor<String, Env>
     {
-        public Void visit(Latte.Absyn.Arg p, Latte.Env arg)
+        public String visit(Latte.Absyn.Arg p, Env env)
         {
-            p.type_.accept(new TypeVisitor<Void,Latte.Env>(), arg);
+
+            System.out.print("\t"+p.ident_+"\t"+ "resd\t1\n");
+            String asm = "\tmov [" + p.ident_ + p.type_.accept(new TypeVisitor(), env) +"], edi\n";
             //p.ident_;
-            return null;
+            return asm;
         }
 
     }
