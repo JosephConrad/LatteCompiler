@@ -21,7 +21,10 @@ public class Env {
     public int whileCounter = 1;
     public Map<String, String> strings = new HashMap<String, String>();
     public int jmpExpCounter = 1;
-    
+    public boolean addIsString = false;
+    public int andExpCounter = 1;
+    public int orExpCounter = 1;
+
 
     public String getCurrentType() {
         return currentType;

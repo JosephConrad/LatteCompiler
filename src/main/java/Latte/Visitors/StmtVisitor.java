@@ -39,6 +39,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     public String visit(Latte.Absyn.Ass p, Env arg)
     {
         String asm = p.expr_.accept(new ExprVisitor(), arg);//eax
+        asm += "\tpop rax\n";
         //asm += "\tmov eax, "+currentNumber+"\n";
         asm+="\tmov ["+p.ident_+"], rax\n";
         //currentNumber = 0;
@@ -83,6 +84,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
         String asm = p.expr_.accept(new ExprVisitor(), env);
         String ifLabel = "\nIF_"+ifNo;
         asm += ifLabel+":\n";
+        asm += "\tpop rax\n";
         asm += "\tcmp rax, 0\n";
         asm += "\tje AFTER_IF_"+ ifNo +"\n\n";
         env.register = "rax";
@@ -123,6 +125,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
 
         String asm = whileLabel + ":\n";
         asm += p.expr_.accept(new ExprVisitor(), env);
+        asm += "\tpop rax\n";
         asm += "\tcmp rax, 0\n";
         asm += "\tje " + afterWhileLabel+"\n\n";
         asm += p.stmt_.accept(new StmtVisitor(), env);

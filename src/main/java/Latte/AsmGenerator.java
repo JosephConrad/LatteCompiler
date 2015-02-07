@@ -43,7 +43,7 @@ public class AsmGenerator
         {
             String asm = "SECTION .text\n";
             asm += "\tglobal main\n\n";
-            asm += "EXTERN printInt, printString, error, readInt, readString\n\n\n";
+            asm += "EXTERN printInt, printString, error, readInt, readString, concatenateString\n\n\n";
             for (TopDef x : p.listtopdef_) {
                 asm += x.accept(new TopDefVisitor(), env);
             }
