@@ -86,8 +86,8 @@ public class AsmGenerator
         public String visit(Latte.Absyn.Arg p, Env env)
         {
 
-            System.out.print("\t"+p.ident_+"\t"+ "resd\t1\n");
-            String asm = "\tmov [" + p.ident_ + p.type_.accept(new TypeVisitor(), env) +"], edi\n";
+            System.out.print("\t"+p.ident_+"\t"+ "resq\t1\n");
+            String asm = "\tmov [" + p.ident_ + p.type_.accept(new TypeVisitor(), env) +"], rdi\n";
             //p.ident_;
             return asm;
         }

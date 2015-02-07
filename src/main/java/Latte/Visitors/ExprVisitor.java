@@ -46,9 +46,9 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     {
         String asm = "";
         for (Expr expr : p.listexpr_) {
-            env.register = "eax";
+            env.register = "rax";
             asm += expr.accept(new ExprVisitor(), env);
-            asm += "\tmov edi, eax\n";
+            asm += "\tmov rdi, rax\n";
             //asm += "\tpush eax\n";
         }
         asm += "\tcall " + p.ident_ + "\n";
@@ -62,15 +62,15 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
         int stringNo = env.strings.size();
         String stringID = "STR_"+stringNo;
         env.strings.put(stringID, p.string_);
-        String asm = "\tmov eax, (" + stringID + ")\n";
+        String asm = "\tmov rax, (" + stringID + ")\n";
         return asm;
     }
    
     public String visit(Latte.Absyn.Neg p, Env env)
     {
         String asm = p.expr_.accept(new ExprVisitor(), env);
-        asm += "\tsub eax, " + env.neg + " \n";
-        asm += "\tsub eax, " + env.neg + " \n";
+        asm += "\tneg rax\n";
+        asm += "\tpush rax\n";
         return asm;
     }
 
@@ -84,11 +84,11 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
 
     public String visit(Latte.Absyn.EMul p, Env env)
     {
-        env.register = "eax";
+        env.register = "rax";
         String asm = p.expr_1.accept(new ExprVisitor(), env);
-        env.register = "ebx";
+        env.register = "rbx";
         asm += p.expr_2.accept(new ExprVisitor(), env);
-        asm += "\tmov edx, 0\n";
+        asm += "\tmov rdx, 0\n";
         asm += p.mulop_.accept(new MulOpVisitor(), env);
         
 
@@ -96,33 +96,37 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
     public String visit(Latte.Absyn.EAdd p, Env env)
     {
-        env.register = "eax";
+        env.register = "rax";
         String asm = p.expr_1.accept(new ExprVisitor(), env);//eax
-        env.register = "edx";
+        env.register = "rdx";
         asm += p.expr_2.accept(new ExprVisitor(), env);//edx
-        asm += p.addop_.accept(new AddOpVisitor(), env) + " eax, edx\n";
+        asm += p.addop_.accept(new AddOpVisitor(), env) + " rax, rdx\n";
         return asm;
     }
     public String visit(Latte.Absyn.ERel p, Env env)
     {   
-        env.register = "eax";
+        env.register = "rax";
         String asm = p.expr_1.accept(new ExprVisitor(), env);
-        env.register = "edx";
+        env.register = "rdx";
         asm += p.expr_2.accept(new ExprVisitor(), env);
-        asm += '\t'+ "cmp eax, edx\n";
-        asm += p.relop_.accept(new RelOpVisitor(), env);
+        
         
         int no = env.jmpExpCounter++;
-        asm += " ERel_t_"+no + "\n";
-        asm += "\tjmp ERel_f_"+no + "\n";
         
-        asm += "ERel_t_"+no+":\n";
-        asm += "\tmov eax, 1\n";
-        asm += "\tjmp ERel_finish_"+no+"\n";
+        asm += '\t'+ "cmp rax, rdx\n";
+        asm += p.relop_.accept(new RelOpVisitor(), env) + " REL_TRUE_"+no + "\n";
+        asm += "\tjmp REL_FALSE_"+no + "\n";
+        
+        asm += "\nREL_TRUE_"+no+":\n";
+        asm += "\tmov rax, 1\n";
+        asm += "\tjmp REL_FINISH_"+no+"\n";
 
-        asm += "ERel_f_"+no+":\n";
-        asm += "\tmov eax, 0\n";
-        asm += "ERel_finish_"+no+":\n";
+        asm += "\nREL_FALSE_"+no+":\n";
+        asm += "\tmov rax, 0\n";
+        asm += "\nREL_FINISH_"+no+":\n";
+        
+        asm += "\tpush rax\n";
+        
 
         return asm;
     }

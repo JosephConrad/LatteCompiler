@@ -8,17 +8,18 @@ import Latte.Absyn.MulOp;
 public class MulOpVisitor<R,A> implements MulOp.Visitor<String,A>
 {
     public String visit(Latte.Absyn.Times p, A arg)
+            
     {
-        return "\timul eax, ebx\n";
+        return "\timul rax, rbx\n";
     }
     public String visit(Latte.Absyn.Div p, A arg)
     {
-        return "\tidiv ebx\n";
+        return "\tidiv rbx\n";
     }
     public String visit(Latte.Absyn.Mod p, A arg)
     {
-        String asm = "\tidiv ebx\n";
-        return asm + "\tmov eax, ebx\n";
+        String asm = "\tidiv rbx\n";
+        return asm + "\tmov rax, rbx\n";
     }
 
 }

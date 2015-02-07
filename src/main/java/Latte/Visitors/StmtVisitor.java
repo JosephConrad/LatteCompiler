@@ -29,7 +29,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
         p.type_.accept(new TypeVisitor(), env);
         String asm = "";
         for (Item x : p.listitem_) {
-            env.register = "eax";
+            env.register = "rax";
             asm += x.accept(new ItemVisitor(), env);
         }
         return asm;
@@ -40,7 +40,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     {
         String asm = p.expr_.accept(new ExprVisitor(), arg);//eax
         //asm += "\tmov eax, "+currentNumber+"\n";
-        asm+="\tmov ["+p.ident_+"], eax\n";
+        asm+="\tmov ["+p.ident_+"], rax\n";
         //currentNumber = 0;
 
         return asm;
@@ -63,7 +63,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     // Return
     public String visit(Latte.Absyn.Ret p, Env env)
     {
-        env.register = "eax";
+        env.register = "rax";
         String asm = p.expr_.accept(new ExprVisitor(), env);
         return asm;
     }
@@ -71,21 +71,21 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     // Void Return
     public String visit(Latte.Absyn.VRet p, Env arg)
     {
-        return "\tmov eax, 0\n";
+        return "\tmov rax, 0\n";
     }
 
     // Warunek
     public String visit(Latte.Absyn.Cond p, Env env)
     {
-        env.register = "eax"; // che dostac wynik obliczenia wyr do eax
+        env.register = "rax"; // che dostac wynik obliczenia wyr do eax
         int ifNo = env.ifCounter++;
 
         String asm = p.expr_.accept(new ExprVisitor(), env);
         String ifLabel = "\nIF_"+ifNo;
         asm += ifLabel+":\n";
-        asm += "\tcmp eax, 0\n";
+        asm += "\tcmp rax, 0\n";
         asm += "\tje AFTER_IF_"+ ifNo +"\n\n";
-        env.register = "eax";
+        env.register = "rax";
         asm += p.stmt_.accept(new StmtVisitor(), env);
         asm += "AFTER_IF_" + ifNo + ":\n";
         return asm;
@@ -94,19 +94,20 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     // Warunek z elsem
     public String visit(Latte.Absyn.CondElse p, Env env)
     {
-        env.register = "eax"; // che dostac wynik obliczenia wyr do eax
+        env.register = "rax"; // che dostac wynik obliczenia wyr do eax
         int ifNo = env.ifCounter++;
 
         String asm = p.expr_.accept(new ExprVisitor(), env);
         String ifLabel = "\nIF_"+ifNo;
         asm += ifLabel+":\n";
-        asm += "\tcmp eax, 0\n";
+        asm += "\tpop rax\n";
+        asm += "\tcmp rax, 0\n";
         asm += "\tje  ELSE_"+ ifNo +"\n\n";
-        env.register = "eax";
+        env.register = "rax";
         asm += p.stmt_1.accept(new StmtVisitor(), env);
         asm += "\tjmp AFTER_IF_"+ ifNo +"\n\n";
-        asm += "ELSE_" + ifNo + ":\n\n";
-        env.register = "eax";
+        asm += "ELSE_" + ifNo + ":\n";
+        env.register = "rax";
         asm += p.stmt_2.accept(new StmtVisitor(), env);
         asm += "AFTER_IF_" + ifNo + ":\n";
 
@@ -122,7 +123,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
 
         String asm = whileLabel + ":\n";
         asm += p.expr_.accept(new ExprVisitor(), env);
-        asm += "\tcmp eax, 0\n";
+        asm += "\tcmp rax, 0\n";
         asm += "\tje " + afterWhileLabel+"\n\n";
         asm += p.stmt_.accept(new StmtVisitor(), env);
         asm += "\tjmp "+whileLabel+"\n\n";
