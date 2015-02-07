@@ -86,9 +86,11 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     {
         env.register = "eax";
         String asm = p.expr_1.accept(new ExprVisitor(), env);
-        env.register = "edx";
+        env.register = "ebx";
         asm += p.expr_2.accept(new ExprVisitor(), env);
-        asm += p.mulop_.accept(new MulOpVisitor(), env) + " eax, edx\n";
+        asm += "\tmov edx, 0\n";
+        asm += p.mulop_.accept(new MulOpVisitor(), env);
+        
 
         return asm;
     }
@@ -109,8 +111,19 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
         asm += p.expr_2.accept(new ExprVisitor(), env);
         asm += '\t'+ "cmp eax, edx\n";
         asm += p.relop_.accept(new RelOpVisitor(), env);
-
         
+        int no = env.jmpExpCounter++;
+        asm += " ERel_t_"+no + "\n";
+        asm += "\tjmp ERel_f_"+no + "\n";
+        
+        asm += "ERel_t_"+no+":\n";
+        asm += "\tmov eax, 1\n";
+        asm += "\tjmp ERel_finish_"+no+"\n";
+
+        asm += "ERel_f_"+no+":\n";
+        asm += "\tmov eax, 0\n";
+        asm += "ERel_finish_"+no+":\n";
+
         return asm;
     }
     public String visit(Latte.Absyn.EAnd p, Env arg)

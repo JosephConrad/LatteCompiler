@@ -23,8 +23,10 @@ public class TypeVisitor implements Type.Visitor<String, Env>
         return null;
     }
     public String visit(Latte.Absyn.Bool p, Env env)
+            
     {
-        return null;
+        String asm = "";
+        return asm;
     }
     public String visit(Latte.Absyn.Void p, Env env)
     {

@@ -75,13 +75,19 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     }
 
     // Warunek
-    public String visit(Latte.Absyn.Cond p, Env arg)
+    public String visit(Latte.Absyn.Cond p, Env env)
     {
-        String asm = p.expr_.accept(new ExprVisitor(), arg); //eax
-        asm += " AFTER_IF\n\n";
+        env.register = "eax"; // che dostac wynik obliczenia wyr do eax
+        int ifNo = env.ifCounter++;
 
-        asm += p.stmt_.accept(new StmtVisitor(), arg);
-        asm += "AFTER_IF:\n";
+        String asm = p.expr_.accept(new ExprVisitor(), env);
+        String ifLabel = "\nIF_"+ifNo;
+        asm += ifLabel+":\n";
+        asm += "\tcmp eax, 0\n";
+        asm += "\tje AFTER_IF_"+ ifNo +"\n\n";
+        env.register = "eax";
+        asm += p.stmt_.accept(new StmtVisitor(), env);
+        asm += "AFTER_IF_" + ifNo + ":\n";
         return asm;
     }
 
@@ -90,11 +96,12 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     {
         env.register = "eax"; // che dostac wynik obliczenia wyr do eax
         int ifNo = env.ifCounter++;
-        
-        String ifLabel = "IF_"+ifNo;
-        String asm = ifLabel+":\n";
-        asm += p.expr_.accept(new ExprVisitor(), env) + " ELSE_"+ ifNo +"\n\n";
-        
+
+        String asm = p.expr_.accept(new ExprVisitor(), env);
+        String ifLabel = "\nIF_"+ifNo;
+        asm += ifLabel+":\n";
+        asm += "\tcmp eax, 0\n";
+        asm += "\tje  ELSE_"+ ifNo +"\n\n";
         env.register = "eax";
         asm += p.stmt_1.accept(new StmtVisitor(), env);
         asm += "\tjmp AFTER_IF_"+ ifNo +"\n\n";
@@ -112,9 +119,11 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
         int whileNo = env.whileCounter++;
         String whileLabel = "WHILE_"+whileNo;
         String afterWhileLabel = "AFTER_WHILE_"+whileNo;
-        
+
         String asm = whileLabel + ":\n";
-        asm += p.expr_.accept(new ExprVisitor(), env) +  " " + afterWhileLabel+"\n\n";
+        asm += p.expr_.accept(new ExprVisitor(), env);
+        asm += "\tcmp eax, 0\n";
+        asm += "\tje " + afterWhileLabel+"\n\n";
         asm += p.stmt_.accept(new StmtVisitor(), env);
         asm += "\tjmp "+whileLabel+"\n\n";
         asm += afterWhileLabel+ ":\n\n";

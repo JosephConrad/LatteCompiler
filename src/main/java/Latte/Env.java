@@ -20,6 +20,7 @@ public class Env {
     public int neg;
     public int whileCounter = 1;
     public Map<String, String> strings = new HashMap<String, String>();
+    public int jmpExpCounter = 1;
     
 
     public String getCurrentType() {

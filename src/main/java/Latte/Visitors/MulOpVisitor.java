@@ -9,24 +9,16 @@ public class MulOpVisitor<R,A> implements MulOp.Visitor<String,A>
 {
     public String visit(Latte.Absyn.Times p, A arg)
     {
-      /* Code For Times Goes Here */
-
-
-        return "\timul";
+        return "\timul eax, ebx\n";
     }
     public String visit(Latte.Absyn.Div p, A arg)
     {
-      /* Code For Div Goes Here */
-
-
-        return null;
+        return "\tidiv ebx\n";
     }
     public String visit(Latte.Absyn.Mod p, A arg)
     {
-      /* Code For Mod Goes Here */
-
-
-        return null;
+        String asm = "\tidiv ebx\n";
+        return asm + "\tmov eax, ebx\n";
     }
 
 }
