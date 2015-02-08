@@ -27,12 +27,12 @@ public class AsmGenerator {
 
     void generateASM() {
         LinkedList<Env> envs = new LinkedList<Env>();
-        envs.add(new Env());
+        envs.add(new Env("main"));
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
         System.out.print("SECTION .bss\n");
         String asm = program.accept(programVisitor, envs);
         String data = "SECTION .data\n";
-        for (String key : envs.getLast().strings.keySet()) {
+        for (String key : Env.strings.keySet()) {
             data += "\t" + key + "\tdb\t\"" + envs.getLast().strings.get(key) + "\", 0\n";
         }
         System.out.println("\n\n\n" + data);
@@ -59,8 +59,9 @@ public class AsmGenerator {
             }
             String asm = p.ident_ + ":\n";
             asm += "\tenter 0,0\n";
-
-            envs.add(new Env());
+            asm += "\tsub rsp, 100\n";
+            
+            envs.add(new Env(p.ident_));
             Env env = envs.getLast();
 
             p.type_.accept(new TypeVisitor(), envs);
@@ -93,7 +94,7 @@ public class AsmGenerator {
             env.argumentsShifts.put(p.ident_, shift);
             
             
-            System.out.print("\t" + p.ident_ + "\t" + "resq\t1\n");
+            //System.out.print("\t" + p.ident_ + "\t" + "resq\t1\n");
             String asm = "\tmov rax, [rbp+" + shift + "]\n";
 
 

@@ -67,16 +67,27 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
         Env env = envs.getLast();
         
         String asm = "";
-        int shift = (p.listexpr_.size()-1)*8;
-        for (Expr expr : p.listexpr_) {
-            env.ileArgumentow++;
-            envs.getLast().register = "rax";
-            asm += expr.accept(new ExprVisitor(), envs);
-            asm += "\tpop rax\n";
-            asm += "\tmov [rsp-"+ shift +"], rax\n";
-            shift -= 8;
+        if (env.predefinedFunctions.contains(p.ident_)){
+            for (Expr expr : p.listexpr_) {
+                env.ileArgumentow++;
+                asm += expr.accept(new ExprVisitor(), envs);
+                asm += "\tpop rax\n";
+                asm += "\tmov rdi, rax\n";
+                asm += "\tcall " + p.ident_ + "\n";
+            }
+        } else {
+            int shift = (p.listexpr_.size())*8;
+            for (Expr expr : p.listexpr_) {
+                env.ileArgumentow++;
+                asm += expr.accept(new ExprVisitor(), envs);
+                asm += "\tcall " + p.ident_ + "\n";
+                asm += "\tadd rsp, " + shift + "\n";
+                //asm += "\tpop rax\n";
+                //asm += "\tmov [rsp+"+ shift +"], rax\n";
+                //shift -= 8;
+            }
         }
-        asm += "\tcall " + p.ident_ + "\n";
+
         asm += "\tpush rax\n";
 
         return asm;
@@ -85,9 +96,10 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     // Napis - zwraca identyfikator do wypisania
     public String visit(Latte.Absyn.EString p, LinkedList<Env> envs)
     {
+        Env env = envs.getLast();
         int stringNo = envs.getLast().strings.size();
-        String stringID = "STR_"+stringNo;
-        envs.getLast().strings.put(stringID, p.string_);
+        String stringID = "STR_"+env.funName + "_" + stringNo;
+        Env.strings.put(stringID, p.string_);
         String asm = "\tmov rax, (" + stringID + ")\n";
         asm += "\tpush rax\n";
         envs.getLast().addIsString = true;
@@ -135,10 +147,11 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     }
     public String visit(Latte.Absyn.ERel p, LinkedList<Env> envs)
     {   
+        Env env = envs.getLast();
         String asm = p.expr_1.accept(new ExprVisitor(), envs);
         asm += p.expr_2.accept(new ExprVisitor(), envs);
         
-        int no = envs.getLast().jmpExpCounter++;
+        String no = env.funName+"_"+envs.getLast().jmpExpCounter++;
         asm += twoArgs();
 
         asm += '\t'+ "cmp rax, rbx\n";
@@ -159,9 +172,11 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     }
     public String visit(Latte.Absyn.EAnd p, LinkedList<Env> envs)
     {
+        Env env = envs.getLast();
+        
         String asm = p.expr_1.accept(new ExprVisitor(), envs);
 
-        int no = envs.getLast().andExpCounter++;
+        String no = env.funName+"_"+envs.getLast().andExpCounter++;
         String label = "AFTER_AND_"+no;
         asm += "\tmov rax, [rsp]\n";
         asm += "\tcmp rax, 0\n";
@@ -179,8 +194,10 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
 
     public String visit(Latte.Absyn.EOr p, LinkedList<Env> envs)
     {
+        Env env = envs.getLast();
+        
         String asm = p.expr_1.accept(new ExprVisitor(), envs);
-        int no = envs.getLast().orExpCounter++;
+        String no = env.funName+"_"+envs.getLast().orExpCounter++;
         String label = "AFTER_OR_"+no;
         asm += "\tmov rax, [rsp]\n";
         asm += "\tcmp rax, 1\n";

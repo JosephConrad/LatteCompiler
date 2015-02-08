@@ -10,7 +10,7 @@ import java.util.Map;
  * Default contructor initate completely new environment
  */
 public class Env {
-    List<String> predefinedFunctions = Arrays.asList("readInt", "readString", "error", "printInt", "printString", "concatenateString");
+    public List<String> predefinedFunctions = Arrays.asList("readInt", "readString", "error", "printInt", "printString", "concatenateString");
     private Map<String, String> variableType = new HashMap<String, String>();
     private Map<String, Integer> variableValues  = new HashMap<String, Integer>();
     private Map<String, String> variablesDefault = new HashMap<String, String>();
@@ -20,11 +20,12 @@ public class Env {
     public String register = "";
     public int neg;
     public int whileCounter = 1;
-    public Map<String, String> strings = new HashMap<String, String>();
+    public static Map<String, String> strings = new HashMap<String, String>();
     public int jmpExpCounter = 1;
     public boolean addIsString = false;
     public int andExpCounter = 1;
     public int orExpCounter = 1;
+    public String funName = "";
 
     
     public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
@@ -36,12 +37,17 @@ public class Env {
 
     public Env(Env last) {
         this.ileArgumentow = last.ileArgumentow;
-    }
-
-    public Env() {
-        
+        this.jmpExpCounter = last.jmpExpCounter;
+        this.andExpCounter = last.andExpCounter;
+        this.whileCounter = last.whileCounter;
+        this.orExpCounter = last.orExpCounter;
     }
     
+
+    public Env(String ident_) {
+        this.funName = ident_;
+    }
+
     public String getCurrentType() {
         return currentType;
     }

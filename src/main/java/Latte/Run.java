@@ -31,7 +31,7 @@ public class Run
             String[] parts = args[0].split("/");
             String[] file = parts[2].split("\\.");
             PrintStream out = new PrintStream(new FileOutputStream("/Users/konrad/Dropbox/09_semestr/mrjp/LatteCompiler/tests/out/"+ file[0]+".asm"));
-            //System.setOut(out);
+            System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
             System.out.print("; ");
             System.out.println(PrettyPrinter.show(parse_tree));
