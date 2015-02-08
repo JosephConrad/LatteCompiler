@@ -102,8 +102,8 @@ public class AsmGenerator {
 
 
             asm += "\tmov [rbp-" + env.localVarShift + "], rax\n";
-            env.variableShifts.put(p.ident_, env.localVarShift);
-            env.localVarShift -= 8;
+            //env.variableShifts.put(p.ident_, env.localVarShift);
+            //env.localVarShift -= 8;
 
             asm += p.type_.accept(new TypeVisitor(), envs);
             //p.ident_;

@@ -45,8 +45,12 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
         
         asm += p.expr_.accept(new ExprVisitor(), envs);
         asm += "\tpop rax\n";
-        asm += "\tmov [rbp-"+env.variableShifts.get(p.ident_)+"], rax\n";
- 
+        if (env.variableShifts.containsKey(p.ident_)) {
+            asm += "\tmov [rbp-"+env.variableShifts.get(p.ident_)+"], rax\n";
+        }
+        if (env.argumentsShifts.containsKey(p.ident_)) {
+            asm += "\tmov [rbp+"+env.variableShifts.get(p.ident_)+"], rax\n";
+        }
         return asm;
     }
 

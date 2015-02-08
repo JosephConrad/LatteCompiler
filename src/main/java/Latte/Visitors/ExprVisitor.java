@@ -28,8 +28,13 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     {
         
         Env env = envs.getLast();
-
-        String argument = "[rbp-"+env.variableShifts.get(p.ident_)+"]";
+        String argument = "";
+        if (env.variableShifts.containsKey(p.ident_)) {
+            argument = "[rbp-"+env.variableShifts.get(p.ident_)+"]";
+        }
+        if (env.argumentsShifts.containsKey(p.ident_)) {
+             argument = "[rbp+"+env.argumentsShifts.get(p.ident_)+"]";
+        }
         //String asm = oneArg();
         String asm = "\tmov rax, "+ argument+"\n";
         asm += "\tpush rax\n";
