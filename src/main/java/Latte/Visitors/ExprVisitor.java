@@ -65,7 +65,9 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
         asm += "\tpush rax\n";
         return asm;
     }
-    
+
+
+
     // Wywolanie funkcji
     public String visit(Latte.Absyn.EApp p, LinkedList<Env> envs)
     {

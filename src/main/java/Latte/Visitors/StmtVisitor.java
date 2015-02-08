@@ -66,6 +66,8 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
         asm += "\tmov [rbp-"+ shift +"], rax\n";
         return asm;
     }
+    
+    
 
     // Dekrementacja
     public String visit(Latte.Absyn.Decr p, LinkedList<Env> envs)

@@ -60,7 +60,7 @@ public class AsmGenerator {
             String asm = p.ident_ + ":\n";
             asm += "\tenter 0,0\n";
             asm += "\tsub rsp, 100\n";
-            
+
             envs.add(new Env(p.ident_));
             Env env = envs.getLast();
 
@@ -72,7 +72,11 @@ public class AsmGenerator {
                 asm += a.accept(new ArgVisitor(), envs);
                 env.ileArgumentow--;
             }
+
+
             asm += p.block_.accept(new BlockVisitor(), envs);
+
+
             envs.removeLast();
 
             asm += "\tleave\n";

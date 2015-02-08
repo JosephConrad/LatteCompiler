@@ -28,6 +28,8 @@ public class Env {
     public String funName = "";
 
     
+    
+    
     public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
     public int localVarShift = 8;
 
@@ -35,12 +37,24 @@ public class Env {
     
     public int ileArgumentow = 0;
 
-    public Env(Env last) {
-        this.ileArgumentow = last.ileArgumentow;
-        this.jmpExpCounter = last.jmpExpCounter;
-        this.andExpCounter = last.andExpCounter;
-        this.whileCounter = last.whileCounter;
-        this.orExpCounter = last.orExpCounter;
+    public static Env copyEnv(Env last, String funName) {
+        Env env = new Env(funName);
+        env.ileArgumentow = last.ileArgumentow;
+        env.jmpExpCounter = last.jmpExpCounter;
+        env.andExpCounter = last.andExpCounter;
+        env.whileCounter = last.whileCounter;
+        env.orExpCounter = last.orExpCounter;
+        env.localVarShift = last.localVarShift;
+        env.argumentsShifts = last.argumentsShifts;
+        
+
+        for(String key: last.variableShifts.keySet()) {
+            env.variableShifts.put(key, last.variableShifts.get(key));
+        }
+        for(String key: last.argumentsShifts.keySet()) {
+            env.argumentsShifts.put(key, last.argumentsShifts.get(key));
+        }
+        return env;
     }
     
 
