@@ -6,6 +6,11 @@ public class Str extends Type {
 
   public <R,A> R accept(Latte.Absyn.Type.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
+    public String toString(){
+        return "string";
+        
+    }    
+    
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.Str) {

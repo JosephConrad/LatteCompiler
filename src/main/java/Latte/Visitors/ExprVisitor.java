@@ -143,15 +143,18 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     }
     public String visit(Latte.Absyn.EAdd p, LinkedList<Env> envs)
     {
+        String type = p.returnType(envs);
         String asm = p.expr_1.accept(new ExprVisitor(), envs);
         asm += p.expr_2.accept(new ExprVisitor(), envs);
         asm += twoArgs();
-        
+        if (type == "string")
+            envs.getLast().addIsString = true;
         asm += p.addop_.accept(new AddOpVisitor(), envs);
         envs.getLast().addIsString = false;
         asm += "\tpush rax\n";
         return asm;
     }
+
     public String visit(Latte.Absyn.ERel p, LinkedList<Env> envs)
     {   
         Env env = envs.getLast();

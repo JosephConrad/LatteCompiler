@@ -51,6 +51,9 @@ public class Env {
         for(String key: last.argumentsShifts.keySet()) {
             env.argumentsShifts.put(key, last.argumentsShifts.get(key));
         }
+        for(String key: last.variableType.keySet()) {
+            env.variableType.put(key, last.variableType.get(key));
+        }
         return env;
     }
     
