@@ -98,14 +98,14 @@ public class AsmGenerator {
             
             
             //System.out.print("\t" + p.ident_ + "\t" + "resq\t1\n");
-            String asm = "\tmov rax, [rbp+" + shift + "]\n";
+            //String asm = "\tmov rax, [rbp+" + shift + "]\n";
 
 
-            asm += "\tmov [rbp-" + env.localVarShift + "], rax\n";
+            //asm += "\tmov [rbp-" + env.localVarShift + "], rax\n";
             //env.variableShifts.put(p.ident_, env.localVarShift);
             //env.localVarShift -= 8;
 
-            asm += p.type_.accept(new TypeVisitor(), envs);
+            String asm = p.type_.accept(new TypeVisitor(), envs);
             //p.ident_;
             return asm;
         }

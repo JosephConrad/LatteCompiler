@@ -86,13 +86,16 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
         envs.getLast().register = "rax";
         String asm = p.expr_.accept(new ExprVisitor(), envs);
         asm += "\tpop rax\n";
+        asm += "\tleave\n\tret\n";
         return asm;
     }
 
     // Void Return
     public String visit(Latte.Absyn.VRet p, LinkedList<Env> envs)
     {
-        return "\tmov rax, 0\n";
+        //String asm = "\tmov rax, 0\n";
+        String asm = "\tleave\n\tret\n";
+        return asm;
     }
 
     // Warunek
