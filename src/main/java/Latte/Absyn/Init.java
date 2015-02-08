@@ -8,7 +8,13 @@ public class Init extends Item {
 
   public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-  public boolean equals(Object o) {
+    @Override
+    public String getIdent() {
+        return ident_;
+    }
+
+
+    public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.Init) {
       Latte.Absyn.Init x = (Latte.Absyn.Init)o;

@@ -9,6 +9,11 @@ public class NoInit extends Item {
         return v.visit(this, env);
     }
 
+    @Override
+    public String getIdent() {
+        return ident_;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof Latte.Absyn.NoInit) {

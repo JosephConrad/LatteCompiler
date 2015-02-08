@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class Env {
     public List<String> predefinedFunctions = Arrays.asList("readInt", "readString", "error", "printInt", "printString", "concatenateString");
-    private Map<String, String> variableType = new HashMap<String, String>();
+    public Map<String, String> variableType = new HashMap<String, String>();
     private Map<String, Integer> variableValues  = new HashMap<String, Integer>();
     private Map<String, String> variablesDefault = new HashMap<String, String>();
     private String currentType;

@@ -31,6 +31,7 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
         p.type_.accept(new TypeVisitor(), envs);
         String asm = "";
         for (Item x : p.listitem_) {
+            envs.getLast().variableType.put(x.getIdent(), p.type_.toString());
             envs.getLast().register = "rax";
             asm += x.accept(new ItemVisitor(), envs);
         }
