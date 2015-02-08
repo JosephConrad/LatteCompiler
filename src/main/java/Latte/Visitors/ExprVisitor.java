@@ -3,26 +3,28 @@ package Latte.Visitors;
 import Latte.Absyn.Expr;
 import Latte.Env;
 
+import java.util.LinkedList;
+
 /**
  * Class for expressions
  
  * Created by konrad on 05/02/15.
  */
 
-public class ExprVisitor implements Expr.Visitor<String, Env>
+public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
 {   
     
     public String oneArg(){
         return "\n\tpop rax\n";
     }
-    
+
     public String twoArgs(){
         String asm = "\n\tpop rbx\n";
         asm += "\tpop rax\n";
         return asm;
     }
     
-    public String visit(Latte.Absyn.EVar p, Env env)
+    public String visit(Latte.Absyn.EVar p, LinkedList<Env> env)
     {
         String argument = "["+p.ident_+"]";
         //String asm = oneArg();
@@ -33,7 +35,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
 
 
     // Literal liczbowy
-    public String visit(Latte.Absyn.ELitInt p, Env env)
+    public String visit(Latte.Absyn.ELitInt p, LinkedList<Env> env)
     {
         String asm = "\tmov rax, " + p.integer_+"\n";
         asm += "\tpush rax\n";
@@ -41,7 +43,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
     
     // True
-    public String visit(Latte.Absyn.ELitTrue p, Env env)
+    public String visit(Latte.Absyn.ELitTrue p, LinkedList<Env> env)
     {
         String asm = '\t' + "mov rax, 1\n" ;
         asm += "\tpush rax\n";
@@ -49,7 +51,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
     
     // Wyrazenie False
-    public String visit(Latte.Absyn.ELitFalse p, Env env)
+    public String visit(Latte.Absyn.ELitFalse p, LinkedList<Env> env)
     {
         String asm = '\t' + "mov rax, 0\n" ;
         asm += "\tpush rax\n";
@@ -57,12 +59,12 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
     
     // Wywolanie funkcji
-    public String visit(Latte.Absyn.EApp p, Env env)
+    public String visit(Latte.Absyn.EApp p, LinkedList<Env> envs)
     {
         String asm = "";
         for (Expr expr : p.listexpr_) {
-            env.register = "rax";
-            asm += expr.accept(new ExprVisitor(), env);
+            envs.getLast().register = "rax";
+            asm += expr.accept(new ExprVisitor(), envs);
             asm += "\tpop rax\n";
             asm += "\tmov rdi, rax\n";
             //asm += "\tpush eax\n";
@@ -74,18 +76,18 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
     
     // Napis - zwraca identyfikator do wypisania
-    public String visit(Latte.Absyn.EString p, Env env)
+    public String visit(Latte.Absyn.EString p, LinkedList<Env> envs)
     {
-        int stringNo = env.strings.size();
+        int stringNo = envs.getLast().strings.size();
         String stringID = "STR_"+stringNo;
-        env.strings.put(stringID, p.string_);
+        envs.getLast().strings.put(stringID, p.string_);
         String asm = "\tmov rax, (" + stringID + ")\n";
         asm += "\tpush rax\n";
-        env.addIsString = true;
+        envs.getLast().addIsString = true;
         return asm;
     }
    
-    public String visit(Latte.Absyn.Neg p, Env env)
+    public String visit(Latte.Absyn.Neg p, LinkedList<Env> env)
     {
         String asm = p.expr_.accept(new ExprVisitor(), env);
         asm += oneArg();
@@ -94,46 +96,46 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
         return asm;
     }
 
-    public String visit(Latte.Absyn.Not p, Env arg)
+    public String visit(Latte.Absyn.Not p, LinkedList<Env> envs)
     {
 
-        String asm = p.expr_.accept(new ExprVisitor(), arg);
+        String asm = p.expr_.accept(new ExprVisitor(), envs);
         asm += oneArg();
         asm += "\txor rax, 1\n";
         asm += "\tpush rax\n";
         return asm;
     }
 
-    public String visit(Latte.Absyn.EMul p, Env env)
+    public String visit(Latte.Absyn.EMul p, LinkedList<Env> envs)
     {
-        String asm = p.expr_1.accept(new ExprVisitor(), env);
-        asm += p.expr_2.accept(new ExprVisitor(), env);
+        String asm = p.expr_1.accept(new ExprVisitor(), envs);
+        asm += p.expr_2.accept(new ExprVisitor(), envs);
         asm += twoArgs();
-        asm += p.mulop_.accept(new MulOpVisitor(), env);
+        asm += p.mulop_.accept(new MulOpVisitor(), envs);
         asm += "\tpush rax\n";
         return asm;
     }
-    public String visit(Latte.Absyn.EAdd p, Env env)
+    public String visit(Latte.Absyn.EAdd p, LinkedList<Env> envs)
     {
-        String asm = p.expr_1.accept(new ExprVisitor(), env);
-        asm += p.expr_2.accept(new ExprVisitor(), env);
+        String asm = p.expr_1.accept(new ExprVisitor(), envs);
+        asm += p.expr_2.accept(new ExprVisitor(), envs);
         asm += twoArgs();
         
-        asm += p.addop_.accept(new AddOpVisitor(), env);
-        env.addIsString = false;
+        asm += p.addop_.accept(new AddOpVisitor(), envs);
+        envs.getLast().addIsString = false;
         asm += "\tpush rax\n";
         return asm;
     }
-    public String visit(Latte.Absyn.ERel p, Env env)
+    public String visit(Latte.Absyn.ERel p, LinkedList<Env> envs)
     {   
-        String asm = p.expr_1.accept(new ExprVisitor(), env);
-        asm += p.expr_2.accept(new ExprVisitor(), env);
+        String asm = p.expr_1.accept(new ExprVisitor(), envs);
+        asm += p.expr_2.accept(new ExprVisitor(), envs);
         
-        int no = env.jmpExpCounter++;
+        int no = envs.getLast().jmpExpCounter++;
         asm += twoArgs();
 
         asm += '\t'+ "cmp rax, rbx\n";
-        asm += p.relop_.accept(new RelOpVisitor(), env) + " REL_TRUE_"+no + "\n";
+        asm += p.relop_.accept(new RelOpVisitor(), envs) + " REL_TRUE_"+no + "\n";
         asm += "\tjmp REL_FALSE_"+no + "\n";
         
         asm += "\nREL_TRUE_"+no+":\n";
@@ -148,17 +150,17 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
 
         return asm;
     }
-    public String visit(Latte.Absyn.EAnd p, Env env)
+    public String visit(Latte.Absyn.EAnd p, LinkedList<Env> envs)
     {
-        String asm = p.expr_1.accept(new ExprVisitor(), env);
+        String asm = p.expr_1.accept(new ExprVisitor(), envs);
 
-        int no = env.andExpCounter++;
+        int no = envs.getLast().andExpCounter++;
         String label = "AFTER_AND_"+no;
         asm += "\tmov rax, [rsp]\n";
         asm += "\tcmp rax, 0\n";
         asm += "\t je " + label + "\n";
 
-        asm += p.expr_2.accept(new ExprVisitor(), env);
+        asm += p.expr_2.accept(new ExprVisitor(), envs);
        
         asm += twoArgs();
         asm += "\tand rax, rbx\n";
@@ -168,16 +170,16 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     }
 
 
-    public String visit(Latte.Absyn.EOr p, Env env)
+    public String visit(Latte.Absyn.EOr p, LinkedList<Env> envs)
     {
-        String asm = p.expr_1.accept(new ExprVisitor(), env);
-        int no = env.orExpCounter++;
+        String asm = p.expr_1.accept(new ExprVisitor(), envs);
+        int no = envs.getLast().orExpCounter++;
         String label = "AFTER_OR_"+no;
         asm += "\tmov rax, [rsp]\n";
         asm += "\tcmp rax, 1\n";
         asm += "\t je " + label + "\n";
 
-        asm += p.expr_2.accept(new ExprVisitor(), env);
+        asm += p.expr_2.accept(new ExprVisitor(), envs);
 
         asm += twoArgs();
         asm += "\tor rax, rbx\n";

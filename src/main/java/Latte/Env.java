@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * Created by konrad on 01/02/15.
+ * Default contructor initate completely new environment
  */
 public class Env {
     List<String> predefinedFunctions = Arrays.asList("readInt", "readString", "error", "printInt", "printString", "concatenateString");

@@ -3,18 +3,20 @@ package Latte.Visitors;
 import Latte.Absyn.AddOp;
 import Latte.Env;
 
+import java.util.LinkedList;
+
 /**
  * Created by konrad on 05/02/15.
  */
 
 
-public class AddOpVisitor implements AddOp.Visitor<String, Env>
+public class AddOpVisitor implements AddOp.Visitor<String, LinkedList<Env>>
 {
-    public String visit(Latte.Absyn.Plus p, Env env)
+    public String visit(Latte.Absyn.Plus p, LinkedList<Env> envs)
             
             
     {
-        if (env.addIsString == true) {
+        if (envs.getLast().addIsString == true) {
             String asm = "\tmov rdi, rax\n";
             asm += "\tmov rsi, rbx\n";
             asm += "\tcall concatenateString\n";
@@ -22,7 +24,9 @@ public class AddOpVisitor implements AddOp.Visitor<String, Env>
         }
        return "\tadd rax, rbx\n" ;
     }
-    public String visit(Latte.Absyn.Minus p, Env env)
+
+
+    public String visit(Latte.Absyn.Minus p, LinkedList<Env> envs)
     {
         return "\tsub rax, rbx\n";
     }
