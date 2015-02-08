@@ -72,20 +72,20 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
                 env.ileArgumentow++;
                 asm += expr.accept(new ExprVisitor(), envs);
                 asm += "\tpop rax\n";
-                asm += "\tmov rdi, rax\n";
-                asm += "\tcall " + p.ident_ + "\n";
             }
+            asm += "\tmov rdi, rax\n";
+            asm += "\tcall " + p.ident_ + "\n";
         } else {
             int shift = (p.listexpr_.size())*8;
             for (Expr expr : p.listexpr_) {
                 env.ileArgumentow++;
                 asm += expr.accept(new ExprVisitor(), envs);
-                asm += "\tcall " + p.ident_ + "\n";
-                asm += "\tadd rsp, " + shift + "\n";
                 //asm += "\tpop rax\n";
                 //asm += "\tmov [rsp+"+ shift +"], rax\n";
                 //shift -= 8;
             }
+            asm += "\tcall " + p.ident_ + "\n";
+            asm += "\tadd rsp, " + shift + "\n";
         }
 
         asm += "\tpush rax\n";
