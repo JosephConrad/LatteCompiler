@@ -65,9 +65,12 @@ public class AsmGenerator {
             Env env = envs.getLast();
 
             p.type_.accept(new TypeVisitor(), envs);
-            for (Arg a : p.listarg_) {
-                env.ileArgumentow++;   // ustawiam liczbe argumentow dla kazdego wywolania funkcji
+
+            env.ileArgumentow = p.listarg_.size();
+            env.localVarShift = (env.ileArgumentow + 1) * 8;
+            for (Arg a : p.listarg_) {// ustawiam liczbe argumentow dla kazdego wywolania funkcji
                 asm += a.accept(new ArgVisitor(), envs);
+                env.ileArgumentow--;
             }
             asm += p.block_.accept(new BlockVisitor(), envs);
             envs.removeLast();
@@ -100,7 +103,7 @@ public class AsmGenerator {
 
             asm += "\tmov [rbp-" + env.localVarShift + "], rax\n";
             env.variableShifts.put(p.ident_, env.localVarShift);
-            env.localVarShift += 8;
+            env.localVarShift -= 8;
 
             asm += p.type_.accept(new TypeVisitor(), envs);
             //p.ident_;
