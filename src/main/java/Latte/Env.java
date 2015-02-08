@@ -26,15 +26,9 @@ public class Env {
     public int andExpCounter = 1;
     public int orExpCounter = 1;
     public String funName = "";
-
-    
-    
-    
     public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
     public int localVarShift = 8;
-
     public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
-    
     public int ileArgumentow = 0;
 
     public static Env copyEnv(Env last, String funName) {
@@ -46,8 +40,11 @@ public class Env {
         env.orExpCounter = last.orExpCounter;
         env.localVarShift = last.localVarShift;
         env.argumentsShifts = last.argumentsShifts;
-        
+        env.addIsString = last.addIsString;
 
+        for(String key: last.strings.keySet()) {
+            env.strings.put(key, last.strings.get(key));
+        }
         for(String key: last.variableShifts.keySet()) {
             env.variableShifts.put(key, last.variableShifts.get(key));
         }
