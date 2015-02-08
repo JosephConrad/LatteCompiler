@@ -24,9 +24,12 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
         return asm;
     }
     
-    public String visit(Latte.Absyn.EVar p, LinkedList<Env> env)
+    public String visit(Latte.Absyn.EVar p, LinkedList<Env> envs)
     {
-        String argument = "["+p.ident_+"]";
+        
+        Env env = envs.getLast();
+
+        String argument = "[rbp-"+env.variableShifts.get(p.ident_)+"]";
         //String asm = oneArg();
         String asm = "\tmov rax, "+ argument+"\n";
         asm += "\tpush rax\n";
@@ -61,13 +64,17 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     // Wywolanie funkcji
     public String visit(Latte.Absyn.EApp p, LinkedList<Env> envs)
     {
+        Env env = envs.getLast();
+        
         String asm = "";
+        int shift = (p.listexpr_.size()-1)*8;
         for (Expr expr : p.listexpr_) {
+            env.ileArgumentow++;
             envs.getLast().register = "rax";
             asm += expr.accept(new ExprVisitor(), envs);
             asm += "\tpop rax\n";
-            asm += "\tmov rdi, rax\n";
-            //asm += "\tpush eax\n";
+            asm += "\tmov [rsp-"+ shift +"], rax\n";
+            shift -= 8;
         }
         asm += "\tcall " + p.ident_ + "\n";
         asm += "\tpush rax\n";

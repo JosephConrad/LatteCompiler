@@ -15,35 +15,32 @@ import java.util.LinkedList;
    Replace the R and A parameters with the desired return
    and context types.*/
 
-public class AsmGenerator
-{
+public class AsmGenerator {
     String classname;
     Latte.Absyn.Program program;
-    
+
 
     public AsmGenerator(Latte.Absyn.Program program, String string) {
         this.program = program;
         this.classname = string.split("\\.")[0];
     }
 
-    void generateASM(){
+    void generateASM() {
         LinkedList<Env> envs = new LinkedList<Env>();
         envs.add(new Env());
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
         System.out.print("SECTION .bss\n");
         String asm = program.accept(programVisitor, envs);
         String data = "SECTION .data\n";
-        for (String key : envs.getLast().strings.keySet()){
+        for (String key : envs.getLast().strings.keySet()) {
             data += "\t" + key + "\tdb\t\"" + envs.getLast().strings.get(key) + "\", 0\n";
         }
         System.out.println("\n\n\n" + data);
-        System.out.println("\n\n\n"+asm);
+        System.out.println("\n\n\n" + asm);
     }
 
-    public class ProgramVisitor<R,S>  implements Program.Visitor<String,LinkedList<Env>>
-    {
-        public String visit(Latte.Absyn.Program p, LinkedList<Env> envs)
-        {
+    public class ProgramVisitor<R, S> implements Program.Visitor<String, LinkedList<Env>> {
+        public String visit(Latte.Absyn.Program p, LinkedList<Env> envs) {
             String asm = "SECTION .text\n";
             asm += "\tglobal main\n\n";
             asm += "EXTERN printInt, printString, error, readInt, readString, concatenateString\n\n\n";
@@ -55,21 +52,24 @@ public class AsmGenerator
     }
 
 
-    public class TopDefVisitor implements TopDef.Visitor<String,LinkedList<Env>>
-    {
-        public String visit(Latte.Absyn.FnDef p, LinkedList<Env> envs)
-        {
+    public class TopDefVisitor implements TopDef.Visitor<String, LinkedList<Env>> {
+        public String visit(Latte.Absyn.FnDef p, LinkedList<Env> envs) {
             if (envs.getLast().predefinedFunctions.contains(p.ident_)) {
                 return "";
             }
-            String asm = p.ident_+":\n";
+            String asm = p.ident_ + ":\n";
             asm += "\tenter 0,0\n";
 
+            envs.add(new Env());
+            Env env = envs.getLast();
+
             p.type_.accept(new TypeVisitor(), envs);
-            for (Arg a: p.listarg_) {
+            for (Arg a : p.listarg_) {
+                env.ileArgumentow++;   // ustawiam liczbe argumentow dla kazdego wywolania funkcji
                 asm += a.accept(new ArgVisitor(), envs);
             }
             asm += p.block_.accept(new BlockVisitor(), envs);
+            envs.removeLast();
 
             asm += "\tleave\n";
             asm += "\tret\n";
@@ -84,17 +84,26 @@ public class AsmGenerator
      * Argument Visitor
      */
 
-    public class ArgVisitor implements Arg.Visitor<String, LinkedList<Env>>
-    {
-        public String visit(Latte.Absyn.Arg p, LinkedList<Env> envs)
-        {
+    public class ArgVisitor implements Arg.Visitor<String, LinkedList<Env>> {
+        public String visit(Latte.Absyn.Arg p, LinkedList<Env> envs) {
 
-            System.out.print("\t"+p.ident_+"\t"+ "resq\t1\n");
-            String asm = "\tmov [" + p.ident_ + p.type_.accept(new TypeVisitor(), envs) +"], rdi\n";
+            Env env = envs.getLast();
+
+            int shift = 8 * (1 + env.ileArgumentow);
+            env.argumentsShifts.put(p.ident_, shift);
+            
+            
+            System.out.print("\t" + p.ident_ + "\t" + "resq\t1\n");
+            String asm = "\tmov rax, [rbp+" + shift + "]\n";
+
+
+            asm += "\tmov [rbp-" + env.localVarShift + "], rax\n";
+            env.variableShifts.put(p.ident_, env.localVarShift);
+            env.localVarShift += 8;
+
+            asm += p.type_.accept(new TypeVisitor(), envs);
             //p.ident_;
             return asm;
         }
-
     }
-
 }

@@ -26,7 +26,22 @@ public class Env {
     public int andExpCounter = 1;
     public int orExpCounter = 1;
 
+    
+    public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
+    public int localVarShift = 8;
 
+    public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
+    
+    public int ileArgumentow = 0;
+
+    public Env(Env last) {
+        this.ileArgumentow = last.ileArgumentow;
+    }
+
+    public Env() {
+        
+    }
+    
     public String getCurrentType() {
         return currentType;
     }
