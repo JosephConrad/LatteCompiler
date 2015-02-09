@@ -46,7 +46,7 @@ public class AsmGenerator {
             //System.err.println(key + " "+  Env.functionsReturnType.get(key));
         }
         
-        //program.checkTypes(envs);
+        program.checkTypes(envs);
         
         
         

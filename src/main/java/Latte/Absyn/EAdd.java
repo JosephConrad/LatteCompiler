@@ -18,6 +18,11 @@ public class EAdd extends Expr {
         //System.err.println("Eadd");
         String expr1Type = expr_1.returnExprType(envs);
         String expr2Type = expr_2.returnExprType(envs);
+        Env env = envs.getLast();
+        System.err.println( env.variableType.size());
+        for (String str :env.variableType.keySet()){
+            System.err.println(str + " " + env.variableType.get(str));
+        }
         if ((expr1Type == expr2Type) && (expr1Type == "int"))
             return "int";
         else if ((expr1Type == expr2Type) && (expr1Type == "string"))

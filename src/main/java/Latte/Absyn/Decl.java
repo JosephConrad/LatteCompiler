@@ -19,7 +19,9 @@ public class Decl extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-
+        for(Item item: listitem_){
+            item.checkTypes(envs, currentFunction, type_);
+        }
     }
 
 

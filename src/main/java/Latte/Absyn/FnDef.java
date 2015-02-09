@@ -24,7 +24,15 @@ public class FnDef extends TopDef {
 
     @Override
     public void checkTypes(LinkedList<Env> envs) {
+        System.err.println("FnDef "+ident_);
+        envs.add(new Env(ident_));
+
+        for (Arg arg: listarg_){
+            arg.checkTypes(envs, ident_);
+        }
         block_.checkTypes(envs, ident_);
+
+        envs.removeLast();
     }
 
     public boolean equals(Object o) {

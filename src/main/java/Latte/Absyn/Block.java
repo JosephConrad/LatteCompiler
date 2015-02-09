@@ -41,9 +41,12 @@ public class Block {
     }
 
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
+        Env env = envs.getLast();
+        envs.add(Env.copyEnv(env, env.funName));
         for (Stmt s: liststmt_){
             s.checkTypes(envs, currentFunction);
         }
+        envs.removeLast();
     }
 
     public interface Visitor <R,A> {
