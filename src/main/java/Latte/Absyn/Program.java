@@ -28,6 +28,12 @@ public class Program {
         return this.listtopdef_.hashCode();
     }
 
+    public void functionsRetType() {
+        for(TopDef ltd: listtopdef_){
+            ltd.returnType();
+        }
+    }
+
     public interface Visitor <R,A> {
         public R visit(Latte.Absyn.Program p, A arg);
 

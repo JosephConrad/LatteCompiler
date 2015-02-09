@@ -29,12 +29,25 @@ public class AsmGenerator {
         LinkedList<Env> envs = new LinkedList<Env>();
         envs.add(new Env("main"));
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
+
+        program.functionsRetType();
+        // Calculate functions return Type
+        for (String key: Env.functionsReturnType.keySet()){
+            //System.err.println(key + " "+  Env.functionsReturnType.get(key));
+        }
        //System.out.print("SECTION .bss\n");
         String asm = program.accept(programVisitor, envs);
+        
+
         String data = "SECTION .data\n";
         for (String key : Env.strings.keySet()) {
             data += "\t" + key + "\tdb\t\"" + envs.getLast().strings.get(key) + "\", 0\n";
         }
+        
+        // checkReturnAchievibility
+        
+        
+        
         System.out.println("\n\n\n" + data);
         System.out.println("\n\n\n" + asm);
     }
