@@ -22,7 +22,18 @@ public class EApp extends Expr {
 
     @Override
     public String returnExprType(LinkedList<Env> envs) {
-
+        if ((ident_ == "printInt") && (listexpr_.get(0).returnExprType(envs) != "int"))
+            throw new IllegalArgumentException("Function printInt takes as parameter int, not " + listexpr_.get(0).returnExprType(envs));
+        if ((ident_ == "printString") && (listexpr_.get(0).returnExprType(envs) != "string"))
+            throw new IllegalArgumentException("Function printString takes as parameter string, not " + listexpr_.get(0).returnExprType(envs));
+//        System.err.println("Haha: " + ident_ + " " +listexpr_.size());
+//        for (String str: Env.functionsArgumentsNumber.keySet()) {
+//            System.err.println(str + " " + Env.functionsArgumentsNumber.get(str));
+//        }
+        if (Env.functionsArgumentsNumber.get(ident_) != listexpr_.size())
+            throw new IllegalArgumentException("Wrong number of arguments. Function takas "
+                + Env.functionsArgumentsNumber.get(ident_) + " arguments, but "
+                + listexpr_.size() + " found.");
         // System.err.println("EApp "+ident_);
         return Env.functionsReturnType.get(ident_);
     }

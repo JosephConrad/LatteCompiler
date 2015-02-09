@@ -17,6 +17,15 @@ public class Init extends Item {
         return ident_;
     }
 
+    public void checkTypes(LinkedList<Env> envs, String currentFunction, Type type_) {
+        Env env = envs.getLast();
+        env.variableType.put(this.getIdent(), type_.toString());
+        if (type_.toString() != expr_.returnExprType(envs))
+            throw new IllegalArgumentException(currentFunction.toUpperCase() + 
+                    " function: to variable " + ident_ +
+                    " of type " + type_ +
+                    " cannot be assigned " + expr_.returnExprType(envs) + " expression.");
+    }
 
     public boolean equals(Object o) {
     if (this == o) return true;

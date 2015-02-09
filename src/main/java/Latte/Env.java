@@ -31,6 +31,7 @@ public class Env {
     public Map<String, Integer> varDeclarationEnv = new HashMap<String, Integer>();
     public static Map<String, Boolean> functionsReturnAchievibility = new HashMap<String, Boolean>();
     public static Map<String, String> functionsReturnType = new HashMap<String, String>();
+    public static Map<String, Integer> functionsArgumentsNumber = new HashMap<String, Integer>();
 
     public static Env copyEnv(Env last, String funName) {
         Env env = new Env(funName);
