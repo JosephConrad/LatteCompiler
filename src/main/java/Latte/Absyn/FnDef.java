@@ -24,7 +24,7 @@ public class FnDef extends TopDef {
 
     @Override
     public void checkTypes(LinkedList<Env> envs) {
-        System.err.println("FnDef "+ident_);
+        //System.err.println("FnDef "+ident_);
         envs.add(new Env(ident_));
 
         for (Arg arg: listarg_){

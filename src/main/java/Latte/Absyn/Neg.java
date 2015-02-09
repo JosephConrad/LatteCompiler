@@ -20,7 +20,7 @@ public class Neg extends Expr {
     @Override
     public String returnExprType(LinkedList<Env> envs) {
             String type = expr_.returnExprType(envs);
-        System.err.println("eneg");
+       // System.err.println("eneg");
             if (type == "int") return "int";
             else
                 throw new IllegalArgumentException("Not appropriate argument for negation");

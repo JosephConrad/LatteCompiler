@@ -19,8 +19,9 @@ public class Ass extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-//        if (envs.getLast().variableType.get(ident_) != expr_.returnExprType())
-//            throw new IllegalArgumentException("Assignment: ");
+        if (envs.getLast().variableType.get(ident_) != expr_.returnExprType(envs))
+            throw new IllegalArgumentException("Bad assignment: incompatible type of variable " +
+                    envs.getLast().variableType.get(ident_) +  " with " + expr_.returnExprType(envs));
     }
 
 

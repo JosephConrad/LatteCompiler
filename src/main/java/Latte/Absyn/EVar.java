@@ -16,10 +16,10 @@ public class EVar extends Expr {
     @Override
     public String returnExprType(LinkedList<Env> envs) {
 
-        System.err.println("evar" + envs.getLast().variableType.keySet().size());
+        //System.err.println("evar" + envs.getLast().variableType.keySet().size());
         
         for (String str: envs.getLast().variableType.keySet()) {
-            System.err.println(str+" "+ envs.getLast().variableType.get(str));
+            //System.err.println(str+" "+ envs.getLast().variableType.get(str));
 
         }
         return envs.getLast().variableType.get(ident_);

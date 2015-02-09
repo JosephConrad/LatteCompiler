@@ -24,7 +24,6 @@ public class SExp extends Stmt {
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
 
-        System.err.println("EApp ");
         String type = expr_.returnExprType(envs);
     }
 

@@ -20,7 +20,7 @@ public class ERel extends Expr {
         if (expr1Type == expr2Type)
             return "boolean";
         else
-            throw new IllegalArgumentException("Add: invalid operands: " + expr1Type + ", and " + expr1Type);
+            throw new IllegalArgumentException("Rel: invalid operands: " + expr1Type + ", and " + expr2Type);
     }
 
 

@@ -17,7 +17,8 @@ public class VRet extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-
+        if (Env.functionsReturnType.get(currentFunction) != "void")
+            throw new IllegalArgumentException(currentFunction.toUpperCase() + " function: cannot return void to non-void function.");
     }
 
     public boolean equals(Object o) {

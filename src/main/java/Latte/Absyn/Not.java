@@ -16,7 +16,7 @@ public class Not extends Expr {
     public String returnExprType(LinkedList<Env> envs) {
         String type = expr_.returnExprType(envs);
 
-        System.err.println("enot");
+        //System.err.println("enot");
         if (type == "boolean") return "boolean";
         else
             throw new IllegalArgumentException("Not compatible operands in line");

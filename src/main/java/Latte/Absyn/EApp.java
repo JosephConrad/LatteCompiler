@@ -23,7 +23,7 @@ public class EApp extends Expr {
     @Override
     public String returnExprType(LinkedList<Env> envs) {
 
-        System.err.println("EApp "+ident_);
+        // System.err.println("EApp "+ident_);
         return Env.functionsReturnType.get(ident_);
     }
 
