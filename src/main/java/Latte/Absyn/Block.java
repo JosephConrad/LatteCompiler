@@ -28,6 +28,14 @@ public class Block {
         return this.liststmt_.hashCode();
     }
 
+    public Boolean functionsReturnAchievibility() {
+        for (Stmt s: liststmt_){
+            if (s.functionsReturnAchievibility())
+                return true;
+        }
+        return false;
+    }
+
     public interface Visitor <R,A> {
         public R visit(Latte.Absyn.Block p, A arg);
 

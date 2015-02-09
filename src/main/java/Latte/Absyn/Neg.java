@@ -19,6 +19,11 @@ public class Neg extends Expr {
             throw new IllegalArgumentException("Not appropriate argument for negation");
     }
 
+    @Override
+    public boolean evalExpr() {
+        return false;
+    }
+
 
     public boolean equals(Object o) {
         if (this == o) return true;

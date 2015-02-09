@@ -6,7 +6,12 @@ public class Empty extends Stmt {
 
   public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-  public boolean equals(Object o) {
+    @Override
+    public boolean functionsReturnAchievibility() {
+        return false;
+    }
+
+    public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.Empty) {
       return true;

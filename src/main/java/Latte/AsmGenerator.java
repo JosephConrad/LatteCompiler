@@ -6,6 +6,7 @@ import Latte.Absyn.TopDef;
 import Latte.Visitors.BlockVisitor;
 import Latte.Visitors.TypeVisitor;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /*** BNFC-Generated Visitor Design Pattern Skeleton. ***/
@@ -30,11 +31,21 @@ public class AsmGenerator {
         envs.add(new Env("main"));
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
 
+        Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
+        Env.functionsReturnType = new HashMap<String, String>();
+        
         program.functionsRetType();
         // Calculate functions return Type
-        for (String key: Env.functionsReturnType.keySet()){
+        for (String key: Env.functionsReturnAchievibility.keySet()){
+            if (Env.functionsReturnType.get(key) != "void")
+                if (Env.functionsReturnAchievibility.get(key) == false)
+                    throw new IllegalArgumentException("return stmt of function " + key.toUpperCase() + " is not achievable");
             //System.err.println(key + " "+  Env.functionsReturnType.get(key));
         }
+        
+        
+        
+        
        //System.out.print("SECTION .bss\n");
         String asm = program.accept(programVisitor, envs);
         

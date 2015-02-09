@@ -19,6 +19,10 @@ public class EApp extends Expr {
         return "int";
     }
 
+    @Override
+    public boolean evalExpr() {
+        return true;
+    }
 
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }

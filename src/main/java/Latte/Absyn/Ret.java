@@ -7,6 +7,11 @@ public class Ret extends Stmt {
 
     public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
+    @Override
+    public boolean functionsReturnAchievibility() {
+        return true;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof Latte.Absyn.Ret) {

@@ -8,7 +8,13 @@ public class While extends Stmt {
 
   public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-  public boolean equals(Object o) {
+    @Override
+    public boolean functionsReturnAchievibility() {
+        if (expr_.evalExpr()) return stmt_.functionsReturnAchievibility();
+        return false;
+    }
+
+    public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.While) {
       Latte.Absyn.While x = (Latte.Absyn.While)o;

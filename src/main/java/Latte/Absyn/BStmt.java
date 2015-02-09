@@ -7,7 +7,12 @@ public class BStmt extends Stmt {
 
   public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-  public boolean equals(Object o) {
+    @Override
+    public boolean functionsReturnAchievibility() {
+        return block_.functionsReturnAchievibility();
+    }
+
+    public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.BStmt) {
       Latte.Absyn.BStmt x = (Latte.Absyn.BStmt)o;

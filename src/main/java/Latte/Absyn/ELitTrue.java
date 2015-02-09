@@ -15,6 +15,11 @@ public class ELitTrue extends Expr {
         return "boolean";
     }
 
+    @Override
+    public boolean evalExpr() {
+        return true;
+    }
+
 
     public boolean equals(Object o) {
     if (this == o) return true;

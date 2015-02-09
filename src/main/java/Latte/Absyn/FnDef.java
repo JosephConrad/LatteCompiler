@@ -17,6 +17,7 @@ public class FnDef extends TopDef {
     @Override
     public void returnType() {
         Env.functionsReturnType.put(ident_, type_.toString());
+        Env.functionsReturnAchievibility.put(ident_, block_.functionsReturnAchievibility());
     }
 
     public boolean equals(Object o) {

@@ -8,7 +8,14 @@ public class CondElse extends Stmt {
 
   public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-  public boolean equals(Object o) {
+    @Override
+    public boolean functionsReturnAchievibility() {
+        if (expr_.evalExpr()) return stmt_1.functionsReturnAchievibility();
+        else
+            return stmt_2.functionsReturnAchievibility();
+    }
+
+    public boolean equals(Object o) {
     if (this == o) return true;
     if (o instanceof Latte.Absyn.CondElse) {
       Latte.Absyn.CondElse x = (Latte.Absyn.CondElse)o;
