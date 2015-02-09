@@ -29,7 +29,10 @@ public class AsmGenerator {
     void generateASM() {
         LinkedList<Env> envs = new LinkedList<Env>();
         envs.add(new Env("main"));
+        
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
+        
+        // Frontend 
 
         Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
         Env.functionsReturnType = new HashMap<String, String>();
@@ -43,10 +46,16 @@ public class AsmGenerator {
             //System.err.println(key + " "+  Env.functionsReturnType.get(key));
         }
         
+        program.checkTypes(envs);
         
         
         
-       //System.out.print("SECTION .bss\n");
+        
+        
+        // Backend
+        
+        envs = new LinkedList<Env>();
+        envs.add(new Env("main"));
         String asm = program.accept(programVisitor, envs);
         
 
@@ -92,7 +101,8 @@ public class AsmGenerator {
 
             env.ileArgumentow = p.listarg_.size();
             env.localVarShift = (env.ileArgumentow + 1) * 8;
-            for (Arg a : p.listarg_) {// ustawiam liczbe argumentow dla kazdego wywolania funkcji
+            // ustawiam liczbe argumentow dla kazdego wywolania funkcji
+            for (Arg a : p.listarg_) {
                 asm += a.accept(new ArgVisitor(), envs);
                 env.ileArgumentow--;
             }
@@ -126,17 +136,8 @@ public class AsmGenerator {
                 throw new IllegalArgumentException("Repeated argument name\n");
             env.argumentsShifts.put(p.ident_, shift);
             
-            
-            //System.out.print("\t" + p.ident_ + "\t" + "resq\t1\n");
-            //String asm = "\tmov rax, [rbp+" + shift + "]\n";
-
-
-            //asm += "\tmov [rbp-" + env.localVarShift + "], rax\n";
-            //env.variableShifts.put(p.ident_, env.localVarShift);
-            //env.localVarShift -= 8;
-
+             
             String asm = p.type_.accept(new TypeVisitor(), envs);
-            //p.ident_;
             return asm;
         }
     }
