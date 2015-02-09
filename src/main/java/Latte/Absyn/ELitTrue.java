@@ -20,6 +20,11 @@ public class ELitTrue extends Expr {
         return true;
     }
 
+    @Override
+    public String returnExprType() {
+        return "boolean";
+    }
+
 
     public boolean equals(Object o) {
     if (this == o) return true;

@@ -22,6 +22,17 @@ public class EAdd extends Expr {
           //  throw new IllegalArgumentException("Not compatible operandds in line :" + type1+ " and "+ type2);
     }
 
+    @Override
+    public String returnExprType() {
+        String expr1Type = expr_1.returnExprType();
+        String expr2Type = expr_2.returnExprType();
+        if ((expr1Type == expr2Type) && (expr1Type == "int"))
+            return "int";
+        else if ((expr1Type == expr2Type) && (expr1Type == "string"))
+            return "string";
+        else
+            throw new IllegalArgumentException("Add: invalid operands: " + expr1Type + ", and " + expr1Type);
+    }
 
     public boolean equals(Object o) {
     if (this == o) return true;

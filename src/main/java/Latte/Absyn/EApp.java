@@ -24,6 +24,11 @@ public class EApp extends Expr {
         return true;
     }
 
+    @Override
+    public String returnExprType() {
+        return Env.functionsReturnType.get(ident_);
+    }
+
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 

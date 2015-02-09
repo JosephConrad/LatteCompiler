@@ -21,6 +21,11 @@ public class ELitFalse extends Expr {
         return false;
     }
 
+    @Override
+    public String returnExprType() {
+        return "boolean";
+    }
+
 
     public boolean equals(Object o) {
     if (this == o) return true;

@@ -15,6 +15,11 @@ public class EString extends Expr {
     public String returnType(LinkedList<Env> envs) {
         return "string";
     }
+    @Override
+    public String returnExprType() {
+        return "string";
+    }
+
 
 
     public boolean equals(Object o) {

@@ -21,6 +21,16 @@ public class EOr extends Expr {
           //  throw new IllegalArgumentException("Not compatible operands in line");
     }
 
+    @Override
+    public String returnExprType() {
+        String expr1Type = expr_1.returnExprType();
+        String expr2Type = expr_2.returnExprType();
+        if ((expr1Type == expr2Type) && (expr1Type == "boolean"))
+            return "boolean";
+        else
+            throw new IllegalArgumentException("Add: invalid operands: " + expr1Type + ", and " + expr1Type);
+    }
+
 
     public boolean equals(Object o) {
     if (this == o) return true;

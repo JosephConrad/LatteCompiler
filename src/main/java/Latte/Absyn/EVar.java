@@ -16,6 +16,12 @@ public class EVar extends Expr {
         return envs.getLast().variableType.get(ident_);
     }
 
+    @Override
+    public String returnExprType() {
+        return "int";
+        
+    }
+
 
     public boolean equals(Object o) {
     if (this == o) return true;

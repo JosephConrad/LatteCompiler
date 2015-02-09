@@ -18,6 +18,10 @@ public class Not extends Expr {
         else
             throw new IllegalArgumentException("Not compatible operands in line");
     }
+    @Override
+    public String returnExprType() {
+        return "boolean";
+    }
 
 
     public boolean equals(Object o) {

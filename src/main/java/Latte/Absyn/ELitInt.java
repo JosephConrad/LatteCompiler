@@ -16,6 +16,11 @@ public class ELitInt extends Expr {
          return "int";
     }
 
+    @Override
+    public String returnExprType() {
+        return "int";
+    }
+
 
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -24,6 +24,11 @@ public class Neg extends Expr {
         return false;
     }
 
+    @Override
+    public String returnExprType() {
+        return "int";
+    }
+
 
     public boolean equals(Object o) {
         if (this == o) return true;
