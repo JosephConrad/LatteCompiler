@@ -18,14 +18,17 @@ public class RunTest
         }
     }
 
-//
-//    @Test
-//    public void main_String_NegativeTest() throws Exception {
-//        for(int i = 1; i <= 9; i++){
-//            Run.main(new String[]{"tests/bad/bad00"+i+".lat"});
-//        }
-//        for(int i = 10; i <= 27; i++){
-//            Run.main(new String[]{"tests/bad/bad0"+i+".lat"});
-//        }
-//    }
+
+    @Test
+    public void main_String_NegativeTest() throws Exception {
+        for(int i = 1; i <= 9; i++){
+            Run.main(new String[]{"tests/bad/bad00"+i+".lat"});
+        }
+        for(int i = 10; i <= 13; i++){
+            Run.main(new String[]{"tests/bad/bad0"+i+".lat"});
+        }
+        for(int i = 15; i <= 27; i++){
+            Run.main(new String[]{"tests/bad/bad0"+i+".lat"});
+        }
+    }
 }

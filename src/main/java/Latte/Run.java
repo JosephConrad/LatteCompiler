@@ -26,10 +26,10 @@ public class Run
             System.exit(1);
         }
         p = new parser(l);
+        String[] parts = args[0].split("/");
+        String[] file = parts[2].split("\\.");
         try
         {
-            String[] parts = args[0].split("/");
-            String[] file = parts[2].split("\\.");
             PrintStream out = new PrintStream(new FileOutputStream("/Users/konrad/Dropbox/09_semestr/mrjp/LatteCompiler/tests/out/"+ file[0]+".asm"));
             System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
@@ -43,14 +43,14 @@ public class Run
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
             System.err.println("OK");
-            System.exit(0);
+            //System.exit(0);
         }
         catch(Throwable e)
         {
             System.err.println("ERROR");
+            System.err.println(file[0]);
             System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
             System.err.println("     " + e.getMessage());
-            System.exit(1);
         }
     }
 }
