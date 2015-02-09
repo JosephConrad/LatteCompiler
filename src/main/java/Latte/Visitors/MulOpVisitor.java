@@ -23,7 +23,7 @@ public class MulOpVisitor<R,A> implements MulOp.Visitor<String,A>
     {
         String asm = resetRdx();
         asm += "\tidiv rbx\n";
-        return asm + "\tmov rax, rbx\n";
+        return asm + "\tmov rax, rdx\n";
     }
 
 }

@@ -14,10 +14,6 @@ public class EApp extends Expr {
 
     public EApp(String p1, ListExpr p2) { ident_ = p1; listexpr_ = p2; }
 
-    @Override
-    public String returnType(LinkedList<Env> envs) {
-        return "int";
-    }
 
     @Override
     public boolean evalExpr() {
@@ -25,7 +21,7 @@ public class EApp extends Expr {
     }
 
     @Override
-    public String returnExprType() {
+    public String returnExprType(LinkedList<Env> envs) {
         return Env.functionsReturnType.get(ident_);
     }
 

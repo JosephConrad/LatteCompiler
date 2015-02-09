@@ -12,17 +12,12 @@ public class ELitFalse extends Expr {
 
 
     @Override
-    public String returnType(LinkedList<Env> envs) {
-        return "boolean";
-    }
-
-    @Override
     public boolean evalExpr() {
         return false;
     }
 
     @Override
-    public String returnExprType() {
+    public String returnExprType(LinkedList<Env> env) {
         return "boolean";
     }
 

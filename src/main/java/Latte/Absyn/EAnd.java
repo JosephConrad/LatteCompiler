@@ -12,19 +12,12 @@ public class EAnd extends Expr {
   public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
 
-    @Override
-    public String returnType(LinkedList<Env> envs) {
-        String type1 = expr_1.returnType(envs);
-        String type2 = expr_2.returnType(envs);
-        if (type1 == type2) return type1;
-        else
-            throw new IllegalArgumentException("Not compatible operands in line");
-    }
+
 
     @Override
-    public String returnExprType() {
-        String expr1Type = expr_1.returnExprType();
-        String expr2Type = expr_2.returnExprType();
+    public String returnExprType(LinkedList<Env> envs) {
+        String expr1Type = expr_1.returnExprType(envs);
+        String expr2Type = expr_2.returnExprType(envs);
         if ((expr1Type == expr2Type) && (expr1Type == "boolean"))
             return "boolean";
         else

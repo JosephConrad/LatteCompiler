@@ -11,15 +11,19 @@ public class EVar extends Expr {
 
   public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-    @Override
-    public String returnType(LinkedList<Env> envs) {
-        return envs.getLast().variableType.get(ident_);
-    }
+
 
     @Override
-    public String returnExprType() {
-        return "int";
+    public String returnExprType(LinkedList<Env> envs) {
+
+        //System.err.println("evar" + envs.getLast().variableType.keySet().size());
         
+        for (String str: envs.getLast().variableType.keySet()) {
+          //  System.err.println(str+" "+ envs.getLast().variableType.get(str));
+
+        }
+        return envs.getLast().variableType.get(ident_);
+
     }
 
 

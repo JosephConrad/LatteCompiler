@@ -46,7 +46,7 @@ public class AsmGenerator {
             //System.err.println(key + " "+  Env.functionsReturnType.get(key));
         }
         
-        program.checkTypes(envs);
+        //program.checkTypes(envs);
         
         
         
@@ -135,6 +135,9 @@ public class AsmGenerator {
             if (env.argumentsShifts.containsKey(p.ident_))
                 throw new IllegalArgumentException("Repeated argument name\n");
             env.argumentsShifts.put(p.ident_, shift);
+            
+            // gdy przechodze po argumentach to dodaje je do zmiennych
+            env.variableType.put(p.ident_, p.type_.toString());
             
              
             String asm = p.type_.accept(new TypeVisitor(), envs);

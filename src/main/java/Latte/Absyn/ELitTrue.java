@@ -9,19 +9,14 @@ public class ELitTrue extends Expr {
   public ELitTrue() { }
 
   public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
-
-    @Override
-    public String returnType(LinkedList<Env> envs) {
-        return "boolean";
-    }
-
+ 
     @Override
     public boolean evalExpr() {
         return true;
     }
 
     @Override
-    public String returnExprType() {
+    public String returnExprType(LinkedList<Env> env) {
         return "boolean";
     }
 

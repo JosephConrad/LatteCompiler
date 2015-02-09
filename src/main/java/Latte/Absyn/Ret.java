@@ -18,8 +18,8 @@ public class Ret extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-        if (Env.functionsReturnType.get(currentFunction) != expr_.returnExprType()) 
-            throw new IllegalArgumentException("Return type " + expr_.returnExprType() + " not complies with " +
+        if (Env.functionsReturnType.get(currentFunction) != expr_.returnExprType(envs))
+            throw new IllegalArgumentException("Return type " + expr_.returnExprType(envs) + " not complies with " +
                     "function " +  currentFunction + "return type ("+ Env.functionsReturnType.get(currentFunction) + ")");
     }
 

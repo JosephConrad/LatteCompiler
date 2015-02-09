@@ -11,16 +11,15 @@ public class Not extends Expr {
 
   public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
+
     @Override
-    public String returnType(LinkedList<Env> envs) {
-        String type = expr_.returnType(envs);
+    public String returnExprType(LinkedList<Env> envs) {
+        String type = expr_.returnExprType(envs);
+
+        System.err.println("enot");
         if (type == "boolean") return "boolean";
         else
             throw new IllegalArgumentException("Not compatible operands in line");
-    }
-    @Override
-    public String returnExprType() {
-        return "boolean";
     }
 
 

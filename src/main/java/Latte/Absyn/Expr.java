@@ -8,14 +8,13 @@ public abstract class Expr implements java.io.Serializable {
     public abstract <R,A> R accept(Expr.Visitor<R,A> v, A arg);
     //public abstract <R,A> Integer eval(Expr.Visitor<R,A> v, A arg);
 
-    public abstract String returnType(LinkedList<Env> envs);
 
     public boolean evalExpr() {
         return true;
     }
 
 
-    public abstract String returnExprType();
+    public abstract String returnExprType(LinkedList<Env> envs);
 
     public interface Visitor <R,A> {
         public R visit(Latte.Absyn.EVar p, A arg);

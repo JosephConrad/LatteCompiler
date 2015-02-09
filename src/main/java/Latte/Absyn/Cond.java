@@ -20,7 +20,7 @@ public class Cond extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-        if (expr_.returnType(envs) != "boolean")
+        if (expr_.returnExprType(envs) != "boolean")
             throw new IllegalArgumentException("Expresion in conditional statment must return boolean "); 
         stmt_.checkTypes(envs, currentFunction);
 

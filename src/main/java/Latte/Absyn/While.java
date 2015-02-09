@@ -20,7 +20,7 @@ public class While extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-        if (expr_.returnExprType() != "boolean")
+        if (expr_.returnExprType(envs) != "boolean")
             throw new IllegalArgumentException("While must have boolean expression");
         stmt_.checkTypes(envs, currentFunction);
     }

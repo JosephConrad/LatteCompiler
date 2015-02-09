@@ -26,7 +26,7 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     
     public String visit(Latte.Absyn.EVar p, LinkedList<Env> envs)
     {
-        
+
         Env env = envs.getLast();
         String argument = "";
         if (env.variableShifts.containsKey(p.ident_)) {
@@ -143,7 +143,7 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     }
     public String visit(Latte.Absyn.EAdd p, LinkedList<Env> envs)
     {
-        String type = p.returnType(envs);
+        String type = p.returnExprType(envs);
         String asm = p.expr_1.accept(new ExprVisitor(), envs);
         asm += p.expr_2.accept(new ExprVisitor(), envs);
         asm += twoArgs();

@@ -11,13 +11,6 @@ public class Neg extends Expr {
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-    @Override
-    public String returnType(LinkedList<Env> envs) {
-        String type = expr_.returnType(envs);
-        if (type == "int") return "int";
-        else
-            throw new IllegalArgumentException("Not appropriate argument for negation");
-    }
 
     @Override
     public boolean evalExpr() {
@@ -25,8 +18,12 @@ public class Neg extends Expr {
     }
 
     @Override
-    public String returnExprType() {
-        return "int";
+    public String returnExprType(LinkedList<Env> envs) {
+            String type = expr_.returnExprType(envs);
+        System.err.println("eneg");
+            if (type == "int") return "int";
+            else
+                throw new IllegalArgumentException("Not appropriate argument for negation");
     }
 
 
