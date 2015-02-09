@@ -29,7 +29,7 @@ public class AsmGenerator {
         LinkedList<Env> envs = new LinkedList<Env>();
         envs.add(new Env("main"));
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
-        System.out.print("SECTION .bss\n");
+       //System.out.print("SECTION .bss\n");
         String asm = program.accept(programVisitor, envs);
         String data = "SECTION .data\n";
         for (String key : Env.strings.keySet()) {
@@ -98,6 +98,8 @@ public class AsmGenerator {
             Env env = envs.getLast();
 
             int shift = 8 * (1 + env.ileArgumentow);
+            if (env.argumentsShifts.containsKey(p.ident_))
+                throw new IllegalArgumentException("Repeated argument name\n");
             env.argumentsShifts.put(p.ident_, shift);
             
             

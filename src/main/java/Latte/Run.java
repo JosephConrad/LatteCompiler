@@ -42,9 +42,12 @@ public class Run
 
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
+            System.err.println("OK");
+            System.exit(0);
         }
         catch(Throwable e)
         {
+            System.err.println("ERROR");
             System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
             System.err.println("     " + e.getMessage());
             System.exit(1);

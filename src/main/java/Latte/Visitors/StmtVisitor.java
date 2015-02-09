@@ -23,14 +23,22 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
         String asm = p.block_.accept(new BlockVisitor(), envs);
         return asm;
     }
+    
+    public void checkVariableRedeclaration(String ident, Env env) {
+        if (!(env.variableType.containsKey(ident)))
+            throw new IllegalArgumentException("Variable " + ident + " is redeclared\n");
+
+    }
 
     // Deklaracje
     public String visit(Latte.Absyn.Decl p, LinkedList<Env> envs)
     {
+        Env env = envs.getLast();
         envs.getLast().setCurrentType(";" + p.type_.toString());
         p.type_.accept(new TypeVisitor(), envs);
         String asm = "";
         for (Item x : p.listitem_) {
+            //checkVariableRedeclaration(x.getIdent(), env);
             envs.getLast().variableType.put(x.getIdent(), p.type_.toString());
             envs.getLast().register = "rax";
             asm += x.accept(new ItemVisitor(), envs);
@@ -38,14 +46,27 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
         return asm;
     }
 
+    public void checkTypeDefinition(String ident, Env env) {
+
+        if (!(env.variableType.containsKey(ident)))
+            throw new IllegalArgumentException("Variable " + ident + " has no type assigned\n");
+        
+    }
+    
+    
     // Przypisanie
     public String visit(Latte.Absyn.Ass p, LinkedList<Env> envs)
     {
         Env env = envs.getLast();
-        String asm = ""; 
+        
+        checkTypeDefinition(p.ident_, env);
+        
+        String asm = "";
+
         
         asm += p.expr_.accept(new ExprVisitor(), envs);
         asm += "\tpop rax\n";
+
         if (env.variableShifts.containsKey(p.ident_)) {
             asm += "\tmov [rbp-"+env.variableShifts.get(p.ident_)+"], rax\n";
         }
