@@ -1,9 +1,6 @@
 package Latte;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by konrad on 01/02/15.
@@ -31,6 +28,8 @@ public class Env {
     public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
     public int ileArgumentow = 0;
 
+    public Map<String, Integer> varDeclarationEnv = new HashMap<String, Integer>();
+
     public static Env copyEnv(Env last, String funName) {
         Env env = new Env(funName);
         env.ileArgumentow = last.ileArgumentow;
@@ -41,20 +40,23 @@ public class Env {
         env.localVarShift = last.localVarShift;
         env.argumentsShifts = last.argumentsShifts;
         env.addIsString = last.addIsString;
+        
+        env.strings = deepCopy(last.strings);
+        env.variableShifts = deepCopy(last.variableShifts);
+        env.argumentsShifts = deepCopy(last.argumentsShifts);
+        env.variableType = deepCopy(last.variableType);
+        env.varDeclarationEnv = deepCopy(last.varDeclarationEnv);
 
-        for(String key: last.strings.keySet()) {
-            env.strings.put(key, last.strings.get(key));
-        }
-        for(String key: last.variableShifts.keySet()) {
-            env.variableShifts.put(key, last.variableShifts.get(key));
-        }
-        for(String key: last.argumentsShifts.keySet()) {
-            env.argumentsShifts.put(key, last.argumentsShifts.get(key));
-        }
-        for(String key: last.variableType.keySet()) {
-            env.variableType.put(key, last.variableType.get(key));
-        }
         return env;
+    }
+    
+    
+    public static <K, V>  Map<K, V> deepCopy(Map<K,V> map) {
+        HashMap<K,V> newMap = new HashMap<K, V>();
+        for(K key: map.keySet()) {
+            newMap.put(key, map.get(key));
+        }
+        return newMap;
     }
     
 
@@ -62,24 +64,9 @@ public class Env {
         this.funName = ident_;
     }
 
-    public String getCurrentType() {
-        return currentType;
-    }
-
     public void setCurrentType(String currentType) {
         this.currentType = currentType;
-    }
-
-    public void addVariable(String name, String value, int type) {
-        variableType.put(name, value);
-
-        variableValues.put(name, type);
-    }
-    
-    public Integer getRbpPosition(String str) {
-        return variableValues.get(str);
-    }
-   
+    }  
 
 
 
