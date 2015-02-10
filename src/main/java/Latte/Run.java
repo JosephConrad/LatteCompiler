@@ -56,7 +56,7 @@ public class Run
             System.err.println("During executing file: " + args[0]);
             System.err.println("" + e.getMessage());
             if (e.getClass() == Exception.class)    
-                System.err.println("\tAt line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+                System.err.println("\tAt line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\".");
             System.err.println("\n\n");
             //System.exit(1);
         }

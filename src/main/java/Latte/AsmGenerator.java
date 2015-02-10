@@ -5,6 +5,7 @@ import Latte.Absyn.Program;
 import Latte.Absyn.TopDef;
 import Latte.BackendASM.BlockVisitor;
 import Latte.BackendASM.TypeVisitor;
+import Latte.Exceptions.TypeException;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -24,7 +25,7 @@ public class AsmGenerator {
     /*
      * Run generating ASM code function
      */
-    void generateASM() {
+    void generateASM() throws TypeException {
         frontEnd();
         backEnd();
     }
@@ -32,7 +33,7 @@ public class AsmGenerator {
     /*
      * Frontend function
      */
-    void frontEnd() {        
+    void frontEnd() throws TypeException {
         LinkedList<Env> envs = new LinkedList<Env>();
         envs.add(new Env("main"));
         
@@ -129,8 +130,8 @@ public class AsmGenerator {
             Env env = envs.getLast();
 
             int shift = 8 * (1 + env.ileArgumentow);
-            if (env.argumentsShifts.containsKey(p.ident_))
-                throw new IllegalArgumentException("Repeated argument name\n");
+//            if (env.argumentsShifts.containsKey(p.ident_))
+//                throw new IllegalArgumentException("Repeated argument name\n");
             
             env.argumentsShifts.put(p.ident_, shift);
             env.variableType.put(p.ident_, p.type_.toString());
