@@ -5,11 +5,11 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public class Incr extends Stmt {
-  public final String ident_;
+    public final String ident_;
 
-  public Incr(String p1) { ident_ = p1; }
+    public Incr(String p1) { ident_ = p1; }
 
-  public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
     public boolean functionsReturnAchievibility() {
@@ -18,23 +18,22 @@ public class Incr extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) {
-       if (envs.getLast().variableType.get(ident_) != "int")
-           throw new IllegalArgumentException("Increment operator to "+ envs.getLast().variableType.get(ident_));
-        
+        if (envs.getLast().variableType.get(ident_) != "int")
+            throw new IllegalArgumentException("Increment operator to "+ envs.getLast().variableType.get(ident_));
     }
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.Incr) {
-      Latte.Absyn.Incr x = (Latte.Absyn.Incr)o;
-      return this.ident_.equals(x.ident_);
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.Incr) {
+            Latte.Absyn.Incr x = (Latte.Absyn.Incr)o;
+            return this.ident_.equals(x.ident_);
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return this.ident_.hashCode();
-  }
+    public int hashCode() {
+        return this.ident_.hashCode();
+    }
 
 
 }

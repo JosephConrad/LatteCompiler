@@ -15,12 +15,11 @@ public class Int extends Type {
     }
 
     public String toString() {
-       return "int";
+        return "int";
     }
 
     public int hashCode() {
         return 37;
     }
-
 
 }

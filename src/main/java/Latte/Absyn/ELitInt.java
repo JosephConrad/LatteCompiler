@@ -11,14 +11,10 @@ public class ELitInt extends Expr {
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
-
     @Override
     public String returnExprType(LinkedList<Env> env) {
-
-        //System.err.println("eint");
         return "int";
     }
-
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -31,11 +27,10 @@ public class ELitInt extends Expr {
 
     public String toString() {
         return integer_.toString();
-    } 
-    
+    }
+
     public int hashCode() {
         return this.integer_.hashCode();
     }
-
 
 }

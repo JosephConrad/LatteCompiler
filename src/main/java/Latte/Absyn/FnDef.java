@@ -16,7 +16,7 @@ public class FnDef extends TopDef {
         return v.visit(this, arg);
     }
 
-    
+
     // Function that is gathering basic infomatino about function
     @Override
     public void returnType() {
@@ -35,7 +35,6 @@ public class FnDef extends TopDef {
 
     @Override
     public void checkTypes(LinkedList<Env> envs) {
-        //System.err.println("FnDef "+ident_);
         envs.add(new Env(ident_));
 
         for (Arg arg: listarg_){
@@ -54,7 +53,7 @@ public class FnDef extends TopDef {
         }
         return false;
     }
-    
+
     public String toString(){
         return "; Definicja funkcji: "+type_ + " " + ident_ + " " + listarg_ + " " + block_;
     }

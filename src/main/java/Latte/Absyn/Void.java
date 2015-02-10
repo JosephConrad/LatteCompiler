@@ -18,7 +18,7 @@ public class Void extends Type {
     public String toString(){
         return "void";
     }
-    
+
     public int hashCode() {
         return 37;
     }

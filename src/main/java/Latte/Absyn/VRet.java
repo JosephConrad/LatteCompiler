@@ -6,9 +6,9 @@ import java.util.LinkedList;
 
 public class VRet extends Stmt {
 
-  public VRet() { }
+    public VRet() { }
 
-  public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
     public boolean functionsReturnAchievibility() {
@@ -22,16 +22,15 @@ public class VRet extends Stmt {
     }
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.VRet) {
-      return true;
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.VRet) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return 37;
-  }
-
+    public int hashCode() {
+        return 37;
+    }
 
 }

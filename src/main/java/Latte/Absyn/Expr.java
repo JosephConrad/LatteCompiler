@@ -6,24 +6,15 @@ import java.util.LinkedList;
 
 public abstract class Expr implements java.io.Serializable {
     public abstract <R,A> R accept(Expr.Visitor<R,A> v, A arg);
-    //public abstract <R,A> Integer eval(Expr.Visitor<R,A> v, A arg);
-
 
     public boolean evalExpr() {
         return false;
     }
 
-
     public abstract String returnExprType(LinkedList<Env> envs);
 
     public interface Visitor <R,A> {
         public R visit(Latte.Absyn.EVar p, A arg);
-
-
-
-
-
-
         public R visit(Latte.Absyn.ELitInt p, A arg);
         public R visit(Latte.Absyn.ELitTrue p, A arg);
         public R visit(Latte.Absyn.ELitFalse p, A arg);

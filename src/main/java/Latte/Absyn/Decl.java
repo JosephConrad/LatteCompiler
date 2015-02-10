@@ -5,12 +5,12 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public class Decl extends Stmt {
-  public final Type type_;
-  public final ListItem listitem_;
+    public final Type type_;
+    public final ListItem listitem_;
 
-  public Decl(Type p1, ListItem p2) { type_ = p1; listitem_ = p2; }
+    public Decl(Type p1, ListItem p2) { type_ = p1; listitem_ = p2; }
 
-  public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
     public boolean functionsReturnAchievibility() {
@@ -26,17 +26,17 @@ public class Decl extends Stmt {
 
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.Decl) {
-      Latte.Absyn.Decl x = (Latte.Absyn.Decl)o;
-      return this.type_.equals(x.type_) && this.listitem_.equals(x.listitem_);
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.Decl) {
+            Latte.Absyn.Decl x = (Latte.Absyn.Decl)o;
+            return this.type_.equals(x.type_) && this.listitem_.equals(x.listitem_);
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return 37*(this.type_.hashCode())+this.listitem_.hashCode();
-  }
+    public int hashCode() {
+        return 37*(this.type_.hashCode())+this.listitem_.hashCode();
+    }
 
 
 }

@@ -13,9 +13,6 @@ public class Program {
         ListArg listArg = new ListArg();
         listArg.add(new Arg(new Int(), "number"));
         listtopdef_.add(new FnDef(new Int(), "printInt", listArg, new Block(new ListStmt())));
-        for (int i = 0; i< listtopdef_.size(); i++) {
-            //System.out.println(listtopdef_.get(i));
-        }
         return programVisitor.visit(this, env);
     }
 
@@ -39,7 +36,8 @@ public class Program {
         for (String key: Env.functionsReturnAchievibility.keySet()){
             if (Env.functionsReturnType.get(key) != "void")
                 if (Env.functionsReturnAchievibility.get(key) == false)
-                    throw new IllegalArgumentException("return stmt of function " + key.toUpperCase() + " is not achievable");
+                    throw new IllegalArgumentException("return stmt of function " +
+                            key.toUpperCase() + " is not achievable");
         }
 
     }

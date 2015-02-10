@@ -5,12 +5,12 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public class Ass extends Stmt {
-  public final String ident_;
-  public final Expr expr_;
+    public final String ident_;
+    public final Expr expr_;
 
-  public Ass(String p1, Expr p2) { ident_ = p1; expr_ = p2; }
+    public Ass(String p1, Expr p2) { ident_ = p1; expr_ = p2; }
 
-  public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
     public boolean functionsReturnAchievibility() {
@@ -26,17 +26,17 @@ public class Ass extends Stmt {
 
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.Ass) {
-      Latte.Absyn.Ass x = (Latte.Absyn.Ass)o;
-      return this.ident_.equals(x.ident_) && this.expr_.equals(x.expr_);
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.Ass) {
+            Latte.Absyn.Ass x = (Latte.Absyn.Ass)o;
+            return this.ident_.equals(x.ident_) && this.expr_.equals(x.expr_);
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return 37*(this.ident_.hashCode())+this.expr_.hashCode();
-  }
+    public int hashCode() {
+        return 37*(this.ident_.hashCode())+this.expr_.hashCode();
+    }
 
 
 }

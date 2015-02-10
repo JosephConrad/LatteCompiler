@@ -5,7 +5,7 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public abstract class Item implements java.io.Serializable {
-  public abstract <R,A> R accept(Item.Visitor<R,A> v, A arg);
+    public abstract <R,A> R accept(Item.Visitor<R,A> v, A arg);
 
     public abstract String getIdent();
 
@@ -15,16 +15,16 @@ public abstract class Item implements java.io.Serializable {
         if (env.varDeclarationEnv.containsKey(this.getIdent()))
             if (env.varDeclarationEnv.get(this.getIdent())== envs.size())
                 throw new IllegalArgumentException("Variable " + this.getIdent() + " reinitialized");
-        
+
         env.variableType.put(this.getIdent(), type_.toString());
         env.varDeclarationEnv.put(this.getIdent(), envs.size());
 
     }
 
     public interface Visitor <R,A> {
-    public R visit(Latte.Absyn.NoInit p, A arg);
-    public R visit(Latte.Absyn.Init p, A arg);
+        public R visit(Latte.Absyn.NoInit p, A arg);
+        public R visit(Latte.Absyn.Init p, A arg);
 
-  }
+    }
 
 }

@@ -5,15 +5,12 @@ import Latte.Env;
 
 import java.util.LinkedList;
 
-/*
- * Jest to klasa odpowiedzialna za aplikacje funkcji od nazwie ident_ do danej listy argumentow
- */
+
 public class EApp extends Expr {
     public final String ident_;
     public final ListExpr listexpr_;
 
     public EApp(String p1, ListExpr p2) { ident_ = p1; listexpr_ = p2; }
-
 
     @Override
     public boolean evalExpr() {
@@ -22,22 +19,22 @@ public class EApp extends Expr {
 
     @Override
     public String returnExprType(LinkedList<Env> envs) {
+
         if ((ident_ == "printInt") && (listexpr_.get(0).returnExprType(envs) != "int"))
-            throw new IllegalArgumentException("Function printInt takes as parameter int, not " + listexpr_.get(0).returnExprType(envs));
+            throw new IllegalArgumentException("Function printInt takes as parameter int, not "
+                    + listexpr_.get(0).returnExprType(envs));
+
         if ((ident_ == "printString") && (listexpr_.get(0).returnExprType(envs) != "string"))
-            throw new IllegalArgumentException("Function printString takes as parameter string, not " + listexpr_.get(0).returnExprType(envs));
-//        System.err.println("Haha: " + ident_ + " " +listexpr_.size());
-//        for (String str: Env.functionsArgumentsNumber.keySet()) {
-//            System.err.println(str + " " + Env.functionsArgumentsNumber.get(str));
-//        }
+            throw new IllegalArgumentException("Function printString takes as parameter string, not "
+                    + listexpr_.get(0).returnExprType(envs));
+
         if (Env.functionsArgumentsNumber.get(ident_) != listexpr_.size())
             throw new IllegalArgumentException("Wrong number of arguments. Function takas "
-                + Env.functionsArgumentsNumber.get(ident_) + " arguments, but "
-                + listexpr_.size() + " found.");
-        // System.err.println("EApp "+ident_);
+                    + Env.functionsArgumentsNumber.get(ident_) + " arguments, but "
+                    + listexpr_.size() + " found.");
+
         return Env.functionsReturnType.get(ident_);
     }
-
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
@@ -56,12 +53,10 @@ public class EApp extends Expr {
             res += e + "; ";
         }
         return res;
-    } 
-    
-    
+    }
+
     public int hashCode() {
         return 37*(this.ident_.hashCode())+this.listexpr_.hashCode();
     }
-
 
 }

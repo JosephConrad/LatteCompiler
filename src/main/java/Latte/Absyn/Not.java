@@ -5,18 +5,17 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public class Not extends Expr {
-  public final Expr expr_;
+    public final Expr expr_;
 
-  public Not(Expr p1) { expr_ = p1; }
+    public Not(Expr p1) { expr_ = p1; }
 
-  public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
 
     @Override
     public String returnExprType(LinkedList<Env> envs) {
         String type = expr_.returnExprType(envs);
 
-        //System.err.println("enot");
         if (type == "boolean") return "boolean";
         else
             throw new IllegalArgumentException("Not compatible operands in line");
@@ -24,17 +23,17 @@ public class Not extends Expr {
 
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.Not) {
-      Latte.Absyn.Not x = (Latte.Absyn.Not)o;
-      return this.expr_.equals(x.expr_);
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.Not) {
+            Latte.Absyn.Not x = (Latte.Absyn.Not)o;
+            return this.expr_.equals(x.expr_);
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return this.expr_.hashCode();
-  }
+    public int hashCode() {
+        return this.expr_.hashCode();
+    }
 
 
 }

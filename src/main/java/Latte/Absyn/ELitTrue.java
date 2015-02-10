@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 public class ELitTrue extends Expr {
 
-  public ELitTrue() { }
+    public ELitTrue() { }
 
-  public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
- 
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+
     @Override
     public boolean evalExpr() {
         return true;
@@ -20,18 +20,17 @@ public class ELitTrue extends Expr {
         return "boolean";
     }
 
-
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.ELitTrue) {
-      return true;
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.ELitTrue) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return 37;
-  }
+    public int hashCode() {
+        return 37;
+    }
 
 
 }

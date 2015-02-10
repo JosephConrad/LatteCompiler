@@ -26,8 +26,8 @@ public class Block {
             ret += s + "; ";
         }
         return ret;
-    } 
-    
+    }
+
     public int hashCode() {
         return this.liststmt_.hashCode();
     }

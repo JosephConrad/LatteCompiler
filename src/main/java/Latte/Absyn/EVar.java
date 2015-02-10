@@ -5,40 +5,28 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public class EVar extends Expr {
-  public final String ident_;
+    public final String ident_;
 
-  public EVar(String p1) { ident_ = p1; }
+    public EVar(String p1) { ident_ = p1; }
 
-  public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
-
-
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
     public String returnExprType(LinkedList<Env> envs) {
-
-        //System.err.println("evar" + envs.getLast().variableType.keySet().size());
-        
-        for (String str: envs.getLast().variableType.keySet()) {
-            //System.err.println(str+" "+ envs.getLast().variableType.get(str));
-
-        }
         return envs.getLast().variableType.get(ident_);
-
     }
-
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.EVar) {
-      Latte.Absyn.EVar x = (Latte.Absyn.EVar)o;
-      return this.ident_.equals(x.ident_);
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.EVar) {
+            Latte.Absyn.EVar x = (Latte.Absyn.EVar)o;
+            return this.ident_.equals(x.ident_);
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return this.ident_.hashCode();
-  }
-
+    public int hashCode() {
+        return this.ident_.hashCode();
+    }
 
 }

@@ -23,14 +23,13 @@ public class Arg {
 
     public String toString() {
         return type_ + " " + ident_;
-        
-    } 
-    
+    }
+
     public int hashCode() {
         return 37*(this.type_.hashCode())+this.ident_.hashCode();
     }
 
-    public void checkTypes(LinkedList<Env> envs, String haha) {
+    public void checkTypes(LinkedList<Env> envs, String str) {
         Env env = envs.getLast();
         env.variableType.put(ident_, type_.toString());
     }

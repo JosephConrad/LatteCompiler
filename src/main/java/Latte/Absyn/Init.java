@@ -5,12 +5,12 @@ import Latte.Env;
 import java.util.LinkedList;
 
 public class Init extends Item {
-  public final String ident_;
-  public final Expr expr_;
+    public final String ident_;
+    public final Expr expr_;
 
-  public Init(String p1, Expr p2) { ident_ = p1; expr_ = p2; }
+    public Init(String p1, Expr p2) { ident_ = p1; expr_ = p2; }
 
-  public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
     public String getIdent() {
@@ -21,24 +21,24 @@ public class Init extends Item {
         Env env = envs.getLast();
         env.variableType.put(this.getIdent(), type_.toString());
         if (type_.toString() != expr_.returnExprType(envs))
-            throw new IllegalArgumentException(currentFunction.toUpperCase() + 
+            throw new IllegalArgumentException(currentFunction.toUpperCase() +
                     " function: to variable " + ident_ +
                     " of type " + type_ +
                     " cannot be assigned " + expr_.returnExprType(envs) + " expression.");
     }
 
     public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o instanceof Latte.Absyn.Init) {
-      Latte.Absyn.Init x = (Latte.Absyn.Init)o;
-      return this.ident_.equals(x.ident_) && this.expr_.equals(x.expr_);
+        if (this == o) return true;
+        if (o instanceof Latte.Absyn.Init) {
+            Latte.Absyn.Init x = (Latte.Absyn.Init)o;
+            return this.ident_.equals(x.ident_) && this.expr_.equals(x.expr_);
+        }
+        return false;
     }
-    return false;
-  }
 
-  public int hashCode() {
-    return 37*(this.ident_.hashCode())+this.expr_.hashCode();
-  }
+    public int hashCode() {
+        return 37*(this.ident_.hashCode())+this.expr_.hashCode();
+    }
 
 
 }
