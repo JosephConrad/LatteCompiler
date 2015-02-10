@@ -19,9 +19,9 @@ public class Ret extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) throws TypeException {
-        if (Env.functionsReturnType.get(currentFunction) != expr_.returnExprType(envs))
+        if (Env.functionsReturnType.get(currentFunction) != expr_.returnExprType(envs, currentFunction))
             throw new TypeException(currentFunction, "return statement is of (" + 
-                    expr_.returnExprType(envs) + ") type and not complies with " +
+                    expr_.returnExprType(envs, currentFunction) + ") type and not complies with " +
                     currentFunction +  " function return type ("+ Env.functionsReturnType.get(currentFunction) + ").");
     }
 

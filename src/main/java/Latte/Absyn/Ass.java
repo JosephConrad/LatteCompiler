@@ -21,10 +21,10 @@ public class Ass extends Stmt {
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) throws TypeException {
         String identType = envs.getLast().variableType.get(ident_);
-        if (identType != expr_.returnExprType(envs))
+        if (identType != expr_.returnExprType(envs, currentFunction))
             throw new TypeException(currentFunction, "\n\t\tAt assignment to " + 
                     ident_ + " variable: " + "incompatible type of variable (" + identType + ")" +
-                    " with operand type (" + expr_.returnExprType(envs) +")");
+                    " with operand type (" + expr_.returnExprType(envs, currentFunction) +")");
     }
 
 

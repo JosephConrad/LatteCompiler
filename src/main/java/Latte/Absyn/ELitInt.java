@@ -12,7 +12,7 @@ public class ELitInt extends Expr {
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
-    public String returnExprType(LinkedList<Env> env) {
+    public String returnExprType(LinkedList<Env> env, String currentFunction) {
         return "int";
     }
 

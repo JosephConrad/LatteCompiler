@@ -12,7 +12,7 @@ public class EVar extends Expr {
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     @Override
-    public String returnExprType(LinkedList<Env> envs) {
+    public String returnExprType(LinkedList<Env> envs, String currentFunction) {
         return envs.getLast().variableType.get(ident_);
     }
 

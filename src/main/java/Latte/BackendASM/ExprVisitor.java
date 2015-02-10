@@ -2,6 +2,7 @@ package Latte.BackendASM;
 
 import Latte.Absyn.Expr;
 import Latte.Env;
+import Latte.Exceptions.TypeException;
 
 import java.util.LinkedList;
 
@@ -155,8 +156,13 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
      * Sum expression
      */
     public String visit(Latte.Absyn.EAdd p, LinkedList<Env> envs) {
-        String type = p.returnExprType(envs);
-        
+        String type = null;
+        try {
+            type = p.returnExprType(envs, "");
+        } catch (TypeException e) {
+            e.printStackTrace();
+        }
+
         String asm = p.expr_1.accept(new ExprVisitor(), envs);
         asm += p.expr_2.accept(new ExprVisitor(), envs);
         asm += twoArgs();

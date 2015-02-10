@@ -16,7 +16,7 @@ public class ELitTrue extends Expr {
     }
 
     @Override
-    public String returnExprType(LinkedList<Env> env) {
+    public String returnExprType(LinkedList<Env> env, String currentFunction) {
         return "boolean";
     }
 

@@ -21,8 +21,8 @@ public class While extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) throws TypeException {
-        if (expr_.returnExprType(envs) != "boolean")
-            throw new IllegalArgumentException("While must have boolean expression");
+        if (expr_.returnExprType(envs, currentFunction) != "boolean")
+            throw new TypeException(currentFunction, "while must have boolean expression");
         stmt_.checkTypes(envs, currentFunction);
     }
 

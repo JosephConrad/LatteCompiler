@@ -22,8 +22,8 @@ public class CondElse extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) throws TypeException {
-        if (expr_.returnExprType(envs) != "boolean")
-            throw new IllegalArgumentException("Expresion in conditional statment must return boolean ");
+        if (expr_.returnExprType(envs, currentFunction) != "boolean")
+            throw new TypeException(currentFunction, "expresion in conditional statment must return boolean ");
         stmt_1.checkTypes(envs, currentFunction);
         stmt_2.checkTypes(envs, currentFunction);
     }

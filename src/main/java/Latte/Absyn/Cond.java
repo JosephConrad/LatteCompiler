@@ -21,7 +21,7 @@ public class Cond extends Stmt {
 
     @Override
     public void checkTypes(LinkedList<Env> envs, String currentFunction) throws TypeException {
-        if (expr_.returnExprType(envs) != "boolean")
+        if (expr_.returnExprType(envs, currentFunction) != "boolean")
             throw new IllegalArgumentException("Expresion in conditional statment must return boolean ");
         stmt_.checkTypes(envs, currentFunction);
 
