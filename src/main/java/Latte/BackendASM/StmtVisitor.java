@@ -126,60 +126,60 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
     /*
      *  Condition with else
      */
-    public String visit(Latte.Absyn.CondElse p, LinkedList<Env> envs)
-    {
-        Env env = envs.getLast();
+    public String visit(Latte.Absyn.CondElse p, LinkedList<Env> envs) {
+        Env env = envs.getLast(); 
         
-        envs.getLast().register = "rax"; // che dostac wynik obliczenia wyr do eax
-        int ifNo = envs.getLast().ifCounter++;
+        int ifNo = env.ifCounter++;
+        String suffix = env.funName.toUpperCase()+"_"+ifNo;
 
         String asm = p.expr_.accept(new ExprVisitor(), envs);
-        String ifLabel = "\nIF_"+env.funName+"_"+ifNo;
-        asm += ifLabel+":\n";
+        
+        asm += "\nIF_"+suffix+":\n";
         asm += "\tpop rax\n";
         asm += "\tcmp rax, 0\n";
-        asm += "\tje  ELSE_"+env.funName+"_"+ ifNo +"\n\n";
-        envs.getLast().register = "rax";
+        asm += "\tje  ELSE_"+suffix+"\n\n";
+        
         asm += p.stmt_1.accept(new StmtVisitor(), envs);
-        asm += "\tjmp AFTER_IF_"+env.funName+"_"+ ifNo +"\n\n";
-        asm += "ELSE_"+env.funName+"_" + ifNo + ":\n";
-        envs.getLast().register = "rax";
+        
+        asm += "\tjmp AFTER_IF_"+suffix+"\n\n";
+        asm += "ELSE_"+suffix+ ":\n";
+        
         asm += p.stmt_2.accept(new StmtVisitor(), envs);
-        asm += "AFTER_IF_"+env.funName+"_" + ifNo + ":\n";
-
+        
+        asm += "AFTER_IF_"+suffix+ ":\n";
         return asm;
     }
 
-    // Petla
-    public String visit(Latte.Absyn.While p, LinkedList<Env> envs)
-    {   
+    /*
+     *  Loop
+     */
+    public String visit(Latte.Absyn.While p, LinkedList<Env> envs) {
         Env env = envs.getLast();
         
         int whileNo = envs.getLast().whileCounter++;
-        String whileLabel = "WHILE_"+env.funName+"_"+whileNo;
-        String afterWhileLabel = "AFTER_WHILE_"+env.funName+"_"+whileNo;
+        
+        String whileLabel = "WHILE_"+env.funName.toUpperCase()+"_"+whileNo;
+        String afterWhileLabel = "AFTER_WHILE_"+env.funName.toUpperCase()+"_"+whileNo;
 
         String asm = whileLabel + ":\n";
+        
         asm += p.expr_.accept(new ExprVisitor(), envs);
+        
         asm += "\tpop rax\n";
         asm += "\tcmp rax, 0\n";
         asm += "\tje " + afterWhileLabel+"\n\n";
+        
         asm += p.stmt_.accept(new StmtVisitor(), envs);
+        
         asm += "\tjmp "+whileLabel+"\n\n";
         asm += afterWhileLabel+ ":\n\n";
-
         return asm;
     }
 
-    // Instrukcja dla wyrazenia
-    public String visit(Latte.Absyn.SExp p, LinkedList<Env> envs)
-    {
-
-        String asm = p.expr_.accept(new ExprVisitor(), envs);
-
-        return asm;
+    /*
+     *  Expression instruction
+     */
+    public String visit(Latte.Absyn.SExp p, LinkedList<Env> envs) {
+        return p.expr_.accept(new ExprVisitor(), envs);
     }
-
 }
-
-
