@@ -3,10 +3,7 @@ package Latte;
 import Latte.Lib.Yylex;
 import Latte.Lib.parser;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
 
 public class Run
 {
@@ -25,13 +22,14 @@ public class Run
         }
         p = new parser(l);
         String[] parts = args[0].split("/");
-        String[] file = parts[2].split("\\.");
+        String[] fileName = parts[2].split("\\.");
         try
         {
-            Path currentRelativePath = Paths.get("");
-            String s = currentRelativePath.toAbsolutePath().toString();
-            //PrintStream out = new PrintStream(new FileOutputStream(s+ file[0]+".asm"));
-            //System.setOut(out);
+            File file = new File(args[0]);
+            String absolutePath = file.getAbsolutePath();
+            String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
+            PrintStream out = new PrintStream(new FileOutputStream(filePath+File.separator+fileName[0]+".asm"));
+            System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
             System.out.println("; Nasm - Assembly code generator for Latte");
             System.out.println("; Author: Konrad Lisiecki");
@@ -46,9 +44,10 @@ public class Run
         {
             System.err.println("ERROR");
             System.err.println("During executing file: " + args[0]);
-           // System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
             System.err.println("" + e.getMessage());
             //System.exit(1);
         }
     }
+
+
 }
