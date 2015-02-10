@@ -40,20 +40,19 @@ public class Run
             System.err.println("OK");
             Runtime rt = Runtime.getRuntime();
 
-            System.err.println(filePath + File.separator + "lat.o " );
-            System.err.println(filePath + File.separator + fileName[0] + ".s" );
-            System.err.println(filePath+File.separator+fileName[0] );
-            Process pr = rt.exec("nasm -g -f elf64 -o " + filePath + File.separator + "lat.o " + filePath + File.separator + fileName[0] + ".s");
-            Process pr1 = rt.exec("gcc -o  " + filePath+File.separator+fileName[0] + 
-                    " -Wall -g "+filePath+File.separator+"lat.o " +  "  lib/runtime.o");
-            System.exit(0);
+            String objectFile = filePath + File.separator + "lat.o";
+            String assFile = filePath + File.separator + fileName[0] + ".s";
+            String execFile = filePath+File.separator+fileName[0];
+            Process pr = rt.exec("nasm -g -f elf64 -o " + objectFile + "  " + assFile);
+            Process pr1 = rt.exec("gcc -o  " + execFile + " -Wall -g "+ objectFile + "  lib/runtime.o");
+            //System.exit(0);
         }
         catch(Throwable e)
         {
             System.err.println("ERROR");
             System.err.println("During executing file: " + args[0]);
             System.err.println("" + e.getMessage());
-            System.exit(1);
+            //System.exit(1);
         }
     }
 
