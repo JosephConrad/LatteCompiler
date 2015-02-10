@@ -6,7 +6,8 @@ import java.util.*;
  * Created by konrad on 01/02/15. 
  */
 public class Env {
-    public List<String> predefinedFunctions = Arrays.asList("readInt", "readString", "error", "printInt", "printString", "concatenateString");
+    public List<String> predefinedFunctions = 
+            Arrays.asList("readInt", "readString", "printInt", "printString", "concatenateString");
     public Map<String, String> variableType = new HashMap<String, String>();
     public Map<String, Integer> varDeclarationEnv = new HashMap<String, Integer>();
     public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift

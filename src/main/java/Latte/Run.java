@@ -10,8 +10,7 @@ import java.io.PrintStream;
 
 public class Run
 {
-    public static void main(String args[]) throws Exception
-    {
+    public static void main(String args[]) throws Exception {
         Yylex l = null;
         parser p;
         try
@@ -32,11 +31,9 @@ public class Run
             PrintStream out = new PrintStream(new FileOutputStream("/Users/konrad/Dropbox/09_semestr/mrjp/LatteCompiler/tests/out/"+ file[0]+".asm"));
             System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
-            //System.out.println(PrettyPrinter.show(parse_tree));
             System.out.println("; Nasm - Assembly code generator for Latte");
             System.out.println("; Author: Konrad Lisiecki");
-            System.out.println("; Classes: Compilers 2014/15\n\n");
-            //System.out.println(PrettyPrinter.print(parse_tree));
+            System.out.println("; Classes: Compilers 2014/15\n");
 
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
@@ -49,6 +46,7 @@ public class Run
             //System.err.println("During executing file: " + args[0]);
             //System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
             //System.err.println("" + e.getMessage());
+            //System.exit(1);
         }
     }
 }

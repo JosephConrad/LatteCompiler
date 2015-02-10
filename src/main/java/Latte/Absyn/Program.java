@@ -36,6 +36,12 @@ public class Program {
         for(TopDef ltd: listtopdef_){
             ltd.returnType();
         }
+        for (String key: Env.functionsReturnAchievibility.keySet()){
+            if (Env.functionsReturnType.get(key) != "void")
+                if (Env.functionsReturnAchievibility.get(key) == false)
+                    throw new IllegalArgumentException("return stmt of function " + key.toUpperCase() + " is not achievable");
+        }
+
     }
 
     public void checkTypes(LinkedList<Env> envs) {
