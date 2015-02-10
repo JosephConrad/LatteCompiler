@@ -37,8 +37,8 @@ public class Program {
         for (String key: Env.functionsReturnAchievibility.keySet()){
             if (Env.functionsReturnType.get(key) != "void")
                 if (Env.functionsReturnAchievibility.get(key) == false)
-                    throw new TypeException(key, "return statement of function " +
-                            key + " is not achievable.");
+                    throw new TypeException(key, "return statement in " + key + " function " +
+                            "is not achievable.");
         }
 
     }
