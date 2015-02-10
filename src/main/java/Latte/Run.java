@@ -38,6 +38,10 @@ public class Run
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
             System.err.println("OK");
+            Runtime rt = Runtime.getRuntime();
+            Process pr = rt.exec("nasm -g -f elf64 -o " + filePath+File.separator+"lat.o " + filePath+File.separator+fileName[0]+".s");
+            Process pr1 = rt.exec("gcc -o  " + filePath+File.separator+fileName[0] + 
+                    " -Wall -g "+filePath+File.separator+"lat.o " +  "  lib/runtime.o");
             System.exit(0);
         }
         catch(Throwable e)
