@@ -44,7 +44,7 @@ public class Run
         {
             System.err.println("ERROR");
             System.err.println("During executing file: " + args[0]);
-            System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+           // System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
             System.err.println("" + e.getMessage());
             //System.exit(1);
         }
