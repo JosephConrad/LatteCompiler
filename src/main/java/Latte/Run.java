@@ -9,7 +9,7 @@ public class Run
 {
     public static void main(String args[]) throws Exception {
         Yylex l = null;
-        parser p;
+        parser p = new parser();
         try
         {
             if (args.length == 0) l = new Yylex(System.in);
@@ -21,20 +21,23 @@ public class Run
             System.exit(1);
         }
         p = new parser(l);
-        String[] parts = args[0].split("/");
-        String[] fileName = parts[2].split("\\.");
         try
         {
+            String[] parts = args[0].split("/");
+            String[] fileName = parts[2].split("\\.");
             File file = new File(args[0]);
+            
             String absolutePath = file.getAbsolutePath();
             String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
             PrintStream out = new PrintStream(new FileOutputStream(filePath+File.separator+fileName[0]+".s"));
             System.setOut(out);
-            Latte.Absyn.Program parse_tree = p.pProgram();
+           // Latte.Absyn.Program parse_tree = p.pProgram();
+
             System.out.println("; Nasm - Assembly code generator for Latte");
             System.out.println("; Author: Konrad Lisiecki");
             System.out.println("; Classes: Compilers 2014/15\n");
 
+            Latte.Absyn.Program parse_tree = p.pProgram();
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
             System.err.println("OK");
@@ -52,6 +55,9 @@ public class Run
             System.err.println("ERROR");
             System.err.println("During executing file: " + args[0]);
             System.err.println("" + e.getMessage());
+            if (e.getClass() == Exception.class)    
+                System.err.println("\tAt line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
+            System.err.println("\n\n");
             //System.exit(1);
         }
     }
