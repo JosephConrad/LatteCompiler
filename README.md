@@ -2,6 +2,27 @@
 ===========
 Compiler for Latte Programming Language
 
+Zawartosc paczki:
+Foldery:
+lib   - katalog lib zawiera plik runtime.c. Po wykonaniu polecania make w katalogu pojawie sie plik runtime.o
+	
+src	  - zrodla projektu 
+tests - katalog z testami. Dodatkowo w katalogu tests/good znajduje sie skrypt test.sh ktory sprawdza poprawnosc
+        plikow wynikowych z plikami output.
+
+Pliki:
+.gitignore	
+Latte.cf	- plik z gramatyka
+Latte.dvi	- plik z dokumentacja do gramatyki
+Makefile
+README.md
+generate_ASM.sh	- skypt generujacy pliki asm dla kazdego z testow
+latc_x86_64.sh	- plik wykonywalny uruchamiajacy kompilator
+pom.xml         - plik pom dla projektu maven
+
+
+
+Tresc zadania:
 Laboratorium MRJP - projekt zaliczeniowy
 
 Zaliczenie laboratorium odbywa się na podstawie projektu obejmującego implementację kompilatora dla prostego jezyka imperatywnego Latte.

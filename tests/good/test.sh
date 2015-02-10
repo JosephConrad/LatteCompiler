@@ -7,9 +7,8 @@ for i in *.asm; do
     file2=$filename$extension
     file1="core.output"
     
-    nasm -g -f elf64 -o lat.o $i 
-    gcc -c ../../lib/c/runtime.c
-    gcc -o $filename -Wall -g lat.o ../../lib/c/runtime.o
+    nasm -g -f elf64 -o lat.o $i
+    gcc -o $filename -Wall -g lat.o ../../lib/runtime.o
     ./$filename < core018.input > core.output
     
     
