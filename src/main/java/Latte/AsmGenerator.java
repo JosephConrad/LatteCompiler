@@ -55,10 +55,10 @@ public class AsmGenerator {
         // Backend
         
         envs = new LinkedList<Env>();
+        Env.strings = new HashMap<String, String>();
         envs.add(new Env("main"));
         String asm = program.accept(programVisitor, envs);
         
-
         String data = "SECTION .data\n";
         for (String key : Env.strings.keySet()) {
             data += "\t" + key + "\tdb\t\"" + envs.getLast().strings.get(key) + "\", 0\n";

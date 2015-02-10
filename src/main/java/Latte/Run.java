@@ -1,6 +1,5 @@
 package Latte;
 
-import Latte.Lib.PrettyPrinter;
 import Latte.Lib.Yylex;
 import Latte.Lib.parser;
 
@@ -33,9 +32,8 @@ public class Run
             PrintStream out = new PrintStream(new FileOutputStream("/Users/konrad/Dropbox/09_semestr/mrjp/LatteCompiler/tests/out/"+ file[0]+".asm"));
             System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
-            System.out.print("; ");
-            System.out.println(PrettyPrinter.show(parse_tree));
-            System.out.println("; Nasm - Asembly code generator for Latte");
+            //System.out.println(PrettyPrinter.show(parse_tree));
+            System.out.println("; Nasm - Assembly code generator for Latte");
             System.out.println("; Author: Konrad Lisiecki");
             System.out.println("; Classes: Compilers 2014/15\n\n");
             //System.out.println(PrettyPrinter.print(parse_tree));
