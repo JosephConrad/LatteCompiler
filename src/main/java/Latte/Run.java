@@ -48,7 +48,7 @@ public class Run
             String execFile = filePath+File.separator+fileName[0];
             Process pr = rt.exec("nasm -g -f elf64 -o " + objectFile + "  " + assFile);
             Process pr1 = rt.exec("gcc -o  " + execFile + " -Wall -g "+ objectFile + "  lib/runtime.o");
-            //System.exit(0);
+            System.exit(0);
         }
         catch(Throwable e)
         {
@@ -58,7 +58,7 @@ public class Run
             if (e.getClass() == Exception.class)    
                 System.err.println("\tAt line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\".");
             System.err.println("\n\n");
-            //System.exit(1);
+            System.exit(1);
         }
     }
 
