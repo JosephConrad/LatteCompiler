@@ -30,15 +30,15 @@ public class Program {
         return this.listtopdef_.hashCode();
     }
 
-    public void functionsRetType() {
+    public void functionsRetType() throws TypeException {
         for(TopDef ltd: listtopdef_){
             ltd.returnType();
         }
         for (String key: Env.functionsReturnAchievibility.keySet()){
             if (Env.functionsReturnType.get(key) != "void")
                 if (Env.functionsReturnAchievibility.get(key) == false)
-                    throw new IllegalArgumentException("return stmt of function " +
-                            key.toUpperCase() + " is not achievable");
+                    throw new TypeException(key, "return statement of function " +
+                            key + " is not achievable.");
         }
 
     }
