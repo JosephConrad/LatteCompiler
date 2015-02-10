@@ -11,7 +11,14 @@ public abstract class Item implements java.io.Serializable {
 
     public void checkTypes(LinkedList<Env> envs, String currentFunction, Type type_) {
         Env env = envs.getLast();
+
+        if (env.varDeclarationEnv.containsKey(this.getIdent()))
+            if (env.varDeclarationEnv.get(this.getIdent())== envs.size())
+                throw new IllegalArgumentException("Variable " + this.getIdent() + " reinitialized");
+        
         env.variableType.put(this.getIdent(), type_.toString());
+        env.varDeclarationEnv.put(this.getIdent(), envs.size());
+
     }
 
     public interface Visitor <R,A> {

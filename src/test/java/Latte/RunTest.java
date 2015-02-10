@@ -21,6 +21,9 @@ public class RunTest
 
     @Test
     public void main_String_NegativeTest() throws Exception {
+        
+        System.err.println("\n====================\n");
+        
         for(int i = 1; i <= 9; i++){
             Run.main(new String[]{"tests/bad/bad00"+i+".lat"});
         }

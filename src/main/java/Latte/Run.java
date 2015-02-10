@@ -46,9 +46,9 @@ public class Run
         catch(Throwable e)
         {
             System.err.println("ERROR");
-            System.err.println("During executing file: " + args[0]);
+            //System.err.println("During executing file: " + args[0]);
             //System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
-            System.err.println("" + e.getMessage());
+            //System.err.println("" + e.getMessage());
         }
     }
 }
