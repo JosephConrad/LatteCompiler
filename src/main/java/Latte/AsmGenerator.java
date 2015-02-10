@@ -3,8 +3,8 @@ package Latte;
 import Latte.Absyn.Arg;
 import Latte.Absyn.Program;
 import Latte.Absyn.TopDef;
-import Latte.Visitors.BlockVisitor;
-import Latte.Visitors.TypeVisitor;
+import Latte.BackendASM.BlockVisitor;
+import Latte.BackendASM.TypeVisitor;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,8 +32,7 @@ public class AsmGenerator {
         
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
         
-        // Frontend 
-
+        // Frontend
         Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
         Env.functionsReturnType = new HashMap<String, String>();
         
@@ -42,18 +41,12 @@ public class AsmGenerator {
         for (String key: Env.functionsReturnAchievibility.keySet()){
             if (Env.functionsReturnType.get(key) != "void")
                 if (Env.functionsReturnAchievibility.get(key) == false)
-                    throw new IllegalArgumentException("return stmt of function " + key.toUpperCase() + " is not achievable");
-            //System.err.println(key + " "+  Env.functionsReturnType.get(key));
+                    throw new IllegalArgumentException("return stmt of function " + key.toUpperCase() + " is not achievable"); 
         }
         
         program.checkTypes(envs);
         
-        
-        
-        
-        
         // Backend
-        
         envs = new LinkedList<Env>();
         Env.strings = new HashMap<String, String>();
         envs.add(new Env("main"));
@@ -63,10 +56,6 @@ public class AsmGenerator {
         for (String key : Env.strings.keySet()) {
             data += "\t" + key + "\tdb\t\"" + envs.getLast().strings.get(key) + "\", 0\n";
         }
-        
-        // checkReturnAchievibility
-        
-        
         
         System.out.println("\n\n\n" + data);
         System.out.println("\n\n\n" + asm);
@@ -107,9 +96,7 @@ public class AsmGenerator {
                 env.ileArgumentow--;
             }
 
-
             asm += p.block_.accept(new BlockVisitor(), envs);
-
 
             envs.removeLast();
 
@@ -125,7 +112,6 @@ public class AsmGenerator {
     /*
      * Argument Visitor
      */
-
     public class ArgVisitor implements Arg.Visitor<String, LinkedList<Env>> {
         public String visit(Latte.Absyn.Arg p, LinkedList<Env> envs) {
 

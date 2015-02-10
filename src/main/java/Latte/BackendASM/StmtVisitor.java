@@ -1,4 +1,4 @@
-package Latte.Visitors;
+package Latte.BackendASM;
 
 import Latte.Absyn.Item;
 import Latte.Absyn.Stmt;

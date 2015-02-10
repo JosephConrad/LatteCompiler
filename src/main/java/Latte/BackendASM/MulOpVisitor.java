@@ -1,4 +1,4 @@
-package Latte.Visitors;
+package Latte.BackendASM;
 
 import Latte.Absyn.MulOp;
 
