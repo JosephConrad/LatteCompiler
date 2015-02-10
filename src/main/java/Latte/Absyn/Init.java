@@ -23,9 +23,9 @@ public class Init extends Item {
         env.variableType.put(this.getIdent(), type_.toString());
         if (type_.toString() != expr_.returnExprType(envs, currentFunction))
             throw new TypeException(currentFunction,
-                    " function: to variable " + ident_ +
-                    " of type " + type_ +
-                    " cannot be assigned " + expr_.returnExprType(envs, currentFunction) + " expression.");
+                    " \n\t\tAt assignment expression: to variable " + ident_ +
+                    " of type (" + type_ +
+                    ") cannot be assigned (" + expr_.returnExprType(envs, currentFunction) + ") expression.");
     }
 
     public boolean equals(Object o) {

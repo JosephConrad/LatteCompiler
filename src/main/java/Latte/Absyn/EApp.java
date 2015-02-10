@@ -22,17 +22,18 @@ public class EApp extends Expr {
     public String returnExprType(LinkedList<Env> envs, String currentFunction) throws TypeException {
 
         if ((ident_ == "printInt") && (listexpr_.get(0).returnExprType(envs, currentFunction) != "int"))
-            throw new IllegalArgumentException("Function printInt takes as parameter int, not "
-                    + listexpr_.get(0).returnExprType(envs, currentFunction));
+            throw new TypeException(currentFunction, "function printInt takes as parameter int, not "
+                    + listexpr_.get(0).returnExprType(envs, currentFunction) + ".");
 
         if ((ident_ == "printString") && (listexpr_.get(0).returnExprType(envs, currentFunction) != "string"))
-            throw new IllegalArgumentException("Function printString takes as parameter string, not "
-                    + listexpr_.get(0).returnExprType(envs, currentFunction));
+            throw new TypeException(currentFunction, "function printString takes as parameter string, not "
+                    + listexpr_.get(0).returnExprType(envs, currentFunction)+".");
 
         if (Env.functionsArgumentsNumber.get(ident_) != listexpr_.size())
-            throw new IllegalArgumentException("Wrong number of arguments. Function takas "
-                    + Env.functionsArgumentsNumber.get(ident_) + " arguments, but "
-                    + listexpr_.size() + " found.");
+            throw new TypeException(currentFunction, 
+                    "\n\t\tAt function " + ident_ + " application: Wrong number of arguments. Function " 
+                            + ident_ + " takes " + Env.functionsArgumentsNumber.get(ident_) + " argument(s), but "
+                            + listexpr_.size() + " found.");
 
         return Env.functionsReturnType.get(ident_);
     }
