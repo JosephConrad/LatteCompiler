@@ -4,9 +4,7 @@ import Latte.Lib.Yylex;
 import Latte.Lib.parser;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -32,8 +30,8 @@ public class Run
         {
             Path currentRelativePath = Paths.get("");
             String s = currentRelativePath.toAbsolutePath().toString();
-            PrintStream out = new PrintStream(new FileOutputStream(s+ file[0]+".asm"));
-            System.setOut(out);
+            //PrintStream out = new PrintStream(new FileOutputStream(s+ file[0]+".asm"));
+            //System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
             System.out.println("; Nasm - Assembly code generator for Latte");
             System.out.println("; Author: Konrad Lisiecki");
