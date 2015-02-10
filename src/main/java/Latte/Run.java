@@ -28,7 +28,7 @@ public class Run
             File file = new File(args[0]);
             String absolutePath = file.getAbsolutePath();
             String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
-            PrintStream out = new PrintStream(new FileOutputStream(filePath+File.separator+fileName[0]+".asm"));
+            PrintStream out = new PrintStream(new FileOutputStream(filePath+File.separator+fileName[0]+".s"));
             System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
             System.out.println("; Nasm - Assembly code generator for Latte");

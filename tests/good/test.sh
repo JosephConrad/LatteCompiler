@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in *.asm; do
+for i in *.s; do
     filename=$(basename "$i")
     filename="${filename%.*}"
     extension='.output'
