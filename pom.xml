@@ -57,10 +57,5 @@
             <artifactId>java-cup</artifactId>
             <version>11a</version>
         </dependency>
-        <dependency>
-            <groupId>jasmin</groupId>
-            <artifactId>jasmin</artifactId>
-            <version>1.0</version>
-        </dependency>
     </dependencies>
 </project>

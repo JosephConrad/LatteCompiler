@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Run
 {
@@ -28,7 +30,9 @@ public class Run
         String[] file = parts[2].split("\\.");
         try
         {
-            PrintStream out = new PrintStream(new FileOutputStream("/Users/konrad/Dropbox/09_semestr/mrjp/LatteCompiler/tests/out/"+ file[0]+".asm"));
+            Path currentRelativePath = Paths.get("");
+            String s = currentRelativePath.toAbsolutePath().toString();
+            PrintStream out = new PrintStream(new FileOutputStream(s+ file[0]+".asm"));
             System.setOut(out);
             Latte.Absyn.Program parse_tree = p.pProgram();
             System.out.println("; Nasm - Assembly code generator for Latte");
