@@ -38,14 +38,14 @@ public class Run
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
             System.err.println("OK");
-            //System.exit(0);
+            System.exit(0);
         }
         catch(Throwable e)
         {
             System.err.println("ERROR");
             System.err.println("During executing file: " + args[0]);
             System.err.println("" + e.getMessage());
-            //System.exit(1);
+            System.exit(1);
         }
     }
 
