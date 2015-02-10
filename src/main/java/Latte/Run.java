@@ -38,7 +38,7 @@ public class Run
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
             System.err.println("OK");
-            System.exit(0);
+            //System.exit(0);
         }
         catch(Throwable e)
         {
@@ -46,7 +46,7 @@ public class Run
             System.err.println("During executing file: " + args[0]);
             System.err.println("At line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\" :");
             System.err.println("" + e.getMessage());
-            System.exit(1);
+            //System.exit(1);
         }
     }
 }

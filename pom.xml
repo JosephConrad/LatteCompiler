@@ -6,8 +6,45 @@
 
     <groupId>groupId</groupId>
     <artifactId>LatteCompiler</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
+
+    <build>
+        <finalName>latc_x86_64</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>package-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>Latte.Run</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>my-local-repo</id>
+            <url>file://${basedir}/src/main/resources/java</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -16,18 +53,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>javaCup</groupId>
-            <artifactId>javaCup</artifactId>
-            <version>11</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/java/CUP/java-cup-11a.jar</systemPath>
+            <groupId>java-cup</groupId>
+            <artifactId>java-cup</artifactId>
+            <version>11a</version>
         </dependency>
         <dependency>
             <groupId>jasmin</groupId>
             <artifactId>jasmin</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/java/JASMIN/jasmin.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
