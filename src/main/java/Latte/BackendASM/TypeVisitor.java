@@ -17,7 +17,7 @@ public class TypeVisitor implements Type.Visitor<String, LinkedList<Env>>
     }
     
     public String visit(Latte.Absyn.Str p, LinkedList<Env> envs) {
-        return null;
+        return "";
     }
     
     public String visit(Latte.Absyn.Bool p, LinkedList<Env> envs) {
@@ -25,11 +25,11 @@ public class TypeVisitor implements Type.Visitor<String, LinkedList<Env>>
     }
     
     public String visit(Latte.Absyn.Void p, LinkedList<Env> envs) {
-        return null;
+        return "";
     }
     
     @Override
     public String visit(Fun p, LinkedList<Env> envs) {
-        return null;
+        return "";
     }
 }

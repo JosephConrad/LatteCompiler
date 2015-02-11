@@ -93,31 +93,39 @@ public class AsmGenerator {
                 return "";
             }
             
-            String asm = p.ident_ + ":\n";
-            asm += "\tenter 0,0\n";
-            asm += "\tsub rsp, 100\n";
+            String prolog = p.ident_ + ":\n";
+            prolog += "\tpush rbp\n";
+            prolog += "\tmov rbp, rsp\n";
 
+            String asm = "";
             envs.add(new Env(p.ident_));
             Env env = envs.getLast();
 
             p.type_.accept(new TypeVisitor(), envs);
 
+
             env.ileArgumentow = p.listarg_.size();
-            env.localVarShift = (env.ileArgumentow + 1) * 8; 
+            env.localVarShift = (env.ileArgumentow + 1) * 8;
             
             for (Arg a : p.listarg_) {
                 asm += a.accept(new ArgVisitor(), envs);
                 env.ileArgumentow--;
             }
 
+            Env.ileZmiennych = 0;
+            
             asm += p.block_.accept(new BlockVisitor(), envs);
+
+            int shift = env.localVarShift + (Env.ileZmiennych*8);
+            Env.ileZmiennych = 0;
+            prolog += "\tsub rsp, "+  shift + "\n";
 
             envs.removeLast();
 
             asm += "\tleave\n";
             asm += "\tret\n";
             asm += "\n\n";
-            return asm;
+            return prolog+asm;
         }
     }
 

@@ -21,6 +21,7 @@ public class Env {
     public int orExpCounter = 1;
     public int localVarShift = 8;
     public int ileArgumentow = 0;
+    public static int ileZmiennych = 0;
     public String funName = "";
     public boolean addIsString = false;
     

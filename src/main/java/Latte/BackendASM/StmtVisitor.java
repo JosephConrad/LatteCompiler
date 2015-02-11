@@ -98,7 +98,7 @@ public class StmtVisitor implements Stmt.Visitor<String, LinkedList<Env>>
      *  Void Return
      */
     public String visit(Latte.Absyn.VRet p, LinkedList<Env> envs) {
-        return "\tleave\n\tret\n"; 
+        return "\tmov rax, 0\n\tleave\n\tret\n";
     }
 
     /*

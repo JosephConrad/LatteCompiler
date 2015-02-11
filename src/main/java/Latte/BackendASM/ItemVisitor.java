@@ -17,7 +17,7 @@ public class ItemVisitor implements Item.Visitor<String, LinkedList<Env>>
         Env env = envs.getLast();
 
         String asm = "";
-
+        Env.ileZmiennych++;
         asm += "\tmov qword [rbp-"+env.localVarShift+"], qword 0\n";
 
         env.variableShifts.put(p.ident_, env.localVarShift);
@@ -35,6 +35,7 @@ public class ItemVisitor implements Item.Visitor<String, LinkedList<Env>>
 
         String asm = "";
 
+        Env.ileZmiennych++;
         asm += p.expr_.accept(new ExprVisitor(), envs);
 
         asm += "\tpop rax\n";

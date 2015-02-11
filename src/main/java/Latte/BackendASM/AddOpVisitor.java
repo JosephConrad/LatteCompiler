@@ -18,18 +18,18 @@ public class AddOpVisitor implements AddOp.Visitor<String, LinkedList<Env>>
         
         if (envs.getLast().addIsString == true) {
             String asm = "\tmov rdi, rax\n";
-            asm += "\tmov rsi, rbx\n";
+            asm += "\tmov rsi, rcx\n";
             asm += "\tcall concatenateString\n";
             return asm;
         }
-        return "\tadd rax, rbx\n" ;
+        return "\tadd rax, rcx\n" ;
     }
 
     /*
     *  Sub two expressions
     */
     public String visit(Latte.Absyn.Minus p, LinkedList<Env> envs) {
-        return "\tsub rax, rbx\n";
+        return "\tsub rax, rcx\n";
     }
 
 }

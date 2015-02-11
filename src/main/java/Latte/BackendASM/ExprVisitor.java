@@ -17,7 +17,7 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
     }
 
     public String twoArgs() {
-        String asm = "\n\tpop rbx\n";
+        String asm = "\n\tpop rcx\n";
         asm += "\tpop rax\n";
         return asm;
     }
@@ -191,19 +191,17 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
         
         asm += twoArgs();
 
-        asm += '\t'+ "cmp rax, rbx\n";
-        asm += p.relop_.accept(new RelOpVisitor(), envs) + " REL_TRUE_"+no + "\n";
-        asm += "\tjmp REL_FALSE_"+no + "\n";
-
+        asm += '\t'+ "cmp rax, rcx\n";
+        asm += p.relop_.accept(new RelOpVisitor(), envs) + " REL_TRUE_"+no + "\n\n";
+        
+        asm += "\tmov rax, 0\n";
+        asm += "\tjmp REL_FINISH_"+no + "\n";
+        
         asm += "\nREL_TRUE_"+no+":\n";
         asm += "\tmov rax, 1\n";
-        asm += "\tjmp REL_FINISH_"+no+"\n";
-
-        asm += "\nREL_FALSE_"+no+":\n";
-        asm += "\tmov rax, 0\n";
         asm += "\nREL_FINISH_"+no+":\n";
 
-        asm += "\tpush rax\n";
+        asm += "\tpush rax\n\n";
         return asm;
     }
 
@@ -225,7 +223,7 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
         asm += p.expr_2.accept(new ExprVisitor(), envs);
 
         asm += twoArgs();
-        asm += "\tand rax, rbx\n";
+        asm += "\tand rax, rcx\n";
         asm += "\tpush rax\n";
         asm += label+":\n";
         return asm;
@@ -248,7 +246,7 @@ public class ExprVisitor implements Expr.Visitor<String, LinkedList<Env>>
         asm += p.expr_2.accept(new ExprVisitor(), envs);
 
         asm += twoArgs();
-        asm += "\tor rax, rbx\n";
+        asm += "\tor rax, rcx\n";
         asm += "\tpush rax\n";
         asm += label+":\n";
         return asm;

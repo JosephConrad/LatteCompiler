@@ -12,16 +12,16 @@ public class MulOpVisitor<R,A> implements MulOp.Visitor<String,A>
     }
     
     public String visit(Latte.Absyn.Times p, A arg) {
-        return resetRdx() + "\timul rax, rbx\n";
+        return resetRdx() + "\timul rax, rcx\n";
     }
     
     public String visit(Latte.Absyn.Div p, A arg) {
-        return resetRdx() + "\tidiv rbx\n";
+        return resetRdx() + "\tidiv rcx\n";
     }
     
     public String visit(Latte.Absyn.Mod p, A arg) {
         String asm = resetRdx();
-        asm += "\tidiv rbx\n";
+        asm += "\tidiv rcx\n";
         return asm + "\tmov rax, rdx\n";
     }
 
