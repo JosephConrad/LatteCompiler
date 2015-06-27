@@ -1,14 +1,12 @@
 package Latte;
 
-import org.junit.Test;
-
 public class RunTest
 {
 
     /**
      * Test main
      */
-    @Test
+    //@Test
     public void main_String_PositiveTest() throws Exception {
         for(int i = 1; i <= 9; i++){
             Run.main(new String[]{"tests/good/core00"+i+".lat"});
@@ -19,9 +17,9 @@ public class RunTest
     }
 
 
-    @Test
+    //@Test
     public void main_String_NegativeTest() throws Exception {
-        
+
         System.err.println("\n====================\n");
 
         for(int i = 1; i <= 9; i++){

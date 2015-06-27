@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar target/latc_x86_64.jar $1 
+java  -mx256m -jar target/latc_x86_64.jar $1 
