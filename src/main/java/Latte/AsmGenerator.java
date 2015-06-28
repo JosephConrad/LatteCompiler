@@ -74,37 +74,31 @@ public class AsmGenerator {
      */
     public class TopDefVisitor implements TopDef.Visitor<String, Env> {
 
-        public String visit(Latte.Absyn.FnDef p, Env env) throws TypeException {
-            if (env.predefinedFunctions.contains(p.ident_)) {
+        public String visit(Latte.Absyn.FnDef function, Env env) throws TypeException {
+            if (env.predefinedFunctions.contains(function.ident_)) {
                 return "";
             }
 
-            String prolog = p.ident_ + ":\n";
+            String prolog = function.ident_ + ":\n";
             prolog += "\tpush rbp\n";
             prolog += "\tmov rbp, rsp\n";
-
+            prolog += "\tsub rsp, " + function.localVars * 8 + "\n";
             String asm = "";
             //env.add(new Env(p.ident_));
 
 
-            p.type_.accept(new TypeVisitor(), env);
+            function.type_.accept(new TypeVisitor(), env);
 
 
-            env.ileArgumentow = p.listarg_.size();
+            env.ileArgumentow = function.listarg_.size();
             env.localVarShift = (env.ileArgumentow + 1) * 8;
 
-            for (Arg a : p.listarg_) {
+            for (Arg a : function.listarg_) {
                 asm += a.accept(new ArgVisitor(), env);
                 env.ileArgumentow--;
             }
 
-            Env.ileZmiennych = 0;
-
-            asm += p.block_.accept(new BlockVisitor(), env);
-
-            int shift = env.localVarShift + (Env.ileZmiennych*8);
-            Env.ileZmiennych = 0;
-            prolog += "\tsub rsp, "+  shift + "\n";
+            asm += function.block_.accept(new BlockVisitor(), env) ;
 
             asm += "\tleave\n";
             asm += "\tret\n";

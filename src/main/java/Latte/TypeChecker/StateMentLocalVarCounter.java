@@ -7,7 +7,7 @@ import Latte.Exceptions.TypeException;
 /**
  * Created by konrad on 28/06/15.
  */
-public class StateMentLocalVarCounter implements Latte.Absyn.Stmt.Visitor<Integer, Env> {
+public class StatementLocalVarCounter implements Latte.Absyn.Stmt.Visitor<Integer, Env> {
     @Override
     public Integer visit(Empty p, Env environment) {
         return 0;
@@ -15,12 +15,13 @@ public class StateMentLocalVarCounter implements Latte.Absyn.Stmt.Visitor<Intege
 
     @Override
     public Integer visit(BStmt blockStmt, Env environment) throws TypeException {
-        return blockStmt.block_.accept(new BlockLocalVarCounter(), environment);
+        int z = blockStmt.block_.accept(new BlockLocalVarCounter(), environment);
+        return z;
     }
 
     @Override
-    public Integer visit(Decl p, Env environment) throws TypeException {
-        return 1;
+    public Integer visit(Decl decl, Env environment) throws TypeException {
+        return decl.listitem_.size();
     }
 
     @Override
@@ -50,18 +51,18 @@ public class StateMentLocalVarCounter implements Latte.Absyn.Stmt.Visitor<Intege
 
     @Override
     public Integer visit(Cond cond, Env environment) throws TypeException {
-        return cond.stmt_.accept(new StateMentLocalVarCounter(), environment);
+        return cond.stmt_.accept(new StatementLocalVarCounter(), environment);
     }
 
     @Override
     public Integer visit(CondElse condElse, Env environment) throws TypeException {
-        return condElse.stmt_1.accept(new StateMentLocalVarCounter(), environment) +
-                condElse.stmt_2.accept(new StateMentLocalVarCounter(), environment);
+        return condElse.stmt_1.accept(new StatementLocalVarCounter(), environment) +
+                condElse.stmt_2.accept(new StatementLocalVarCounter(), environment);
     }
 
     @Override
     public Integer visit(While whileStmt, Env environment) throws TypeException {
-        return whileStmt.stmt_.accept(new StateMentLocalVarCounter(), environment);
+        return whileStmt.stmt_.accept(new StatementLocalVarCounter(), environment);
     }
 
     @Override

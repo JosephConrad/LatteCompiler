@@ -4,7 +4,7 @@ import Latte.Env;
 import Latte.Exceptions.TypeException;
 
 public class FnDef extends TopDef {
-    public int localVar = 0;
+    public int localVars = 0;
     public final Type type_;
     public final String ident_;
     public final ListArg listarg_;

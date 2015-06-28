@@ -13,7 +13,7 @@ public class BlockLocalVarCounter implements Latte.Absyn.Block.Visitor<Integer, 
     public Integer visit(Block block, Env environment) throws TypeException {
         int counter = 0;
         for (Stmt statement: block.liststmt_){
-            counter += statement.accept(new StateMentLocalVarCounter(), environment );
+            counter += statement.accept(new StatementLocalVarCounter(), environment );
         }
         return counter;
     }

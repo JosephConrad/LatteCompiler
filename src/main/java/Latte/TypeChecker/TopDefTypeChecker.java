@@ -17,7 +17,7 @@ public class TopDefTypeChecker implements TopDef.Visitor<Void, Env> {
         processArguments(function, environment);
         processBlock(function, environment);
         checkReturnAccessibility(function, environment);
-        function.localVar = calcLocalVar(function, environment);
+        function.localVars = calcLocalVar(function, environment);
         environment.endFunction();
         return null;
     }
