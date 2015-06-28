@@ -6,6 +6,8 @@ public class Fun extends Type {
 
     public Fun(Type p1, ListType p2) { type_ = p1; listtype_ = p2; }
 
+
+
     public <R,A> R accept(Latte.Absyn.Type.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
     public boolean equals(Object o) {

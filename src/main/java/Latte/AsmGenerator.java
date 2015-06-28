@@ -6,9 +6,9 @@ import Latte.Absyn.TopDef;
 import Latte.BackendASM.BlockVisitor;
 import Latte.BackendASM.TypeVisitor;
 import Latte.Exceptions.TypeException;
+import Latte.TypeChecker.ProgTypeChecker;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 /*** BNFC-Generated Visitor Design Pattern Skeleton. ***/
 
@@ -16,68 +16,67 @@ import java.util.LinkedList;
 public class AsmGenerator {
     String classname;
     Latte.Absyn.Program program;
-    
+    Env env;
+
     public AsmGenerator(Latte.Absyn.Program program, String string) {
         this.program = program;
         this.classname = string.split("\\.")[0];
     }
-    
+
     /*
      * Run generating ASM code function
      */
     void generateASM() throws TypeException {
-        frontEnd();
-        backEnd();
+        this.env = frontEnd();
+        //backEnd();
     }
-    
+
     /*
      * Frontend function
      */
-    void frontEnd() throws TypeException {
-        LinkedList<Env> envs = new LinkedList<Env>();
-        envs.add(new Env("main"));
-        
-        Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
-        Env.functionsReturnType = new HashMap<String, String>();
+    Env frontEnd() throws TypeException {
+        Env env = program.accept(new ProgTypeChecker(), new Env());
 
-        program.functionsRetType();
-        program.checkTypes(envs);
+//        Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
+//        Env.functionsReturnType = new HashMap<String, String>();
+//
+//        program.functionsRetType();
+//        program.checkTypes(env);
+        return env;
     }
-    
+
     /*
      * Backend function
      */
     void backEnd() {
-        LinkedList<Env> envs = new LinkedList<Env>();
-        envs.add(new Env("main"));
-        
+
         Env.strings = new HashMap<String, String>();
 
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
-        
-        String asm = program.accept(programVisitor, envs);
+
+        String asm = program.accept(programVisitor, env);
 
         String data = "SECTION .data\n";
-        for (String key : Env.strings.keySet()) {
-            data += "\t" + key + "\tdb\t\"" + envs.getLast().strings.get(key) + "\", 0\n";
-        }
-        
-        if (!Env.strings.isEmpty())
-            System.out.println("\n" + data);
+//        for (String key : env. keySet()) {
+//            data += "\t" + key + "\tdb\t\"" + env.getLast().strings.get(key) + "\", 0\n";
+//        }
+
+//        if (!env.   .strings.isEmpty())
+//            System.out.println("\n" + data);
         System.out.println("\n" + asm);
     }
 
     /*
      * Program Visitor
      */
-    public class ProgramVisitor<R, S> implements Program.Visitor<String, LinkedList<Env>> {
-        
-        public String visit(Latte.Absyn.Program p, LinkedList<Env> envs) {
+    public class ProgramVisitor<R, S> implements Program.Visitor<String, Env> {
+
+        public String visit(Latte.Absyn.Program p, Env env) {
             String asm = "SECTION .text\n";
             asm += "\tglobal main\n\n";
             asm += "EXTERN printInt, printString, error, readInt, readString, concatenateString\n\n\n";
             for (TopDef x : p.listtopdef_) {
-                asm += x.accept(new TopDefVisitor(), envs);
+                asm += x.accept(new TopDefVisitor(), env);
             }
             return asm;
         }
@@ -86,41 +85,39 @@ public class AsmGenerator {
     /*
      * Function Definition Visitor
      */
-    public class TopDefVisitor implements TopDef.Visitor<String, LinkedList<Env>> {
-        
-        public String visit(Latte.Absyn.FnDef p, LinkedList<Env> envs) {
-            if (envs.getLast().predefinedFunctions.contains(p.ident_)) {
+    public class TopDefVisitor implements TopDef.Visitor<String, Env> {
+
+        public String visit(Latte.Absyn.FnDef p, Env env) {
+            if (env.predefinedFunctions.contains(p.ident_)) {
                 return "";
             }
-            
+
             String prolog = p.ident_ + ":\n";
             prolog += "\tpush rbp\n";
             prolog += "\tmov rbp, rsp\n";
 
             String asm = "";
-            envs.add(new Env(p.ident_));
-            Env env = envs.getLast();
+            //env.add(new Env(p.ident_));
 
-            p.type_.accept(new TypeVisitor(), envs);
+
+            p.type_.accept(new TypeVisitor(), env);
 
 
             env.ileArgumentow = p.listarg_.size();
             env.localVarShift = (env.ileArgumentow + 1) * 8;
-            
+
             for (Arg a : p.listarg_) {
-                asm += a.accept(new ArgVisitor(), envs);
+                asm += a.accept(new ArgVisitor(), env);
                 env.ileArgumentow--;
             }
 
             Env.ileZmiennych = 0;
-            
-            asm += p.block_.accept(new BlockVisitor(), envs);
+
+            asm += p.block_.accept(new BlockVisitor(), env);
 
             int shift = env.localVarShift + (Env.ileZmiennych*8);
             Env.ileZmiennych = 0;
             prolog += "\tsub rsp, "+  shift + "\n";
-
-            envs.removeLast();
 
             asm += "\tleave\n";
             asm += "\tret\n";
@@ -132,19 +129,18 @@ public class AsmGenerator {
     /*
      * Argument Visitor
      */
-    public class ArgVisitor implements Arg.Visitor<String, LinkedList<Env>> {
-        
-        public String visit(Latte.Absyn.Arg p, LinkedList<Env> envs) {
-            Env env = envs.getLast();
+    public class ArgVisitor implements Arg.Visitor<String, Env> {
+
+        public String visit(Latte.Absyn.Arg p, Env env) {
 
             int shift = 8 * (1 + env.ileArgumentow);
 //            if (env.argumentsShifts.containsKey(p.ident_))
 //                throw new IllegalArgumentException("Repeated argument name\n");
-            
+
             env.argumentsShifts.put(p.ident_, shift);
             env.variableType.put(p.ident_, p.type_.toString());
-            
-            String asm = p.type_.accept(new TypeVisitor(), envs);
+
+            String asm = p.type_.accept(new TypeVisitor(), env);
             return asm;
         }
     }
