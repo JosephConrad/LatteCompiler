@@ -5,6 +5,7 @@ import Latte.Absyn.Program;
 import Latte.Absyn.TopDef;
 import Latte.BackendASM.BlockVisitor;
 import Latte.BackendASM.TypeVisitor;
+import Latte.Exceptions.TypeException;
 import Latte.TypeChecker.ProgTypeChecker;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class AsmGenerator {
     /*
      * Run generating ASM code function
      */
-    void generateASM() throws Exception {
+    void generateASM() throws TypeException {
         this.env = frontEnd();
         //backEnd();
     }
@@ -33,8 +34,7 @@ public class AsmGenerator {
     /*
      * Frontend function
      */
-    Env frontEnd() throws Exception {
-        System.err.println("dupa frontEnd");
+    Env frontEnd() throws TypeException {
         Env env = program.accept(new ProgTypeChecker(), new Env());
 
 //        Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
@@ -48,7 +48,7 @@ public class AsmGenerator {
     /*
      * Backend function
      */
-    void backEnd() throws Exception {
+    void backEnd() throws TypeException {
 
         Env.strings = new HashMap<String, String>();
 
@@ -71,7 +71,7 @@ public class AsmGenerator {
      */
     public class ProgramVisitor<R, S> implements Program.Visitor<String, Env> {
 
-        public String visit(Latte.Absyn.Program p, Env env) throws Exception {
+        public String visit(Latte.Absyn.Program p, Env env) throws TypeException {
             String asm = "SECTION .text\n";
             asm += "\tglobal main\n\n";
             asm += "EXTERN printInt, printString, error, readInt, readString, concatenateString\n\n\n";
@@ -87,7 +87,7 @@ public class AsmGenerator {
      */
     public class TopDefVisitor implements TopDef.Visitor<String, Env> {
 
-        public String visit(Latte.Absyn.FnDef p, Env env) throws Exception {
+        public String visit(Latte.Absyn.FnDef p, Env env) throws TypeException {
             if (env.predefinedFunctions.contains(p.ident_)) {
                 return "";
             }

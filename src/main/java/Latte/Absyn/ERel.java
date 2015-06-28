@@ -9,7 +9,7 @@ public class ERel extends Expr {
 
     public ERel(Expr p1, RelOp p2, Expr p3) { expr_1 = p1; relop_ = p2; expr_2 = p3; }
 
-    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
     @Override
     public String returnExprType(Env env, String currentFunction) throws TypeException {

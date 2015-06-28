@@ -69,7 +69,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Function application expression
      */
-    public String visit(Latte.Absyn.EApp p, Env env) throws Exception {
+    public String visit(Latte.Absyn.EApp p, Env env) throws TypeException {
 
         String asm = "";
         if (env.predefinedFunctions.contains(p.ident_)) {
@@ -108,7 +108,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Negative expression
      */
-    public String visit(Latte.Absyn.Neg p, Env env) throws Exception {
+    public String visit(Latte.Absyn.Neg p, Env env) throws TypeException {
         String asm = p.expr_.accept(new ExprVisitor(), env);
         asm += oneArg();
         asm += "\tneg rax\n";
@@ -119,7 +119,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Negated expression
      */
-    public String visit(Latte.Absyn.Not p, Env env) throws Exception {
+    public String visit(Latte.Absyn.Not p, Env env) throws TypeException {
 
         String asm = p.expr_.accept(new ExprVisitor(), env);
         asm += oneArg();
@@ -131,7 +131,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Multiplication expression
      */
-    public String visit(Latte.Absyn.EMul p, Env env) throws Exception {
+    public String visit(Latte.Absyn.EMul p, Env env) throws TypeException {
 
         String asm = p.expr_1.accept(new ExprVisitor(), env);
         asm += p.expr_2.accept(new ExprVisitor(), env);
@@ -144,7 +144,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Sum expression
      */
-    public String visit(Latte.Absyn.EAdd p, Env env) throws Exception {
+    public String visit(Latte.Absyn.EAdd p, Env env) throws TypeException {
         String type = null;
         try {
             type = p.returnExprType(env, "");
@@ -171,7 +171,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Relation expression
      */
-    public String visit(Latte.Absyn.ERel p, Env env) throws Exception {
+    public String visit(Latte.Absyn.ERel p, Env env) throws TypeException {
         String asm = p.expr_1.accept(new ExprVisitor(), env);
         asm += p.expr_2.accept(new ExprVisitor(), env);
 
@@ -196,7 +196,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Conjunction expression
      */
-    public String visit(Latte.Absyn.EAnd p, Env env) throws Exception {
+    public String visit(Latte.Absyn.EAnd p, Env env) throws TypeException {
         String asm = p.expr_1.accept(new ExprVisitor(), env);
 
         String no = env.funName+"_"+env.andExpCounter++;
@@ -218,7 +218,7 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
     /*
      * Alternative expression
      */
-    public String visit(Latte.Absyn.EOr p, Env env) throws Exception {
+    public String visit(Latte.Absyn.EOr p, Env env) throws TypeException {
 
         String asm = p.expr_1.accept(new ExprVisitor(), env);
         String no = env.funName+"_"+env.orExpCounter++;

@@ -1,5 +1,6 @@
 package Latte;
 
+import Latte.Exceptions.TypeException;
 import Latte.Lib.Yylex;
 import Latte.Lib.parser;
 
@@ -25,7 +26,6 @@ public class Run
         p = new parser(l);
         try
         {
-            System.err.println("dupa");
             String[] parts = args[0].split("/");
             String[] fileName = parts[2].split("\\.");
             File file = new File(args[0]);
@@ -43,26 +43,27 @@ public class Run
             AsmGenerator asmGenerator = new AsmGenerator(parse_tree, args[0]);
             asmGenerator.generateASM();
             System.err.println("OK");
-            Runtime rt = Runtime.getRuntime();
-
-            String objectFile = filePath + File.separator + "lat.o";
-            String assFile = filePath + File.separator + fileName[0] + ".s";
-            String execFile = filePath+File.separator+fileName[0];
-            Process pr = rt.exec("nasm -g -f elf64 -o " + objectFile + "  " + assFile);
-            Process pr1 = rt.exec("gcc -o  " + execFile + " -Wall -g "+ objectFile + "  lib/runtime.o");
+//            Runtime rt = Runtime.getRuntime();
+//
+//            String objectFile = filePath + File.separator + "lat.o";
+//            String assFile = filePath + File.separator + fileName[0] + ".s";
+//            String execFile = filePath+File.separator+fileName[0];
+//            Process pr = rt.exec("nasm -g -f elf64 -o " + objectFile + "  " + assFile);
+//            Process pr1 = rt.exec("gcc -o  " + execFile + " -Wall -g "+ objectFile + "  lib/runtime.o");
             if (!DEBUG) System.exit(0);
         }
-        catch(Exception e)
+        catch(TypeException e)
         {
             System.err.println("ERROR");
-            System.err.println("Type error executing file: " + args[0]);
+            System.err.println("When executing file: " + args[0]);
             System.err.println("" + e.getMessage());
             System.err.println("\n\n");
             if (!DEBUG) System.exit(1);
         } catch(Throwable e)
         {
             System.err.println("ERROR");
-            System.err.println("Syntax error executing file: " + args[0]);
+            System.err.println("When executing file: " + args[0]);
+            System.err.println("SYNTAX ERROR:");
             if (e.getClass() == Exception.class)
                 System.err.println("\tAt line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\".");
             System.err.println("\n\n");

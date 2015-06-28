@@ -7,8 +7,8 @@ public class TypeException extends Exception
 {
     //Parameterless Constructor
     public TypeException(String functionName, String message) {
-        super("\nTYPE ERROR:\n\t" + "At function "+ functionName +": "+ message);
-        
+        super("TYPE ERROR:\n\t" + "At function "+ functionName +":\n\t\t"+ message);
+
     }
 
     //Constructor that accepts a message

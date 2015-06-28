@@ -4,7 +4,7 @@ import Latte.Env;
 import Latte.Exceptions.TypeException;
 
 public abstract class Item implements java.io.Serializable {
-    public abstract <R,A> R accept(Item.Visitor<R,A> v, A arg) throws Exception;
+    public abstract <R,A> R accept(Item.Visitor<R,A> v, A arg) throws TypeException;
 
     public abstract String getIdent();
 
@@ -21,8 +21,8 @@ public abstract class Item implements java.io.Serializable {
     }
 
     public interface Visitor <R,A> {
-        public R visit(Latte.Absyn.NoInit p, A arg) throws Exception;
-        public R visit(Latte.Absyn.Init p, A arg) throws Exception;
+        public R visit(Latte.Absyn.NoInit p, A arg) throws TypeException;
+        public R visit(Latte.Absyn.Init p, A arg) throws TypeException;
 
     }
 

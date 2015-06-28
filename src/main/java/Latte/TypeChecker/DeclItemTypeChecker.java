@@ -2,6 +2,7 @@ package Latte.TypeChecker;
 
 import Latte.Absyn.*;
 import Latte.Env;
+import Latte.Exceptions.TypeException;
 import Latte.Lib.PrettyPrinter;
 
 import java.lang.Void;
@@ -18,7 +19,7 @@ public class DeclItemTypeChecker implements Item.Visitor<Void, Env> {
     }
 
     @Override
-    public Void visit(NoInit noInitDecl, Env environment) throws Exception {
+    public Void visit(NoInit noInitDecl, Env environment) throws TypeException {
         environment.addVariable(noInitDecl.ident_, this.type);
         if (environment.typeEquality(this.type, new Str())) {
             environment.addString("");
@@ -27,11 +28,11 @@ public class DeclItemTypeChecker implements Item.Visitor<Void, Env> {
     }
 
     @Override
-    public Void visit(Init initDecl, Env environment) throws Exception {
+    public Void visit(Init initDecl, Env environment) throws TypeException {
         Type initDeclType = initDecl.expr_.accept(new ExprTypeChecker(), environment);
 
         if (!environment.typeEquality(this.type, initDeclType)) {
-            throw new Exception("Declaration is of type: "+this.type+", but expression is: "+initDeclType+
+            throw new TypeException("Declaration is of type: "+this.type+", but expression is: "+initDeclType+
                     ". Instruction "+ PrettyPrinter.print(initDecl));
         }
         environment.addVariable(initDecl.ident_, this.type);

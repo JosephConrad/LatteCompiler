@@ -36,7 +36,7 @@ public class EApp extends Expr {
         return Env.functionsReturnType.get(ident_);
     }
 
-    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
     public boolean equals(Object o) {
         if (this == o) return true;

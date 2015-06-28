@@ -2,6 +2,7 @@ package Latte;
 
 import Latte.Absyn.*;
 import Latte.Absyn.Void;
+import Latte.Exceptions.TypeException;
 
 import java.util.*;
 
@@ -16,6 +17,10 @@ public class Env {
     public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
     public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
 
+
+    public String getCurrentFunctionIdent() {
+        return currentFunctionIdent;
+    }
 
     private String currentFunctionIdent;
 
@@ -65,14 +70,18 @@ public class Env {
 
         ListType argumentsInt= new ListType();
         argumentsInt.add(new Int());
-        ListType argumentsString = new ListType();
-        argumentsInt.add(new Str());
+        ListType argumentsPrintString = new ListType();
+        argumentsPrintString.add(new Str());
+
+        ListType argumentsConcatString = new ListType();
+        argumentsConcatString.add(new Str());
+        argumentsConcatString.add(new Str());
 
         this.envFun.peek().put("printInt", new Fun(new Void(), argumentsInt));
-        this.envFun.peek().put("printString", new Fun(new Void(), argumentsString));
+        this.envFun.peek().put("printString", new Fun(new Void(), argumentsPrintString));
         this.envFun.peek().put("readInt", new Fun(new Int(), new ListType()));
         this.envFun.peek().put("readString", new Fun(new Str(), new ListType()));
-        this.envFun.peek().put("concatenateString", new Fun(new Str(), new ListType()));
+        this.envFun.peek().put("concatenateString", new Fun(new Str(), argumentsConcatString));
 
     }
 
@@ -120,13 +129,13 @@ public class Env {
         envFun.peek().put(ident, function);
     }
 
-    public void beginFunction(String functionIdent) throws Exception {
+    public void beginFunction(String functionIdent) throws TypeException {
         currentFunction = getFunctionById(functionIdent);
         currentFunctionIdent = functionIdent;
         beginBlock();
     }
 
-    private Fun getFunctionById(String functionIdent) throws Exception {
+    public Fun getFunctionById(String functionIdent) throws TypeException {
         Iterator<Map<String, Fun>> iter = envFun.iterator();
 
         while (iter.hasNext()){
@@ -135,41 +144,37 @@ public class Env {
                 return fun;
             }
         }
-        throw new Exception("No function of identifier: "+functionIdent);
+        throw new TypeException("No function of identifier: "+functionIdent);
     }
 
 
-    public Type getVariableType(String ident) throws Exception {
-        Iterator<Map<String, Type>> iter = envVar.iterator();
-
-        while (iter.hasNext()){
-            Type type = iter.next().get(ident);
-            if (!(type == null)) {
+    public Type getVariableType(String ident) throws TypeException {
+        for (ListIterator<Map<String, Type>> iterator = envVar.listIterator(envVar.size());
+             iterator.hasPrevious();) {
+            Type type = iterator.previous().get(ident);
+            if (type != null)
                 return type;
-            }
         }
-        throw new Exception("No variable of identifier: "+ident);
+        throw new TypeException(currentFunctionIdent, "No variable of identifier " + ident);
     }
 
     public void endFunction() {
     }
 
-    public void addVariable(String ident, Type type) throws Exception {
+    public void addVariable(String ident, Type type) throws TypeException {
         if (envVar.peek().containsKey(ident)) {
-            throw new Exception(
-                    "\tAt function " + currentFunctionIdent + ",\n" +
-                    "\t\tAt variable " + ident + " declaration: variable " + ident + " is redeclared.");
+            throw new TypeException(currentFunctionIdent, "At variable " + ident + " declaration: variable " + ident + " is redeclared.");
         }
         if (type.equals(new Void())) {
-            throw new Exception("Nie można zadeklarować zmiennej typu void");
+            throw new TypeException("Nie można zadeklarować zmiennej typu void");
         } else if (type.equals(new Void())) {
-            throw new Exception("Nie można zadeklarować tablicy zawierającej zmienne typu void");
+            throw new TypeException("Nie można zadeklarować tablicy zawierającej zmienne typu void");
         }
         envVar.peek().put(ident, type);
     }
 
     public boolean typeEquality(Type leftHandType, Type rightHandType) {
-        return leftHandType == rightHandType;
+        return leftHandType.equals(rightHandType);
     }
 
     public Fun getCurrentFunction() {

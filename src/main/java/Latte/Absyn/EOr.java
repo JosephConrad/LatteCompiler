@@ -8,7 +8,7 @@ public class EOr extends Expr {
 
     public EOr(Expr p1, Expr p2) { expr_1 = p1; expr_2 = p2; }
 
-    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
 
     @Override

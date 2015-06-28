@@ -2,6 +2,7 @@ package Latte.BackendASM;
 
 import Latte.Absyn.Item;
 import Latte.Env;
+import Latte.Exceptions.TypeException;
 
 /**
  * Created by konrad on 05/02/15.
@@ -26,7 +27,7 @@ public class ItemVisitor implements Item.Visitor<String, Env>
     /*
      *  Item with initialization
      */
-    public String visit(Latte.Absyn.Init p, Env env) throws Exception {
+    public String visit(Latte.Absyn.Init p, Env env) throws TypeException {
         String asm = "";
 
         Env.ileZmiennych++;

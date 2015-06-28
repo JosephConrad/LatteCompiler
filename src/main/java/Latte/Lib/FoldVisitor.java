@@ -1,6 +1,7 @@
 package Latte.Lib;
 
 import Latte.Absyn.*;
+import Latte.Exceptions.TypeException;
 
 /** BNFC-Generated Fold Visitor */
 public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
@@ -8,7 +9,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     public abstract R combine(R x, R y, A arg);
 
 /* Program */
-    public R visit(Latte.Absyn.Program p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Program p, A arg) throws TypeException {
       R r = leaf(arg);
       for (TopDef x : p.listtopdef_) {
         r = combine(x.accept(this,arg), r, arg);
@@ -17,7 +18,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
 
 /* TopDef */
-    public R visit(Latte.Absyn.FnDef p, A arg) throws Exception {
+    public R visit(Latte.Absyn.FnDef p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.type_.accept(this, arg), r, arg);
       for (Arg x : p.listarg_) {
@@ -35,7 +36,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
 
 /* Block */
-    public R visit(Latte.Absyn.Block p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Block p, A arg) throws TypeException {
       R r = leaf(arg);
       for (Stmt x : p.liststmt_) {
         r = combine(x.accept(this,arg), r, arg);
@@ -48,12 +49,12 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(Latte.Absyn.BStmt p, A arg) throws Exception {
+    public R visit(Latte.Absyn.BStmt p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.block_.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.Decl p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Decl p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.type_.accept(this, arg), r, arg);
       for (Item x : p.listitem_) {
@@ -61,7 +62,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       }
       return r;
     }
-    public R visit(Latte.Absyn.Ass p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Ass p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
@@ -74,7 +75,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(Latte.Absyn.Ret p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Ret p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
@@ -83,26 +84,26 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(Latte.Absyn.Cond p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Cond p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       r = combine(p.stmt_.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.CondElse p, A arg) throws Exception {
+    public R visit(Latte.Absyn.CondElse p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       r = combine(p.stmt_1.accept(this, arg), r, arg);
       r = combine(p.stmt_2.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.While p, A arg) throws Exception {
+    public R visit(Latte.Absyn.While p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       r = combine(p.stmt_.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.SExp p, A arg) throws Exception {
+    public R visit(Latte.Absyn.SExp p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
@@ -113,7 +114,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(Latte.Absyn.Init p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Init p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
@@ -162,7 +163,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(Latte.Absyn.EApp p, A arg) throws Exception {
+    public R visit(Latte.Absyn.EApp p, A arg) throws TypeException {
       R r = leaf(arg);
       for (Expr x : p.listexpr_) {
         r = combine(x.accept(this,arg), r, arg);
@@ -173,44 +174,44 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(Latte.Absyn.Neg p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Neg p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.Not p, A arg) throws Exception {
+    public R visit(Latte.Absyn.Not p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.EMul p, A arg) throws Exception {
+    public R visit(Latte.Absyn.EMul p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.mulop_.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.EAdd p, A arg) throws Exception {
+    public R visit(Latte.Absyn.EAdd p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.addop_.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.ERel p, A arg) throws Exception {
+    public R visit(Latte.Absyn.ERel p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.relop_.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.EAnd p, A arg) throws Exception {
+    public R visit(Latte.Absyn.EAnd p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
       return r;
     }
-    public R visit(Latte.Absyn.EOr p, A arg) throws Exception {
+    public R visit(Latte.Absyn.EOr p, A arg) throws TypeException {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);

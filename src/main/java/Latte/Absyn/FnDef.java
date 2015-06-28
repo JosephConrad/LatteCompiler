@@ -11,7 +11,7 @@ public class FnDef extends TopDef {
 
     public FnDef(Type p1, String p2, ListArg p3, Block p4) { type_ = p1; ident_ = p2; listarg_ = p3; block_ = p4; }
 
-    public <R,A> R accept(Latte.Absyn.TopDef.Visitor<R,A> v, A arg) throws Exception {
+    public <R,A> R accept(Latte.Absyn.TopDef.Visitor<R,A> v, A arg) throws TypeException {
         return v.visit(this, arg);
     }
 

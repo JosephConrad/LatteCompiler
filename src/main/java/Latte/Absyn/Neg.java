@@ -8,7 +8,7 @@ public class Neg extends Expr {
 
     public Neg(Expr p1) { expr_ = p1; }
 
-    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
     @Override
     public boolean evalExpr() {

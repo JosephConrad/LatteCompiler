@@ -2,6 +2,7 @@ package Latte.TypeChecker;
 
 import Latte.Absyn.*;
 import Latte.Env;
+import Latte.Exceptions.TypeException;
 import Latte.Lib.PrettyPrinter;
 
 /**
@@ -9,8 +10,9 @@ import Latte.Lib.PrettyPrinter;
  */
 public class ExprTypeChecker implements Latte.Absyn.Expr.Visitor<Type, Env> {
     @Override
-    public Type visit(EVar p, Env arg) {
-        return null;
+    public Type visit(EVar eVar, Env environment) throws TypeException {
+        eVar.expressionType = environment.getVariableType(eVar.ident_);
+        return eVar.expressionType;
     }
 
     @Override
@@ -32,8 +34,29 @@ public class ExprTypeChecker implements Latte.Absyn.Expr.Visitor<Type, Env> {
     }
 
     @Override
-    public Type visit(EApp p, Env environment) {
-        return null;
+    public Type visit(EApp eApp, Env environment) throws TypeException {
+        checkArguments(eApp.listexpr_, environment.getFunctionById(eApp.ident_).listtype_, environment, eApp.ident_);
+        return environment.getFunctionById(eApp.ident_).type_;
+    }
+
+    private void checkArguments(ListExpr listexpr_, ListType listtype_, Env environment, String ident) throws TypeException {
+        int providedArgs = listexpr_.size();
+        int declaredArgs = listtype_.size();
+
+        if (providedArgs != declaredArgs){
+            throw new TypeException(environment.getCurrentFunctionIdent(),
+                    "At function application: Wrong number of arguments. Function takes (" +
+                            declaredArgs + ") argument(s), but (" + providedArgs + ") found.");
+        }
+        for (int i = 0; i < providedArgs; ++i) {
+            Type providedArg = listexpr_.get(i).accept(new ExprTypeChecker(), environment);
+            Type declaredArg = listtype_.get(i);
+            if (!providedArg.equals(declaredArg)) {
+                throw new TypeException(environment.getCurrentFunctionIdent(),
+                        "function "+ident+" takes as "+(i+1)+" parameter ("+declaredArg+"), not ("+providedArg+ ")");
+
+            }
+        }
     }
 
     @Override
@@ -44,57 +67,57 @@ public class ExprTypeChecker implements Latte.Absyn.Expr.Visitor<Type, Env> {
     }
 
     @Override
-    public Type visit(Neg neg, Env environment) throws Exception {
+    public Type visit(Neg neg, Env environment) throws TypeException {
         Type netType = neg.expr_.accept(new ExprTypeChecker(), environment);
         if (environment.typeEquality(netType, new Int())) {
             neg.expressionType = new Int();
             return neg.expressionType;
         }
-        throw new Exception("Expected int type. Received: "+
+        throw new TypeException("Expected int type. Received: "+
                 netType + " in expression " + PrettyPrinter.print(neg));
     }
 
     @Override
-    public Type visit(Not not, Env environment) throws Exception {
+    public Type visit(Not not, Env environment) throws TypeException {
         Type notType = not.expr_.accept(new ExprTypeChecker(), environment);
-        if (environment.typeEquality(notType, new Int())) {
-            not.expressionType = new Int();
+        if (environment.typeEquality(notType, new Bool())) {
+            not.expressionType = new Bool();
             return not.expressionType;
         }
-        throw new Exception("Expected bool type. Received: "+
+        throw new TypeException("Expected bool type. Received: "+
                 notType + " in expression " + PrettyPrinter.print(not));
     }
 
     @Override
-    public Type visit(EMul eMul, Env environment) throws Exception {
+    public Type visit(EMul eMul, Env environment) throws TypeException {
         Type eMulLeft  = eMul.expr_1.accept(new ExprTypeChecker(), environment);
         Type eMulRight = eMul.expr_2.accept(new ExprTypeChecker(), environment);
         if (environment.typeEquality(eMulLeft, eMulRight) && environment.typeEquality(eMulLeft, new Int())) {
-            eMul.expressionType = new Bool();
+            eMul.expressionType = eMulRight;
             return eMul.expressionType;
         }
-        throw new Exception("Expected eMulLeft same bool types. Received: "+
+        throw new TypeException(environment.getCurrentFunctionIdent(), "Expected the same types. Received: "+
                 PrettyPrinter.print(eMulLeft) + ", " + PrettyPrinter.print(eMulRight));
     }
 
     @Override
-    public Type visit(EAdd eAdd, Env environment) throws Exception {
+    public Type visit(EAdd eAdd, Env environment) throws TypeException {
         Type eAddLeft  = eAdd.expr_1.accept(new ExprTypeChecker(), environment);
         Type eAddRight = eAdd.expr_2.accept(new ExprTypeChecker(), environment);
         if (!environment.typeEquality(eAddLeft, eAddRight)) {
-            throw new Exception("Expected the same types. Received: "+
-                    PrettyPrinter.print(eAddLeft) + ", " + PrettyPrinter.print(eAddRight));
+            throw new TypeException(environment.getCurrentFunctionIdent(),
+                    "At add operator expression: invalid operands: ("+eAddLeft+"), and ("+eAddRight+").");
         }
-        eAdd.expressionType = new Int();
+        eAdd.expressionType = eAddLeft;
         return eAdd.expressionType;
     }
 
     @Override
-    public Type visit(ERel eRel, Env environment) throws Exception {
+    public Type visit(ERel eRel, Env environment) throws TypeException {
         Type eRelLeft  = eRel.expr_1.accept(new ExprTypeChecker(), environment);
         Type eRelRight = eRel.expr_2.accept(new ExprTypeChecker(), environment);
         if (!environment.typeEquality(eRelLeft, eRelRight)) {
-            throw new Exception("Expected the same bool types. Received: "+
+            throw new TypeException("Expected the same bool types. Received: "+
                     PrettyPrinter.print(eRelLeft) + ", " + PrettyPrinter.print(eRelRight));
         }
         eRel.expressionType = new Bool();
@@ -102,26 +125,26 @@ public class ExprTypeChecker implements Latte.Absyn.Expr.Visitor<Type, Env> {
     }
 
     @Override
-    public Type visit(EAnd eAnd, Env environment) throws Exception {
+    public Type visit(EAnd eAnd, Env environment) throws TypeException {
         Type eAndLeft  = eAnd.expr_1.accept(new ExprTypeChecker(), environment);
         Type eAndRight = eAnd.expr_2.accept(new ExprTypeChecker(), environment);
         if (environment.typeEquality(eAndLeft, eAndRight) && environment.typeEquality(eAndLeft, new Bool())) {
             eAnd.expressionType = new Bool();
             return eAnd.expressionType;
         }
-        throw new Exception("Expected the same bool types. Received: "+
+        throw new TypeException("Expected the same bool types. Received: "+
                 PrettyPrinter.print(eAndLeft) + ", " + PrettyPrinter.print(eAndRight));
     }
 
     @Override
-    public Type visit(EOr eOr, Env environment) throws Exception {
+    public Type visit(EOr eOr, Env environment) throws TypeException {
         Type eOrLeft  = eOr.expr_1.accept(new ExprTypeChecker(), environment);
         Type eOrRight = eOr.expr_2.accept(new ExprTypeChecker(), environment);
         if (environment.typeEquality(eOrLeft, eOrRight) && environment.typeEquality(eOrLeft, new Bool())) {
             eOr.expressionType = new Bool();
             return eOr.expressionType;
         }
-        throw new Exception("Expected the same bool types. Received: "+
+        throw new TypeException("Expected the same bool types. Received: "+
                 PrettyPrinter.print(eOrLeft) + ", " + PrettyPrinter.print(eOrRight));
     }
 }

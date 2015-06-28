@@ -9,7 +9,7 @@ public class EMul extends Expr {
 
     public EMul(Expr p1, MulOp p2, Expr p3) { expr_1 = p1; mulop_ = p2; expr_2 = p3; }
 
-    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
     @Override
     public String returnExprType(Env env, String currentFunction) throws TypeException {
