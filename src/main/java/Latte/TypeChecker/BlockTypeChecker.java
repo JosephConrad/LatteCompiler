@@ -9,7 +9,7 @@ import Latte.Env;
  */
 public class BlockTypeChecker implements Latte.Absyn.Block.Visitor<Void, Env> {
     @Override
-    public Void visit(Block block, Env environment) {
+    public Void visit(Block block, Env environment) throws Exception {
         for (Stmt statement: block.liststmt_) {
             statement.accept(new StatementTypeChecker(), environment);
         }

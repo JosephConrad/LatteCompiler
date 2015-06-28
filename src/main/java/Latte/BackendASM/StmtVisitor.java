@@ -14,14 +14,14 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
         return "";
     }
 
-    public String visit(Latte.Absyn.BStmt p, Env env) {
+    public String visit(Latte.Absyn.BStmt p, Env env) throws Exception {
         return p.block_.accept(new BlockVisitor(), env);
     }
 
     /*
      *  Declaration
      */
-    public String visit(Latte.Absyn.Decl p, Env env) {
+    public String visit(Latte.Absyn.Decl p, Env env) throws Exception {
 
         p.type_.accept(new TypeVisitor(), env);
 
@@ -36,7 +36,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     /*
      *  Assignment
      */
-    public String visit(Latte.Absyn.Ass p, Env env) {
+    public String visit(Latte.Absyn.Ass p, Env env) throws Exception {
 
         String asm = "";
 
@@ -83,7 +83,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     /*
      *  Return
      */
-    public String visit(Latte.Absyn.Ret p, Env env) {
+    public String visit(Latte.Absyn.Ret p, Env env) throws Exception {
         String asm = p.expr_.accept(new ExprVisitor(), env);
         asm += "\tpop rax\n";
         asm += "\tleave\n\tret\n";
@@ -100,7 +100,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     /*
      *  Condition
      */
-    public String visit(Latte.Absyn.Cond p, Env env) {
+    public String visit(Latte.Absyn.Cond p, Env env) throws Exception {
         int ifNo = env.ifCounter++;
         String suffix = env.funName.toUpperCase()+"_"+ifNo;
 
@@ -120,7 +120,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     /*
      *  Condition with else
      */
-    public String visit(Latte.Absyn.CondElse p, Env env) {
+    public String visit(Latte.Absyn.CondElse p, Env env) throws Exception {
 
         int ifNo = env.ifCounter++;
         String suffix = env.funName.toUpperCase()+"_"+ifNo;
@@ -146,7 +146,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     /*
      *  Loop
      */
-    public String visit(Latte.Absyn.While p, Env env) {
+    public String visit(Latte.Absyn.While p, Env env) throws Exception {
 
         int whileNo = env.whileCounter++;
 
@@ -171,7 +171,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     /*
      *  Expression instruction
      */
-    public String visit(Latte.Absyn.SExp p, Env env) {
+    public String visit(Latte.Absyn.SExp p, Env env) throws Exception {
         return p.expr_.accept(new ExprVisitor(), env);
     }
 }

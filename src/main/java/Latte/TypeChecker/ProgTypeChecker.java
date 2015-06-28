@@ -10,12 +10,14 @@ import Latte.Env;
  */
 public class ProgTypeChecker implements Program.Visitor<Env, Env>  {
     @Override
-    public Env visit(Program p, Env env) {
+    public Env visit(Program p, Env env) throws Exception {
+
+        System.err.println("dupa Program");
         for (TopDef topDef: p.listtopdef_) {
             env.addFunction((FnDef) topDef);
         }
-        for (TopDef def : p.listtopdef_) {
-            def.accept(new TopDefTypeChecker(), env);
+        for (TopDef topDef : p.listtopdef_) {
+            topDef.accept(new TopDefTypeChecker(), env);
         }
         return env;
     }

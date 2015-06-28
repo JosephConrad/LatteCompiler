@@ -13,7 +13,7 @@ public class BlockVisitor implements Block.Visitor<String, Env>
     /*
      *  Block
      */
-    public String visit(Latte.Absyn.Block p, Env env) {
+    public String visit(Latte.Absyn.Block p, Env env) throws Exception {
 
         String asm = "";
         for (Stmt x : p.liststmt_) {

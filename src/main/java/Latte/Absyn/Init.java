@@ -9,7 +9,7 @@ public class Init extends Item {
 
     public Init(String p1, Expr p2) { ident_ = p1; expr_ = p2; }
 
-    public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
 
     @Override
     public String getIdent() {

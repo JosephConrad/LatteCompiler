@@ -4,7 +4,7 @@ import Latte.Env;
 import Latte.Exceptions.TypeException;
 
 public abstract class TopDef implements java.io.Serializable {
-    public abstract <R,A> R accept(TopDef.Visitor<R,A> v, A arg);
+    public abstract <R,A> R accept(TopDef.Visitor<R,A> v, A arg) throws Exception;
     public abstract void returnType();
 
     public abstract void checkTypes(Env env) throws TypeException;

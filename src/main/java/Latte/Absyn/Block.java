@@ -8,7 +8,7 @@ public class Block {
 
     public Block(ListStmt p1) { liststmt_ = p1; }
 
-    public <R,A> R accept(Latte.Absyn.Block.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Block.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,7 +46,7 @@ public class Block {
     }
 
     public interface Visitor <R,A> {
-        public R visit(Latte.Absyn.Block p, A arg);
+        public R visit(Latte.Absyn.Block p, A arg) throws Exception;
 
     }
 

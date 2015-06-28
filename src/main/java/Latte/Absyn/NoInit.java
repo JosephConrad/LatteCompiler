@@ -5,7 +5,7 @@ public class NoInit extends Item {
 
     public NoInit(String p1) { ident_ = p1; }
 
-    public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A env) {
+    public <R,A> R accept(Latte.Absyn.Item.Visitor<R,A> v, A env) throws Exception {
         return v.visit(this, env);
     }
 

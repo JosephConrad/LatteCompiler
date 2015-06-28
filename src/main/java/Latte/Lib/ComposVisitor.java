@@ -17,8 +17,7 @@ public class ComposVisitor<A> implements
   Latte.Absyn.RelOp.Visitor<Latte.Absyn.RelOp,A>
 {
 /* Program */
-    public Program visit(Latte.Absyn.Program p, A arg)
-    {
+    public Program visit(Latte.Absyn.Program p, A arg) throws Exception {
       ListTopDef listtopdef_ = new ListTopDef();
       for (TopDef x : p.listtopdef_) {
         listtopdef_.add(x.accept(this,arg));
@@ -28,8 +27,7 @@ public class ComposVisitor<A> implements
     }
 
 /* TopDef */
-    public TopDef visit(Latte.Absyn.FnDef p, A arg)
-    {
+    public TopDef visit(Latte.Absyn.FnDef p, A arg) throws Exception {
       Type type_ = p.type_.accept(this, arg);
       String ident_ = p.ident_;
       ListArg listarg_ = new ListArg();
@@ -51,8 +49,7 @@ public class ComposVisitor<A> implements
     }
 
 /* Block */
-    public Block visit(Latte.Absyn.Block p, A arg)
-    {
+    public Block visit(Latte.Absyn.Block p, A arg) throws Exception {
       ListStmt liststmt_ = new ListStmt();
       for (Stmt x : p.liststmt_) {
         liststmt_.add(x.accept(this,arg));
@@ -67,14 +64,12 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.Empty();
     }
-    public Stmt visit(Latte.Absyn.BStmt p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.BStmt p, A arg) throws Exception {
       Block block_ = p.block_.accept(this, arg);
 
       return new Latte.Absyn.BStmt(block_);
     }
-    public Stmt visit(Latte.Absyn.Decl p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.Decl p, A arg) throws Exception {
       Type type_ = p.type_.accept(this, arg);
       ListItem listitem_ = new ListItem();
       for (Item x : p.listitem_) {
@@ -83,8 +78,7 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.Decl(type_, listitem_);
     }
-    public Stmt visit(Latte.Absyn.Ass p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.Ass p, A arg) throws Exception {
       String ident_ = p.ident_;
       Expr expr_ = p.expr_.accept(this, arg);
 
@@ -102,8 +96,7 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.Decr(ident_);
     }
-    public Stmt visit(Latte.Absyn.Ret p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.Ret p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
 
       return new Latte.Absyn.Ret(expr_);
@@ -113,30 +106,26 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.VRet();
     }
-    public Stmt visit(Latte.Absyn.Cond p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.Cond p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
       Stmt stmt_ = p.stmt_.accept(this, arg);
 
       return new Latte.Absyn.Cond(expr_, stmt_);
     }
-    public Stmt visit(Latte.Absyn.CondElse p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.CondElse p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
       Stmt stmt_1 = p.stmt_1.accept(this, arg);
       Stmt stmt_2 = p.stmt_2.accept(this, arg);
 
       return new Latte.Absyn.CondElse(expr_, stmt_1, stmt_2);
     }
-    public Stmt visit(Latte.Absyn.While p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.While p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
       Stmt stmt_ = p.stmt_.accept(this, arg);
 
       return new Latte.Absyn.While(expr_, stmt_);
     }
-    public Stmt visit(Latte.Absyn.SExp p, A arg)
-    {
+    public Stmt visit(Latte.Absyn.SExp p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
 
       return new Latte.Absyn.SExp(expr_);
@@ -149,8 +138,7 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.NoInit(ident_);
     }
-    public Item visit(Latte.Absyn.Init p, A arg)
-    {
+    public Item visit(Latte.Absyn.Init p, A arg) throws Exception {
       String ident_ = p.ident_;
       Expr expr_ = p.expr_.accept(this, arg);
 
@@ -212,8 +200,7 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.ELitFalse();
     }
-    public Expr visit(Latte.Absyn.EApp p, A arg)
-    {
+    public Expr visit(Latte.Absyn.EApp p, A arg) throws Exception {
       String ident_ = p.ident_;
       ListExpr listexpr_ = new ListExpr();
       for (Expr x : p.listexpr_) {
@@ -228,51 +215,44 @@ public class ComposVisitor<A> implements
 
       return new Latte.Absyn.EString(string_);
     }
-    public Expr visit(Latte.Absyn.Neg p, A arg)
-    {
+    public Expr visit(Latte.Absyn.Neg p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
 
       return new Latte.Absyn.Neg(expr_);
     }
-    public Expr visit(Latte.Absyn.Not p, A arg)
-    {
+    public Expr visit(Latte.Absyn.Not p, A arg) throws Exception {
       Expr expr_ = p.expr_.accept(this, arg);
 
       return new Latte.Absyn.Not(expr_);
     }
-    public Expr visit(Latte.Absyn.EMul p, A arg)
-    {
+    public Expr visit(Latte.Absyn.EMul p, A arg) throws Exception {
       Expr expr_1 = p.expr_1.accept(this, arg);
       MulOp mulop_ = p.mulop_.accept(this, arg);
       Expr expr_2 = p.expr_2.accept(this, arg);
 
       return new Latte.Absyn.EMul(expr_1, mulop_, expr_2);
     }
-    public Expr visit(Latte.Absyn.EAdd p, A arg)
-    {
+    public Expr visit(Latte.Absyn.EAdd p, A arg) throws Exception {
       Expr expr_1 = p.expr_1.accept(this, arg);
       AddOp addop_ = p.addop_.accept(this, arg);
       Expr expr_2 = p.expr_2.accept(this, arg);
 
       return new Latte.Absyn.EAdd(expr_1, addop_, expr_2);
     }
-    public Expr visit(Latte.Absyn.ERel p, A arg)
-    {
+    public Expr visit(Latte.Absyn.ERel p, A arg) throws Exception {
       Expr expr_1 = p.expr_1.accept(this, arg);
       RelOp relop_ = p.relop_.accept(this, arg);
       Expr expr_2 = p.expr_2.accept(this, arg);
 
       return new Latte.Absyn.ERel(expr_1, relop_, expr_2);
     }
-    public Expr visit(Latte.Absyn.EAnd p, A arg)
-    {
+    public Expr visit(Latte.Absyn.EAnd p, A arg) throws Exception {
       Expr expr_1 = p.expr_1.accept(this, arg);
       Expr expr_2 = p.expr_2.accept(this, arg);
 
       return new Latte.Absyn.EAnd(expr_1, expr_2);
     }
-    public Expr visit(Latte.Absyn.EOr p, A arg)
-    {
+    public Expr visit(Latte.Absyn.EOr p, A arg) throws Exception {
       Expr expr_1 = p.expr_1.accept(this, arg);
       Expr expr_2 = p.expr_2.accept(this, arg);
 

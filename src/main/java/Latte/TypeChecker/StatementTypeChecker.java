@@ -17,7 +17,7 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
     }
 
     @Override
-    public Void visit(BStmt blockStmt, Env environment) {
+    public Void visit(BStmt blockStmt, Env environment) throws Exception {
         environment.beginBlock();
         blockStmt.block_.accept(new BlockTypeChecker(), environment);
         environment.endBlock();
@@ -25,7 +25,7 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
     }
 
     @Override
-    public Void visit(Decl declarationStmt, Env environment) {
+    public Void visit(Decl declarationStmt, Env environment) throws Exception {
         for (Item item: declarationStmt.listitem_) {
             item.accept(new DeclItemTypeChecker(declarationStmt.type_), environment);
         }
@@ -35,7 +35,7 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
     @Override
     public Void visit(Ass assStmt, Env environment) throws Exception {
         Type rightHandType = assStmt.expr_.accept(new ExprTypeChecker(), environment);
-        Type leftHandType = assStmt.ident_;
+        Type leftHandType = environment.getVariableType(assStmt.ident_);
         if (!environment.typeEquality(leftHandType, rightHandType)) {
             throw new Exception("Assignemnt types conflict: "+ PrettyPrinter.print(assStmt));
         }
@@ -44,7 +44,7 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
 
     @Override
     public Void visit(Incr incrementStmt, Env environment) throws Exception {
-        Type variableType = incrementStmt.ident_;
+        Type variableType = environment.getVariableType(incrementStmt.ident_);
         if (!environment.typeEquality(variableType, new Int())) {
             throw new Exception("Increment type conflict: "+ PrettyPrinter.print(incrementStmt));
         }
@@ -53,7 +53,7 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
 
     @Override
     public Void visit(Decr decrementStmt, Env environment) throws Exception {
-        Type variableType = decrementStmt.ident_;
+        Type variableType = environment.getVariableType(decrementStmt.ident_);
         if (!environment.typeEquality(variableType, new Int())) {
             throw new Exception("Decrement type conflict: "+ PrettyPrinter.print(decrementStmt));
         }
@@ -61,12 +61,17 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
     }
 
     @Override
-    public Void visit(Ret returnType, Env environment) {
+    public Void visit(Ret ret, Env environment) throws Exception {
+        Type returnType = ret.expr_.accept(new ExprTypeChecker(), environment);
+        Type funType = environment.getCurrentFunctionType();
+        if (!environment.typeEquality(funType, returnType)) {
+            throw new Exception("Incompatible types in return and defintion: "+ PrettyPrinter.print(funType));
+        }
         return null;
     }
 
     @Override
-    public Void visit(VRet voidReturnType, Env environment) throws Exception {
+    public Void visit(VRet voidRet, Env environment) throws Exception {
         Type funType = environment.getCurrentFunctionType();
         if (!environment.typeEquality(funType, new Latte.Absyn.Void())) {
             throw new Exception("Void returned. Expected: "+ PrettyPrinter.print(funType));
@@ -106,7 +111,7 @@ public class StatementTypeChecker implements Latte.Absyn.Stmt.Visitor<Void, Env>
     }
 
     @Override
-    public Void visit(SExp exprStmt, Env environment) {
+    public Void visit(SExp exprStmt, Env environment) throws Exception {
         exprStmt.expr_.accept(new ExprTypeChecker(), environment);
         return null;
     }

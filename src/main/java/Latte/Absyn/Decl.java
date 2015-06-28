@@ -9,7 +9,7 @@ public class Decl extends Stmt {
 
     public Decl(Type p1, ListItem p2) { type_ = p1; listitem_ = p2; }
 
-    public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+    public <R,A> R accept(Latte.Absyn.Stmt.Visitor<R,A> v, A arg) throws Exception { return v.visit(this, arg); }
 
     @Override
     public boolean functionsReturnAchievibility() {

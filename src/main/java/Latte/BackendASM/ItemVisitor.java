@@ -26,7 +26,7 @@ public class ItemVisitor implements Item.Visitor<String, Env>
     /*
      *  Item with initialization
      */
-    public String visit(Latte.Absyn.Init p, Env env) {
+    public String visit(Latte.Absyn.Init p, Env env) throws Exception {
         String asm = "";
 
         Env.ileZmiennych++;

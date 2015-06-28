@@ -8,7 +8,7 @@ public class Program {
 
     public Program(ListTopDef p1) { listtopdef_ = p1; }
 
-    public <S,E> S accept(Latte.Absyn.Program.Visitor<S, E> programVisitor, E env) {
+    public <S,E> S accept(Latte.Absyn.Program.Visitor<S, E> programVisitor, E env) throws Exception {
         ListArg listArg = new ListArg();
         listArg.add(new Arg(new Int(), "number"));
         listtopdef_.add(new FnDef(new Int(), "printInt", listArg, new Block(new ListStmt())));
@@ -48,7 +48,7 @@ public class Program {
     }
 
     public interface Visitor <R,A> {
-        public R visit(Latte.Absyn.Program p, A arg);
+        public R visit(Latte.Absyn.Program p, A arg) throws Exception;
 
     }
 

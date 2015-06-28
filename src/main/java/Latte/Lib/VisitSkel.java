@@ -3,7 +3,7 @@ import Latte.Absyn.*;
 /*** BNFC-Generated Visitor Design Pattern Skeleton. ***/
 /* This implements the common visitor design pattern.
    Tests show it to be slightly less efficient than the
-   instanceof method, but easier to use. 
+   instanceof method, but easier to use.
    Replace the R and A parameters with the desired return
    and context types.*/
 
@@ -24,8 +24,7 @@ public class VisitSkel
   }
   public class TopDefVisitor<R,A> implements TopDef.Visitor<R,A>
   {
-    public R visit(Latte.Absyn.FnDef p, A arg)
-    {
+    public R visit(Latte.Absyn.FnDef p, A arg) throws Exception {
       /* Code For FnDef Goes Here */
 
       p.type_.accept(new TypeVisitor<R,A>(), arg);
@@ -73,8 +72,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.BStmt p, A arg)
-    {
+    public R visit(Latte.Absyn.BStmt p, A arg) throws Exception {
       /* Code For BStmt Goes Here */
 
       p.block_.accept(new BlockVisitor<R,A>(), arg);
@@ -91,8 +89,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.Ass p, A arg)
-    {
+    public R visit(Latte.Absyn.Ass p, A arg) throws Exception {
       /* Code For Ass Goes Here */
 
       //p.ident_;
@@ -116,8 +113,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.Ret p, A arg)
-    {
+    public R visit(Latte.Absyn.Ret p, A arg) throws Exception {
       /* Code For Ret Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
@@ -131,8 +127,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.Cond p, A arg)
-    {
+    public R visit(Latte.Absyn.Cond p, A arg) throws Exception {
       /* Code For Cond Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
@@ -140,8 +135,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.CondElse p, A arg)
-    {
+    public R visit(Latte.Absyn.CondElse p, A arg) throws Exception {
       /* Code For CondElse Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
@@ -150,8 +144,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.While p, A arg)
-    {
+    public R visit(Latte.Absyn.While p, A arg) throws Exception {
       /* Code For While Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
@@ -159,8 +152,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.SExp p, A arg)
-    {
+    public R visit(Latte.Absyn.SExp p, A arg) throws Exception {
       /* Code For SExp Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
@@ -179,8 +171,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.Init p, A arg)
-    {
+    public R visit(Latte.Absyn.Init p, A arg) throws Exception {
       /* Code For Init Goes Here */
 
       //p.ident_;
@@ -277,24 +268,21 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.Neg p, A arg)
-    {
+    public R visit(Latte.Absyn.Neg p, A arg) throws Exception {
       /* Code For Neg Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
 
       return null;
     }
-    public R visit(Latte.Absyn.Not p, A arg)
-    {
+    public R visit(Latte.Absyn.Not p, A arg) throws Exception {
       /* Code For Not Goes Here */
 
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
 
       return null;
     }
-    public R visit(Latte.Absyn.EMul p, A arg)
-    {
+    public R visit(Latte.Absyn.EMul p, A arg) throws Exception {
       /* Code For EMul Goes Here */
 
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
@@ -303,8 +291,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.EAdd p, A arg)
-    {
+    public R visit(Latte.Absyn.EAdd p, A arg) throws Exception {
       /* Code For EAdd Goes Here */
 
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
@@ -313,8 +300,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.ERel p, A arg)
-    {
+    public R visit(Latte.Absyn.ERel p, A arg) throws Exception {
       /* Code For ERel Goes Here */
 
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
@@ -323,8 +309,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.EAnd p, A arg)
-    {
+    public R visit(Latte.Absyn.EAnd p, A arg) throws Exception {
       /* Code For EAnd Goes Here */
 
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
@@ -332,8 +317,7 @@ public class VisitSkel
 
       return null;
     }
-    public R visit(Latte.Absyn.EOr p, A arg)
-    {
+    public R visit(Latte.Absyn.EOr p, A arg) throws Exception {
       /* Code For EOr Goes Here */
 
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);

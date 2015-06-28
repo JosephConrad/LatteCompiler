@@ -17,11 +17,12 @@ public class Env {
     public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
 
 
+    private String currentFunctionIdent;
 
 
     public Env() {
+        this.envVar = new Stack<Map<String, Type>>();
         this.envFun = new Stack<Map<String, Fun>>();
-
         this.stringsMap = new HashMap<String, String>();
         addPredefinedFunctions();
     }
@@ -121,6 +122,7 @@ public class Env {
 
     public void beginFunction(String functionIdent) throws Exception {
         currentFunction = getFunctionById(functionIdent);
+        currentFunctionIdent = functionIdent;
         beginBlock();
     }
 
@@ -136,14 +138,38 @@ public class Env {
         throw new Exception("No function of identifier: "+functionIdent);
     }
 
+
+    public Type getVariableType(String ident) throws Exception {
+        Iterator<Map<String, Type>> iter = envVar.iterator();
+
+        while (iter.hasNext()){
+            Type type = iter.next().get(ident);
+            if (!(type == null)) {
+                return type;
+            }
+        }
+        throw new Exception("No variable of identifier: "+ident);
+    }
+
     public void endFunction() {
     }
 
-    public void addVariable(String ident, Type type) {
+    public void addVariable(String ident, Type type) throws Exception {
+        if (envVar.peek().containsKey(ident)) {
+            throw new Exception(
+                    "\tAt function " + currentFunctionIdent + ",\n" +
+                    "\t\tAt variable " + ident + " declaration: variable " + ident + " is redeclared.");
+        }
+        if (type.equals(new Void())) {
+            throw new Exception("Nie można zadeklarować zmiennej typu void");
+        } else if (type.equals(new Void())) {
+            throw new Exception("Nie można zadeklarować tablicy zawierającej zmienne typu void");
+        }
+        envVar.peek().put(ident, type);
     }
 
     public boolean typeEquality(Type leftHandType, Type rightHandType) {
-        return true;
+        return leftHandType == rightHandType;
     }
 
     public Fun getCurrentFunction() {

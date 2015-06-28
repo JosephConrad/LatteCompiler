@@ -8,6 +8,8 @@ import java.io.*;
 public class Run
 {
     public static void main(String args[]) throws Exception {
+        boolean DEBUG = false;
+        if (args.length > 1) DEBUG = true;
         Yylex l = null;
         parser p = new parser();
         try
@@ -23,15 +25,15 @@ public class Run
         p = new parser(l);
         try
         {
+            System.err.println("dupa");
             String[] parts = args[0].split("/");
             String[] fileName = parts[2].split("\\.");
             File file = new File(args[0]);
-            
+
             String absolutePath = file.getAbsolutePath();
             String filePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
             PrintStream out = new PrintStream(new FileOutputStream(filePath+File.separator+fileName[0]+".s"));
             System.setOut(out);
-           // Latte.Absyn.Program parse_tree = p.pProgram();
 
             System.out.println("; Nasm - Assembly code generator for Latte");
             System.out.println("; Author: Konrad Lisiecki");
@@ -48,17 +50,23 @@ public class Run
             String execFile = filePath+File.separator+fileName[0];
             Process pr = rt.exec("nasm -g -f elf64 -o " + objectFile + "  " + assFile);
             Process pr1 = rt.exec("gcc -o  " + execFile + " -Wall -g "+ objectFile + "  lib/runtime.o");
-            System.exit(0);
+            if (!DEBUG) System.exit(0);
         }
-        catch(Throwable e)
+        catch(Exception e)
         {
             System.err.println("ERROR");
-            System.err.println("During executing file: " + args[0]);
+            System.err.println("Type error executing file: " + args[0]);
             System.err.println("" + e.getMessage());
-            if (e.getClass() == Exception.class)    
+            System.err.println("\n\n");
+            if (!DEBUG) System.exit(1);
+        } catch(Throwable e)
+        {
+            System.err.println("ERROR");
+            System.err.println("Syntax error executing file: " + args[0]);
+            if (e.getClass() == Exception.class)
                 System.err.println("\tAt line " + String.valueOf(l.line_num()) + ", near \"" + l.buff() + "\".");
             System.err.println("\n\n");
-            System.exit(1);
+            if (!DEBUG) System.exit(1);
         }
     }
 

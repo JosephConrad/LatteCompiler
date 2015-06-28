@@ -6,7 +6,7 @@ import Latte.Exceptions.TypeException;
 public abstract class Expr implements java.io.Serializable {
     public Type expressionType = null;
 
-    public abstract <R,A> R accept(Expr.Visitor<R,A> v, A arg);
+    public abstract <R,A> R accept(Expr.Visitor<R,A> v, A arg) throws Exception;
 
     public boolean evalExpr() {
         return false;
@@ -19,7 +19,7 @@ public abstract class Expr implements java.io.Serializable {
         public R visit(Latte.Absyn.ELitInt p, A arg);
         public R visit(Latte.Absyn.ELitTrue p, A arg);
         public R visit(Latte.Absyn.ELitFalse p, A arg);
-        public R visit(Latte.Absyn.EApp p, A arg);
+        public R visit(Latte.Absyn.EApp p, A arg) throws Exception;
         public R visit(Latte.Absyn.EString p, A arg);
         public R visit(Latte.Absyn.Neg p, A arg) throws Exception;
         public R visit(Latte.Absyn.Not p, A arg) throws Exception;
