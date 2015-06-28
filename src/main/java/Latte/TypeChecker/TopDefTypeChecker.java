@@ -17,8 +17,13 @@ public class TopDefTypeChecker implements TopDef.Visitor<Void, Env> {
         processArguments(function, environment);
         processBlock(function, environment);
         checkReturnAccessibility(function, environment);
+        function.localVar = calcLocalVar(function, environment);
         environment.endFunction();
         return null;
+    }
+
+    private int calcLocalVar(FnDef function, Env environment) throws TypeException {
+        return function.block_.accept(new BlockLocalVarCounter(), environment);
     }
 
     private void checkReturnAccessibility(FnDef function, Env environment) throws TypeException {

@@ -15,7 +15,7 @@ public class RunTest
         Run.main(new String[]{"tests/good/core012.lat", "true"});
     }
 
-    //@Test
+    @Test
     public void main_String_NegativeTest() throws Exception {
 
 
