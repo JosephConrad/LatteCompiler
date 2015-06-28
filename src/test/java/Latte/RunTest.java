@@ -4,7 +4,18 @@ import org.junit.Test;
 
 public class RunTest
 {
+
+
+
+
     @Test
+    public void main_String_SingleTest() throws Exception {
+
+        System.err.println("\n====================\n");
+        Run.main(new String[]{"tests/good/core012.lat", "true"});
+    }
+
+    //@Test
     public void main_String_NegativeTest() throws Exception {
 
 

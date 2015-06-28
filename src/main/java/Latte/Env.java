@@ -25,6 +25,10 @@ public class Env {
     private String currentFunctionIdent;
 
 
+    public Map<String, String> getStringsMap() {
+        return stringsMap;
+    }
+
     public Env() {
         this.envVar = new Stack<Map<String, Type>>();
         this.envFun = new Stack<Map<String, Fun>>();
@@ -107,7 +111,7 @@ public class Env {
 
     public void addString(String str) {
         if (stringsMap.containsKey(str)) return;
-        stringsMap.put(str, ".LC"+ stringsCounter++);
+        stringsMap.put(str, "LC"+ stringsCounter++);
     }
 
     public String getStringAddress(String str) {

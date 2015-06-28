@@ -8,7 +8,7 @@ import Latte.BackendASM.TypeVisitor;
 import Latte.Exceptions.TypeException;
 import Latte.TypeChecker.ProgTypeChecker;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /*** BNFC-Generated Visitor Design Pattern Skeleton. ***/
 
@@ -28,7 +28,7 @@ public class AsmGenerator {
      */
     void generateASM() throws TypeException {
         this.env = frontEnd();
-        //backEnd();
+        backEnd(this.env);
     }
 
     /*
@@ -36,33 +36,20 @@ public class AsmGenerator {
      */
     Env frontEnd() throws TypeException {
         Env env = program.accept(new ProgTypeChecker(), new Env());
-
-//        Env.functionsReturnAchievibility = new HashMap<String, Boolean>();
-//        Env.functionsReturnType = new HashMap<String, String>();
-//
-//        program.functionsRetType();
-//        program.checkTypes(env);
         return env;
     }
 
     /*
      * Backend function
      */
-    void backEnd() throws TypeException {
-
-        Env.strings = new HashMap<String, String>();
-
+    void backEnd(Env env) throws TypeException {
         ProgramVisitor<String, Env> programVisitor = new ProgramVisitor<String, Env>();
-
-        String asm = program.accept(programVisitor, env);
-
-        String data = "SECTION .data\n";
-//        for (String key : env. keySet()) {
-//            data += "\t" + key + "\tdb\t\"" + env.getLast().strings.get(key) + "\", 0\n";
-//        }
-
-//        if (!env.   .strings.isEmpty())
-//            System.out.println("\n" + data);
+        String asm = "";
+        asm += "SECTION .data\n";
+        for (Map.Entry<String, String> entry : env.getStringsMap().entrySet()) {
+            asm += "\t" + entry.getValue() + "\tdb\t\"" + entry.getKey() + "\", 0\n";
+        }
+        asm += program.accept(programVisitor, env);
         System.out.println("\n" + asm);
     }
 
