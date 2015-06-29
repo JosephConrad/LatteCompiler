@@ -12,10 +12,10 @@ public class RunTest
     public void main_String_SingleTest() throws Exception {
 
         System.err.println("\n====================\n");
-        Run.main(new String[]{"tests/good/core006.lat", "true"});
+        Run.main(new String[]{"tests/good/core015.lat", "true"});
     }
 
-    //@Test
+    @Test
     public void main_String_NegativeTest() throws Exception {
 
 

@@ -75,35 +75,32 @@ public class AsmGenerator {
     public class TopDefVisitor implements TopDef.Visitor<String, Env> {
 
         public String visit(Latte.Absyn.FnDef function, Env env) throws TypeException {
+
+            env.beginFunctionASM(function);
             if (env.predefinedFunctions.contains(function.ident_)) {
                 return "";
             }
 
-            String prolog = function.ident_ + ":\n";
-            prolog += "\tpush rbp\n";
-            prolog += "\tmov rbp, rsp\n";
-            prolog += "\tsub rsp, " + function.localVars * 8 + "\n";
-            String asm = "";
-            //env.add(new Env(p.ident_));
-
-
-            function.type_.accept(new TypeVisitor(), env);
-
-
-            env.ileArgumentow = function.listarg_.size();
-            env.localVarShift = (env.ileArgumentow + 1) * 8;
-
-            for (Arg a : function.listarg_) {
-                asm += a.accept(new ArgVisitor(), env);
-                env.ileArgumentow--;
+            int param = 2;
+            for (Arg argument: function.listarg_) {
+                env.addFunctionParams(argument.ident_, param * 8);
             }
+            env.beginBlockASM();
+
+            String asm = "";
+            asm += function.ident_ + ":\n";
+            asm += "\tpush rbp\n";
+            asm += "\tmov rbp, rsp\n";
+            asm += "\tsub rsp, " + function.localVars * 8 + "\n";
 
             asm += function.block_.accept(new BlockVisitor(), env) ;
 
             asm += "\tleave\n";
             asm += "\tret\n";
             asm += "\n\n";
-            return prolog+asm;
+            env.endBlockASM();
+            env.endFunctionASM();
+            return asm;
         }
     }
 

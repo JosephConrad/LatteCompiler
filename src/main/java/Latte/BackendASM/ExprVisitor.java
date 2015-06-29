@@ -145,24 +145,12 @@ public class ExprVisitor implements Expr.Visitor<String, Env>
      * Sum expression
      */
     public String visit(Latte.Absyn.EAdd p, Env env) throws TypeException {
-        String type = null;
-        try {
-            type = p.returnExprType(env, "");
-        } catch (TypeException e) {
-            e.printStackTrace();
-        }
-
         String asm = "";
         asm += p.expr_1.accept(new ExprVisitor(), env);
         asm += p.expr_2.accept(new ExprVisitor(), env);
         asm += twoArgs();
 
-        if (type == "string")
-            env.addIsString = true;
-
         asm += p.addop_.accept(new AddOpVisitor(), env);
-
-        env.addIsString = false;
 
         asm += "\tpush rax\n";
         return asm;

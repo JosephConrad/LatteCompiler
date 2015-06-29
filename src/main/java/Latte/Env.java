@@ -16,6 +16,9 @@ public class Env {
     public Map<String, Integer> varDeclarationEnv = new HashMap<String, Integer>();
     public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
     public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
+    private FnDef currentFunctionBlockGenerator;
+    private int createdLocals;
+    private Stack<Map<String, Integer>> functionParams;
 
 
     public String getCurrentFunctionIdent() {
@@ -33,6 +36,7 @@ public class Env {
         this.envVar = new Stack<Map<String, Type>>();
         this.envFun = new Stack<Map<String, Fun>>();
         this.stringsMap = new HashMap<String, String>();
+        this.functionParams = new Stack<Map<String, Integer>>();
         addPredefinedFunctions();
     }
 
@@ -187,5 +191,29 @@ public class Env {
 
     public Type getCurrentFunctionType() {
         return currentFunction.type_;
+    }
+
+    public void beginFunctionASM(FnDef function) {
+        currentFunctionBlockGenerator = function;
+        createdLocals = 0;
+        beginBlockASM();
+
+    }
+
+    public void endFunctionASM() {
+        currentFunctionBlockGenerator = null;
+        endBlockASM();
+    }
+
+    public void beginBlockASM() {
+        functionParams.push(new HashMap<String, Integer>());
+    }
+
+    public void addFunctionParams(String ident, int shift) {
+        functionParams.peek().put(ident, shift);
+    }
+
+    public void endBlockASM() {
+        functionParams.pop();
     }
 }
