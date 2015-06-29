@@ -11,17 +11,6 @@ public class EAnd extends Expr {
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
 
-    @Override
-    public String returnExprType(Env env, String currentFunction) throws TypeException {
-        String expr1Type = expr_1.returnExprType(env, currentFunction);
-        String expr2Type = expr_2.returnExprType(env, currentFunction);
-        if ((expr1Type == expr2Type) && (expr1Type == "boolean"))
-            return "boolean";
-        else
-            throw new TypeException(currentFunction,
-                    "\n\t\tAt conjunction expression: invalid operands: " + expr1Type + ", and " + expr1Type);
-    }
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof Latte.Absyn.EAnd) {

@@ -16,25 +16,6 @@ public class EApp extends Expr {
         return true;
     }
 
-    @Override
-    public String returnExprType(Env env, String currentFunction) throws TypeException {
-
-        if ((ident_ == "printInt") && (listexpr_.get(0).returnExprType(env, currentFunction) != "int"))
-            throw new TypeException(currentFunction, "function printInt takes as parameter int, not "
-                    + listexpr_.get(0).returnExprType(env, currentFunction) + ".");
-
-        if ((ident_ == "printString") && (listexpr_.get(0).returnExprType(env, currentFunction) != "string"))
-            throw new TypeException(currentFunction, "function printString takes as parameter string, not "
-                    + listexpr_.get(0).returnExprType(env, currentFunction)+".");
-
-        if (Env.functionsArgumentsNumber.get(ident_) != listexpr_.size())
-            throw new TypeException(currentFunction,
-                    "\n\t\tAt function " + ident_ + " application: Wrong number of arguments. Function "
-                            + ident_ + " takes " + Env.functionsArgumentsNumber.get(ident_) + " argument(s), but "
-                            + listexpr_.size() + " found.");
-
-        return Env.functionsReturnType.get(ident_);
-    }
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 

@@ -16,14 +16,6 @@ public class Init extends Item {
         return ident_;
     }
 
-    public void checkTypes(Env env, String currentFunction, Type type_) throws TypeException {
-        env.variableType.put(this.getIdent(), type_.toString());
-        if (type_.toString() != expr_.returnExprType(env, currentFunction))
-            throw new TypeException(currentFunction,
-                    " \n\t\tAt assignment expression: to variable " + ident_ +
-                    " of type (" + type_ +
-                    ") cannot be assigned (" + expr_.returnExprType(env, currentFunction) + ") expression.");
-    }
 
     public boolean equals(Object o) {
         if (this == o) return true;

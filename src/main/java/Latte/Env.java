@@ -10,27 +10,25 @@ import java.util.*;
  * Created by konrad on 01/02/15.
  */
 public class Env {
-    public List<String> predefinedFunctions =
+    private List<String> predefinedFunctions =
             Arrays.asList("readInt", "readString", "printInt", "printString", "concatenateString");
-    public Map<String, String> variableType = new HashMap<String, String>();
-    public Map<String, Integer> varDeclarationEnv = new HashMap<String, Integer>();
-    public Map<String, Integer> variableShifts = new HashMap<String, Integer>(); // Name, Shift
-    public Map<String, Integer> argumentsShifts = new HashMap<String, Integer>(); // Name, Shift
     private FnDef currentFunctionBlockGenerator;
-    private int createdLocals;
     private Stack<Map<String, Integer>> functionParams;
-
-
-    public String getCurrentFunctionIdent() {
-        return currentFunctionIdent;
-    }
-
+    private Stack<Map<String, Type>> envVar;
+    private Stack<Map<String, Fun>> envFun;
+    private Map<String, String> stringsMap;
     private String currentFunctionIdent;
+    private Fun currentFunction;
+    private static int stringsCounter = 0;
+    private int createdLocals;
 
-
-    public Map<String, String> getStringsMap() {
-        return stringsMap;
+    public String getNextLabel() {
+        return "LABEL_"+ labelNumber++;
     }
+
+    private int labelNumber = 1;
+
+    private boolean plusConcat;
 
     public Env() {
         this.envVar = new Stack<Map<String, Type>>();
@@ -39,37 +37,6 @@ public class Env {
         this.functionParams = new Stack<Map<String, Integer>>();
         addPredefinedFunctions();
     }
-
-
-
-    private Stack<Map<String, Type>> envVar;
-
-    private Stack<Map<String, Fun>> envFun;
-    private Fun currentFunction;
-
-    private Map<String, String> stringsMap;
-
-    public int rbp = 4;
-    public int ifCounter = 1;
-    public int neg;
-    public int whileCounter = 1;
-    public int jmpExpCounter = 1;
-    public int andExpCounter = 1;
-    public int orExpCounter = 1;
-    public int localVarShift = 8;
-    public int ileArgumentow = 0;
-    public static int ileZmiennych = 0;
-    public String funName = "";
-    public boolean addIsString = false;
-
-    public static Map<String, String> strings = new HashMap<String, String>();
-    public static Map<String, Boolean> functionsReturnAchievibility = new HashMap<String, Boolean>();
-    public static Map<String, String> functionsReturnType = new HashMap<String, String>();
-    public static Map<String, Integer> functionsArgumentsNumber = new HashMap<String, Integer>();
-
-
-    public static int stringsCounter = 0;
-
 
 
 
@@ -99,10 +66,6 @@ public class Env {
 
     public void endBlock() {
         envVar.pop();
-    }
-
-    public Env(String ident_) {
-        this.funName = ident_;
     }
 
     public static <K, V>  Map<K, V> deepCopy(Map<K,V> map) {
@@ -153,6 +116,16 @@ public class Env {
             }
         }
         throw new TypeException("No function of identifier: "+functionIdent);
+    }
+
+    public int getVarStack(String ident) throws TypeException {
+        for (ListIterator<Map<String, Integer>> iterator = functionParams
+                .listIterator(functionParams.size()); iterator.hasPrevious();) {
+            Integer value = iterator.previous().get(ident);
+            if (value != null)
+                return value;
+        }
+        throw new TypeException("Brak zmiennej o identyfikatorze "+ident);
     }
 
 
@@ -215,5 +188,46 @@ public class Env {
 
     public void endBlockASM() {
         functionParams.pop();
+    }
+//
+//    public String getFunctionParamShift(String ident_) {
+//    }
+
+    public String getCurrentFunctionIdent() {
+        return currentFunctionIdent;
+    }
+
+    public Map<String, String> getStringsMap() {
+        return stringsMap;
+    }
+
+
+    public boolean isPlusConcat() {
+        return plusConcat;
+    }
+
+    public void setPlusConcat(boolean plusConcat) {
+        this.plusConcat = plusConcat;
+    }
+
+    public void determinePlusOperation(Type expressionType) {
+        setPlusConcat(false);
+        if (expressionType.equals(new Str())) {
+            setPlusConcat(true);
+        }
+    }
+
+    public boolean isPredefinedFunction(String ident) {
+        return predefinedFunctions.contains(ident);
+    }
+
+    public int getLocalVarNumber() {
+        int result = -4*(currentFunctionBlockGenerator.localVars - createdLocals);
+        createdLocals++;
+        return result;
+    }
+
+    public void addVariableStack(String ident, int varNumber) {
+        functionParams.peek().put(ident, varNumber);
     }
 }

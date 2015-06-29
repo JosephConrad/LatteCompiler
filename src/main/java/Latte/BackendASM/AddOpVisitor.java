@@ -14,21 +14,21 @@ public class AddOpVisitor implements AddOp.Visitor<String, Env>
     */
     public String visit(Latte.Absyn.Plus p, Env env) {
 
-        if (env.addIsString == true) {
-            String asm = "\tmov rdi, rax\n";
-            asm += "\tmov rsi, rcx\n";
+        if (env.isPlusConcat()) {
+            String asm = "\tmov edi, eax\n";
+            asm += "\tmov esi, ecx\n";
             asm += "\tcall concatenateString\n";
             asm += "\tadd esp, 8\n";
             return asm;
         }
-        return "\tadd rax, rcx\n" ;
+        return "\tadd eax, ecx\n" ;
     }
 
     /*
     *  Sub two expressions
     */
     public String visit(Latte.Absyn.Minus p, Env env) {
-        return "\tsub rax, rcx\n";
+        return "\tsub eax, ecx\n";
     }
 
 }

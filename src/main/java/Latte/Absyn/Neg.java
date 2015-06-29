@@ -15,14 +15,6 @@ public class Neg extends Expr {
         return false;
     }
 
-    @Override
-    public String returnExprType(Env env, String currentFunction) throws TypeException {
-        String type = expr_.returnExprType(env, currentFunction);
-        if (type == "int") return "int";
-        else
-            throw new TypeException(currentFunction, "not appropriate argument for negation");
-    }
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof Latte.Absyn.Neg) {

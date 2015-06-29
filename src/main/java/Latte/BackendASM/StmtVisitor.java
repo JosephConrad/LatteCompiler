@@ -28,7 +28,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
 
         String asm = "";
         for (Item x : p.listitem_) {
-            env.variableType.put(x.getIdent(), p.type_.toString());
+            env.addVariable(x.getIdent(), p.type_);
             asm += x.accept(new ItemVisitor(), env);
         }
         return asm;
@@ -42,42 +42,37 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
         String asm = "";
 
         asm += p.expr_.accept(new ExprVisitor(), env);
-        asm += "\tpop rax\n";
-
-        if (env.variableShifts.containsKey(p.ident_)) {
-            asm += "\tmov [rbp-"+env.variableShifts.get(p.ident_)+"], rax\n";
-        }
-        if (env.argumentsShifts.containsKey(p.ident_)) {
-            asm += "\tmov [rbp+"+env.variableShifts.get(p.ident_)+"], rax\n";
-        }
+        asm += "\tpop eax\n";
+        asm += "\tmov [ebp"+env.getVarStack(p.ident_)+"], eax\n";
+        asm += "\tmov [ebp"+env.getVarStack(p.ident_) + "], eax\n";
         return asm;
     }
 
     /*
      *  Increment
      */
-    public String visit(Latte.Absyn.Incr p, Env env) {
+    public String visit(Latte.Absyn.Incr p, Env env) throws TypeException {
 
-        int shift = env.variableShifts.get(p.ident_);
+        int shift = env.getVarStack(p.ident_);
 
         String asm = "";
-        asm += "\tmov rax, [rbp-"+ shift +"]\n";
-        asm += "\tadd rax, 1\n";
-        asm += "\tmov [rbp-"+ shift +"], rax\n";
+        asm += "\tmov eax, [ebp"+ shift +"]\n";
+        asm += "\tadd eax, 1\n";
+        asm += "\tmov [ebp"+ shift +"], eax\n";
         return asm;
     }
 
     /*
      *  Decrement
      */
-    public String visit(Latte.Absyn.Decr p, Env env) {
+    public String visit(Latte.Absyn.Decr p, Env env) throws TypeException {
 
-        int shift = env.variableShifts.get(p.ident_);
+        int shift = env.getVarStack(p.ident_);
 
         String asm = "";
-        asm += "\tmov rax, [rbp-"+ shift +"]\n";
-        asm += "\tsub rax, 1\n";
-        asm += "\tmov [rbp-"+ shift +"], rax\n";
+        asm += "\tmov eax, [ebp-"+ shift +"]\n";
+        asm += "\tsub eax, 1\n";
+        asm += "\tmov [ebp-"+ shift +"], eax\n";
         return asm;
     }
 
@@ -86,8 +81,8 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
      */
     public String visit(Latte.Absyn.Ret p, Env env) throws TypeException {
         String asm = p.expr_.accept(new ExprVisitor(), env);
-        asm += "\tpop rax\n";
-        asm += "\tleave\n\tret\n";
+        asm += "\tpop eax\n";
+        asm += "\tjmp ret_" + env.getCurrentFunctionIdent() + "\n";
         return asm;
     }
 
@@ -95,21 +90,23 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
      *  Void Return
      */
     public String visit(Latte.Absyn.VRet p, Env env) {
-        return "\tmov rax, 0\n\tleave\n\tret\n";
+        String asm = "";
+        asm += "\tmov eax, 0\n";
+        asm += "\tjmp ret_" + env.getCurrentFunctionIdent() + "\n";
+        return asm;
     }
 
     /*
      *  Condition
      */
     public String visit(Latte.Absyn.Cond p, Env env) throws TypeException {
-        int ifNo = env.ifCounter++;
-        String suffix = env.funName.toUpperCase()+"_"+ifNo;
+        String suffix = env.getNextLabel();
 
         String asm = p.expr_.accept(new ExprVisitor(), env);
 
         asm += "\nIF_"+suffix+":\n";
-        asm += "\tpop rax\n";
-        asm += "\tcmp rax, 0\n";
+        asm += "\tpop eax\n";
+        asm += "\tcmp eax, 0\n";
         asm += "\tje AFTER_IF_"+suffix+"\n\n";
 
         asm += p.stmt_.accept(new StmtVisitor(), env);
@@ -122,15 +119,13 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
      *  Condition with else
      */
     public String visit(Latte.Absyn.CondElse p, Env env) throws TypeException {
-
-        int ifNo = env.ifCounter++;
-        String suffix = env.funName.toUpperCase()+"_"+ifNo;
+        String suffix = env.getNextLabel();
 
         String asm = p.expr_.accept(new ExprVisitor(), env);
 
         asm += "\nIF_"+suffix+":\n";
-        asm += "\tpop rax\n";
-        asm += "\tcmp rax, 0\n";
+        asm += "\tpop eax\n";
+        asm += "\tcmp eax, 0\n";
         asm += "\tje  ELSE_"+suffix+"\n\n";
 
         asm += p.stmt_1.accept(new StmtVisitor(), env);
@@ -149,17 +144,15 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
      */
     public String visit(Latte.Absyn.While p, Env env) throws TypeException {
 
-        int whileNo = env.whileCounter++;
-
-        String whileLabel = "WHILE_"+env.funName.toUpperCase()+"_"+whileNo;
-        String afterWhileLabel = "AFTER_WHILE_"+env.funName.toUpperCase()+"_"+whileNo;
+        String whileLabel = env.getNextLabel();
+        String afterWhileLabel = env.getNextLabel();
 
         String asm = whileLabel + ":\n";
 
         asm += p.expr_.accept(new ExprVisitor(), env);
 
-        asm += "\tpop rax\n";
-        asm += "\tcmp rax, 0\n";
+        asm += "\tpop eax\n";
+        asm += "\tcmp eax, 0\n";
         asm += "\tje " + afterWhileLabel+"\n\n";
 
         asm += p.stmt_.accept(new StmtVisitor(), env);

@@ -17,32 +17,6 @@ public class FnDef extends TopDef {
     }
 
 
-    // Function that is gathering basic infomatino about function
-    @Override
-    public void returnType() {
-        Env.functionsReturnType.put(ident_, type_.toString());
-        Env.functionsReturnType.put("readInt", "int");
-        Env.functionsReturnType.put("readString", "string");
-        Env.functionsReturnAchievibility.put(ident_, block_.functionsReturnAchievibility());
-        Env.functionsArgumentsNumber.put(ident_, listarg_.size());
-        Env.functionsArgumentsNumber.put("printInt", 1);
-        Env.functionsArgumentsNumber.put("readString", 0);
-        Env.functionsArgumentsNumber.put("printString", 1);
-        Env.functionsArgumentsNumber.put("concatenateString", 2);
-        Env.functionsArgumentsNumber.put("readInt", 0);
-
-    }
-
-    @Override
-    public void checkTypes(Env env) throws TypeException {
-
-        for (Arg arg: listarg_){
-            arg.checkTypes(env, ident_);
-        }
-        block_.checkTypes(env, ident_);
-
-    }
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof Latte.Absyn.FnDef) {

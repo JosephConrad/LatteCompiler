@@ -15,12 +15,9 @@ public class ItemVisitor implements Item.Visitor<String, Env>
      */
     public String visit(Latte.Absyn.NoInit p, Env env) {
         String asm = "";
-        Env.ileZmiennych++;
-        asm += "\tmov qword [rbp-"+env.localVarShift+"], qword 0\n";
-
-        env.variableShifts.put(p.ident_, env.localVarShift);
-        env.localVarShift += 8;
-
+        int varNumber = env.getLocalVarNumber();
+        env.addVariableStack(p.ident_, varNumber);
+        asm += "\tmov dword [ebp"+varNumber+"], dword 0\n";
         return asm;
     }
 
@@ -30,14 +27,13 @@ public class ItemVisitor implements Item.Visitor<String, Env>
     public String visit(Latte.Absyn.Init p, Env env) throws TypeException {
         String asm = "";
 
-        Env.ileZmiennych++;
+
+        int varNumber = env.getLocalVarNumber();
+        env.addVariableStack(p.ident_, varNumber);
         asm += p.expr_.accept(new ExprVisitor(), env);
 
-        asm += "\tpop rax\n";
-        asm += "\tmov [rbp-"+env.localVarShift+"], rax\n";
-
-        env.variableShifts.put(p.ident_, env.localVarShift);
-        env.localVarShift += 8;
+        asm += "\tpop eax\n";
+        asm += "\tmov [ebp"+varNumber+"], eax\n";
 
         return asm;
     }

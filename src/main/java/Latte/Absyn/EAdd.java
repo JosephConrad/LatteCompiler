@@ -11,20 +11,6 @@ public class EAdd extends Expr {
 
     public <R,A> R accept(Latte.Absyn.Expr.Visitor<R,A> v, A arg) throws TypeException { return v.visit(this, arg); }
 
-    @Override
-    public String returnExprType(Env env, String  currentFunction) throws TypeException {
-
-        String expr1Type = expr_1.returnExprType(env, currentFunction);
-        String expr2Type = expr_2.returnExprType(env, currentFunction);
-
-        if ((expr1Type == expr2Type) && (expr1Type == "int"))
-            return "int";
-        else if ((expr1Type == expr2Type) && (expr1Type == "string"))
-            return "string";
-        else
-            throw new TypeException(currentFunction, "\n\t\t At add operator expression: invalid operands: "
-                    + expr1Type + ", and " + expr2Type);
-    }
 
     public boolean equals(Object o) {
         if (this == o) return true;

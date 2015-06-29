@@ -16,14 +16,6 @@ public class Ass extends Stmt {
         return false;
     }
 
-    @Override
-    public void checkTypes(Env env, String currentFunction) throws TypeException {
-        String identType = env.variableType.get(ident_);
-        if (identType != expr_.returnExprType(env, currentFunction))
-            throw new TypeException(currentFunction, "\n\t\tAt assignment to " +
-                    ident_ + " variable: " + "incompatible type of variable (" + identType + ")" +
-                    " with operand type (" + expr_.returnExprType(env, currentFunction) +")");
-    }
 
 
     public boolean equals(Object o) {

@@ -4,7 +4,6 @@ import Latte.Absyn.Arg;
 import Latte.Absyn.Program;
 import Latte.Absyn.TopDef;
 import Latte.BackendASM.BlockVisitor;
-import Latte.BackendASM.TypeVisitor;
 import Latte.Exceptions.TypeException;
 import Latte.TypeChecker.ProgTypeChecker;
 
@@ -77,7 +76,7 @@ public class AsmGenerator {
         public String visit(Latte.Absyn.FnDef function, Env env) throws TypeException {
 
             env.beginFunctionASM(function);
-            if (env.predefinedFunctions.contains(function.ident_)) {
+            if (env.isPredefinedFunction(function.ident_)) {
                 return "";
             }
 
@@ -89,36 +88,19 @@ public class AsmGenerator {
 
             String asm = "";
             asm += function.ident_ + ":\n";
-            asm += "\tpush rbp\n";
-            asm += "\tmov rbp, rsp\n";
-            asm += "\tsub rsp, " + function.localVars * 8 + "\n";
+            asm += "\tpush ebp\n";
+            asm += "\tmov ebp, esp\n";
+            asm += "\tsub esp, " + (function.localVars + 1) * 4 + "\n";
 
             asm += function.block_.accept(new BlockVisitor(), env) ;
 
+            asm += "\tadd esp, " + (function.localVars + 1) * 4 + "\n";
+            asm += "ret_"+function.ident_ + ":\n";
             asm += "\tleave\n";
             asm += "\tret\n";
             asm += "\n\n";
             env.endBlockASM();
             env.endFunctionASM();
-            return asm;
-        }
-    }
-
-    /*
-     * Argument Visitor
-     */
-    public class ArgVisitor implements Arg.Visitor<String, Env> {
-
-        public String visit(Latte.Absyn.Arg p, Env env) {
-
-            int shift = 8 * (1 + env.ileArgumentow);
-//            if (env.argumentsShifts.containsKey(p.ident_))
-//                throw new IllegalArgumentException("Repeated argument name\n");
-
-            env.argumentsShifts.put(p.ident_, shift);
-            env.variableType.put(p.ident_, p.type_.toString());
-
-            String asm = p.type_.accept(new TypeVisitor(), env);
             return asm;
         }
     }

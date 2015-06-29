@@ -8,21 +8,21 @@ import Latte.Absyn.MulOp;
 public class MulOpVisitor<R,A> implements MulOp.Visitor<String,A>
 {
     private String resetRdx() {
-        return "\tmov rdx, 0\n";
+        return "\tmov edx, 0\n";
     }
-    
+
     public String visit(Latte.Absyn.Times p, A arg) {
-        return resetRdx() + "\timul rax, rcx\n";
+        return resetRdx() + "\timul eax, ecx\n";
     }
-    
+
     public String visit(Latte.Absyn.Div p, A arg) {
-        return resetRdx() + "\tidiv rcx\n";
+        return resetRdx() + "\tidiv ecx\n";
     }
-    
+
     public String visit(Latte.Absyn.Mod p, A arg) {
         String asm = resetRdx();
-        asm += "\tidiv rcx\n";
-        return asm + "\tmov rax, rdx\n";
+        asm += "\tidiv ecx\n";
+        return asm + "\tmov eax, edx\n";
     }
 
 }
