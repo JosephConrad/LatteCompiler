@@ -12,7 +12,7 @@ public class RunTest
     public void main_String_SingleTest() throws Exception {
 
         System.err.println("\n====================\n");
-        Run.main(new String[]{"tests/good/core015.lat", "true"});
+        Run.main(new String[]{"tests/good/core019.lat", "true"});
     }
 
     @Test

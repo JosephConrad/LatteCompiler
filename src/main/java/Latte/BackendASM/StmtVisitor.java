@@ -16,7 +16,10 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
     }
 
     public String visit(Latte.Absyn.BStmt p, Env env) throws TypeException {
-        return p.block_.accept(new BlockVisitor(), env);
+        env.beginBlockASM();
+        String asm = p.block_.accept(new BlockVisitor(), env);
+        env.endBlockASM();
+        return asm;
     }
 
     /*
@@ -44,7 +47,6 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
         asm += p.expr_.accept(new ExprVisitor(), env);
         asm += "\tpop eax\n";
         asm += "\tmov [ebp"+env.getVarStack(p.ident_)+"], eax\n";
-        asm += "\tmov [ebp"+env.getVarStack(p.ident_) + "], eax\n";
         return asm;
     }
 
@@ -53,7 +55,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
      */
     public String visit(Latte.Absyn.Incr p, Env env) throws TypeException {
 
-        int shift = env.getVarStack(p.ident_);
+        String shift = env.getVarStack(p.ident_);
 
         String asm = "";
         asm += "\tmov eax, [ebp"+ shift +"]\n";
@@ -67,7 +69,7 @@ public class StmtVisitor implements Stmt.Visitor<String, Env>
      */
     public String visit(Latte.Absyn.Decr p, Env env) throws TypeException {
 
-        int shift = env.getVarStack(p.ident_);
+        String shift = env.getVarStack(p.ident_);
 
         String asm = "";
         asm += "\tmov eax, [ebp-"+ shift +"]\n";

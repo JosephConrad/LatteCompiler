@@ -13,7 +13,7 @@ public class Env {
     private List<String> predefinedFunctions =
             Arrays.asList("readInt", "readString", "printInt", "printString", "concatenateString");
     private FnDef currentFunctionBlockGenerator;
-    private Stack<Map<String, Integer>> functionParams;
+    private Stack<Map<String, Integer>> varStack;
     private Stack<Map<String, Type>> envVar;
     private Stack<Map<String, Fun>> envFun;
     private Map<String, String> stringsMap;
@@ -34,7 +34,7 @@ public class Env {
         this.envVar = new Stack<Map<String, Type>>();
         this.envFun = new Stack<Map<String, Fun>>();
         this.stringsMap = new HashMap<String, String>();
-        this.functionParams = new Stack<Map<String, Integer>>();
+        this.varStack = new Stack<Map<String, Integer>>();
         addPredefinedFunctions();
     }
 
@@ -118,12 +118,15 @@ public class Env {
         throw new TypeException("No function of identifier: "+functionIdent);
     }
 
-    public int getVarStack(String ident) throws TypeException {
-        for (ListIterator<Map<String, Integer>> iterator = functionParams
-                .listIterator(functionParams.size()); iterator.hasPrevious();) {
+    public String getVarStack(String ident) throws TypeException {
+        for (ListIterator<Map<String, Integer>> iterator = varStack
+                .listIterator(varStack.size()); iterator.hasPrevious();) {
             Integer value = iterator.previous().get(ident);
             if (value != null)
-                return value;
+                if (value > 0)
+                    return "+"+value;
+                else
+                    return value.toString();
         }
         throw new TypeException("Brak zmiennej o identyfikatorze "+ident);
     }
@@ -170,6 +173,7 @@ public class Env {
         currentFunctionBlockGenerator = function;
         createdLocals = 0;
         beginBlockASM();
+        currentFunctionIdent = function.ident_;
 
     }
 
@@ -179,15 +183,15 @@ public class Env {
     }
 
     public void beginBlockASM() {
-        functionParams.push(new HashMap<String, Integer>());
+        varStack.push(new HashMap<String, Integer>());
     }
 
     public void addFunctionParams(String ident, int shift) {
-        functionParams.peek().put(ident, shift);
+        varStack.peek().put(ident, shift);
     }
 
     public void endBlockASM() {
-        functionParams.pop();
+        varStack.pop();
     }
 //
 //    public String getFunctionParamShift(String ident_) {
@@ -228,6 +232,6 @@ public class Env {
     }
 
     public void addVariableStack(String ident, int varNumber) {
-        functionParams.peek().put(ident, varNumber);
+        varStack.peek().put(ident, varNumber);
     }
 }

@@ -82,7 +82,7 @@ public class AsmGenerator {
 
             int param = 2;
             for (Arg argument: function.listarg_) {
-                env.addFunctionParams(argument.ident_, param * 8);
+                env.addFunctionParams(argument.ident_, param * 4);
             }
             env.beginBlockASM();
 
@@ -94,8 +94,8 @@ public class AsmGenerator {
 
             asm += function.block_.accept(new BlockVisitor(), env) ;
 
-            asm += "\tadd esp, " + (function.localVars + 1) * 4 + "\n";
             asm += "ret_"+function.ident_ + ":\n";
+            asm += "\tadd esp, " + (function.localVars + 1) * 4 + "\n";
             asm += "\tleave\n";
             asm += "\tret\n";
             asm += "\n\n";

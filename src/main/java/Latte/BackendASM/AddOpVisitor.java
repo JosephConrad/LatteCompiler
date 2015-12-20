@@ -15,8 +15,8 @@ public class AddOpVisitor implements AddOp.Visitor<String, Env>
     public String visit(Latte.Absyn.Plus p, Env env) {
 
         if (env.isPlusConcat()) {
-            String asm = "\tmov edi, eax\n";
-            asm += "\tmov esi, ecx\n";
+            String asm = "\tpush ecx\n";
+            asm += "\tpush eax\n";
             asm += "\tcall concatenateString\n";
             asm += "\tadd esp, 8\n";
             return asm;

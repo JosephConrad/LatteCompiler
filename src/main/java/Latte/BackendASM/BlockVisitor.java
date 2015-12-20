@@ -21,7 +21,6 @@ public class BlockVisitor implements Block.Visitor<String, Env>
             asm += x.accept(new StmtVisitor(), env);
             asm += "\n";
         }
-
         return asm;
     }
 
